@@ -1,36 +1,9 @@
 // Golden path (spec 11 §3.2). Runs the real Electron app with the scripted fake model.
 import { resolve } from "node:path";
 import { expect, type Page, test } from "@playwright/test";
-import { launchApp, quickSetup, screenshot } from "./helpers";
+import { createDot, launchApp, openDot, quickSetup, screenshot, send } from "./helpers";
 
 const ECHO = resolve(import.meta.dirname, "../fixtures/mcp-echo-server.mjs");
-
-async function createDot(page: Page, templateId: string, name?: string): Promise<string> {
-	return page.evaluate(
-		async ({ templateId, name }) => {
-			const t = (await window.opendot.dots.templates()).find((x) => x.id === templateId)!;
-			const d = await window.opendot.dots.create({
-				draft: { ...t.draft, ...(name ? { name } : {}) },
-				creationPrompt: t.examplePrompt,
-			});
-			return d.id;
-		},
-		{ templateId, name },
-	);
-}
-
-async function openDot(page: Page, id: string): Promise<void> {
-	await page.evaluate((id) => {
-		window.location.hash = `#/chats/${id}`;
-	}, id);
-	await expect(page.getByRole("textbox", { name: /message/i }).or(page.locator("textarea").last())).toBeVisible();
-}
-
-async function send(page: Page, text: string): Promise<void> {
-	const box = page.locator("textarea").last();
-	await box.fill(text);
-	await box.press("Enter");
-}
 
 test("onboarding → first Dots", async () => {
 	const { app, page } = await launchApp();

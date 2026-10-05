@@ -3,7 +3,7 @@
 import { mkdirSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { type ElectronApplication, _electron as electron, type Page } from "@playwright/test";
+import { type ElectronApplication, _electron as electron, expect, type Page } from "@playwright/test";
 import type { OpenDotApi, OpenDotTestApi } from "../../src/shared/ipc";
 
 export interface Launched {
@@ -74,4 +74,31 @@ declare global {
 		opendot: OpenDotApi;
 		opendotTest?: OpenDotTestApi;
 	}
+}
+
+export async function createDot(page: Page, templateId: string, name?: string): Promise<string> {
+	return page.evaluate(
+		async ({ templateId, name }) => {
+			const t = (await window.opendot.dots.templates()).find((x) => x.id === templateId)!;
+			const d = await window.opendot.dots.create({
+				draft: { ...t.draft, ...(name ? { name } : {}) },
+				creationPrompt: t.examplePrompt,
+			});
+			return d.id;
+		},
+		{ templateId, name },
+	);
+}
+
+export async function openDot(page: Page, id: string): Promise<void> {
+	await page.evaluate((id) => {
+		window.location.hash = `#/chats/${id}`;
+	}, id);
+	await expect(page.getByRole("textbox", { name: /message/i }).or(page.locator("textarea").last())).toBeVisible();
+}
+
+export async function send(page: Page, text: string): Promise<void> {
+	const box = page.locator("textarea").last();
+	await box.fill(text);
+	await box.press("Enter");
 }

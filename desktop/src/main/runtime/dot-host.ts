@@ -153,13 +153,15 @@ export class DotHost {
 		mkdirSync(cwd, { recursive: true });
 		mkdirSync(sessionDir, { recursive: true });
 		await this.deps.pii.ensureVault(dot.id);
+		// pi's built-in tools (read, ls, grep, find, write, edit, bash) come from This Mac's "files"/"shell" grants.
+		// Pass the exact list in the initial settings: plain names replace pi's defaults (read, bash, edit, write)
+		// and [] means none. ("+name" would ADD to those defaults, `noTools` would ignore this list, and
+		// applyOverrides() is lost when pi reloads settings from storage.)
+		const builtins = this.deps.grantedBuiltins(dot);
 		const settingsManager = SettingsManager.inMemory({
 			compaction: { enabled: true },
 			retry: { enabled: true, maxRetries: 2 },
-		} as never);
-		const builtins = this.deps.grantedBuiltins(dot);
-		settingsManager.applyOverrides({
-			defaultTools: builtins.map((t) => `+${t}`),
+			defaultTools: [...builtins],
 		} as never);
 		let systemPrompt = compileSystemPrompt(dot);
 		if (ctx.kind === "link") {
@@ -194,8 +196,7 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 			resourceLoader,
 			sessionManager,
 			settingsManager,
-			// Never pass `tools`: it would hide MCP tools (spec 03 §4.1).
-			noTools: "builtin",
+			// Never pass `tools` (it would hide MCP and extension tools) or `noTools` (it would ignore defaultTools).
 		});
 		await session.bindExtensions({
 			mode: "rpc",
