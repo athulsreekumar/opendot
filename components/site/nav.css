@@ -1,0 +1,20 @@
+.od-sheet {
+	position: absolute;
+	inset: 52px 0 auto 0;
+	background: color-mix(in srgb, var(--bg) 94%, transparent);
+	backdrop-filter: saturate(180%) blur(20px);
+	-webkit-backdrop-filter: saturate(180%) blur(20px);
+	border-bottom: 1px solid var(--line);
+	animation: od-sheet-in 0.3s var(--ease-out) both;
+}
+@keyframes od-sheet-in {
+	from {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.od-sheet {
+		animation: none;
+	}
+}

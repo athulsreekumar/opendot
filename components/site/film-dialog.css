@@ -1,0 +1,23 @@
+.od-film {
+	animation: od-film-in 0.35s var(--ease-out) both;
+}
+.od-film-stage {
+	animation: od-film-stage-in 0.5s var(--ease-out) both;
+}
+@keyframes od-film-in {
+	from {
+		opacity: 0;
+	}
+}
+@keyframes od-film-stage-in {
+	from {
+		opacity: 0;
+		transform: scale(0.96);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.od-film,
+	.od-film-stage {
+		animation: none;
+	}
+}
