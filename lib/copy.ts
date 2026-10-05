@@ -9,9 +9,10 @@ export const MAC_ONLY = {
 
 export const nav = {
 	links: [
-		{ label: "Features", href: "#create" },
-		{ label: "SuperDot", href: "#superdot" },
-		{ label: "Privacy", href: "#privacy" },
+		{ label: "Features", href: "/features" },
+		{ label: "SuperDot", href: "/features/superdot" },
+		{ label: "Privacy", href: "/features/privacy" },
+		{ label: "Guides", href: "/guides" },
 	],
 	cta: "Get early access",
 };
@@ -147,8 +148,29 @@ export const form = {
 export const footer = {
 	tagline: "Made for Mac.",
 	links: [
-		{ label: "Privacy", href: "/privacy" },
+		{ label: "Download", href: "/download" },
+		{ label: "Privacy policy", href: "/privacy" },
 		{ label: "GitHub", href: GITHUB_URL },
+	],
+	columns: [
+		{
+			title: "Features",
+			links: [
+				{ label: "SuperDot", href: "/features/superdot" },
+				{ label: "Private by default", href: "/features/privacy" },
+				{ label: "Always on", href: "/features/always-on" },
+				{ label: "Any model", href: "/features/any-model" },
+				{ label: "Connections and MCP", href: "/features/connections" },
+			],
+		},
+		{
+			title: "Guides",
+			links: [
+				{ label: "Local AI with Ollama", href: "/guides/local-ai-assistant-mac-ollama" },
+				{ label: "AI email assistant for Gmail", href: "/guides/ai-email-assistant-gmail" },
+				{ label: "MCP servers on Mac", href: "/guides/mcp-servers-mac" },
+			],
+		},
 	],
 };
 

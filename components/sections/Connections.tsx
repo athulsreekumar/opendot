@@ -5,6 +5,7 @@ import { MacWindow } from "@/components/ui/MacWindow";
 import { Screenshot } from "@/components/ui/Screenshot";
 import { connections as copy } from "@/lib/copy";
 import { ConnectionsMcp } from "./ConnectionsMcp";
+import { LearnMore } from "./LearnMore";
 
 const ICONS: LucideIcon[] = [Mail, Cloud, Calendar, Server, Webhook, Folder];
 const CHIPS: Record<number, string[]> = {
@@ -26,7 +27,10 @@ export function Connections() {
 				<Reveal className="mx-auto max-w-3xl text-center">
 					<p className="t-caption mb-4 font-semibold uppercase tracking-[0.14em] text-accent">{copy.eyebrow}</p>
 					<h2 className="t-display-l">{copy.h2.join(" ")}</h2>
-					<p className="t-lead mx-auto mt-5 max-w-2xl text-fg-2">{copy.lead}</p>
+					<p className="t-lead mx-auto mt-5 max-w-2xl text-fg-2">
+						{copy.lead}
+						<LearnMore href="/features/connections" label="Learn more about connections and MCP" />
+					</p>
 				</Reveal>
 
 				<Reveal stagger={0.08} className="mt-14 grid grid-cols-1 gap-4 md:mt-20 md:grid-cols-2 md:gap-5 lg:grid-cols-3">

@@ -7,6 +7,17 @@ const config: NextConfig = {
 	reactStrictMode: true,
 	poweredByHeader: false,
 	images: { formats: ["image/avif", "image/webp"] },
+	// Canonical host is the apex. Anything on www is sent there with a permanent redirect (path and query kept).
+	async redirects() {
+		return [
+			{
+				source: "/:path*",
+				has: [{ type: "host", value: "www.opendot.live" }],
+				destination: "https://opendot.live/:path*",
+				permanent: true,
+			},
+		];
+	},
 	async headers() {
 		return [
 			{

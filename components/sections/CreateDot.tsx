@@ -177,7 +177,9 @@ export function CreateDot() {
 	const header: ReactNode = (
 		<div className="text-center">
 			<Reveal as="p" className="t-caption font-semibold uppercase tracking-[0.14em] text-accent">
-				{createDot.eyebrow}
+				<a href="/features" className="hover:underline">
+					{createDot.eyebrow} ›
+				</a>
 			</Reveal>
 			<Reveal as="h2" delay={0.06} className="t-display-l mt-4">
 				<span className="block">{createDot.h2[0]}</span>

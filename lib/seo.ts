@@ -1,4 +1,6 @@
-import { faq, hero, meta } from "@/lib/copy";
+import type { Metadata } from "next";
+import { faq, GITHUB_URL, hero, meta } from "@/lib/copy";
+import type { ContentPage } from "@/lib/pages";
 import { SITE_URL } from "@/lib/site";
 
 export const SITE_NAME = "OpenDot";
@@ -69,6 +71,7 @@ export function homeJsonLd() {
 				name: SITE_NAME,
 				url: abs("/"),
 				logo: { "@type": "ImageObject", url: abs("/icon.png"), width: 512, height: 512 },
+				sameAs: [GITHUB_URL],
 			},
 			{
 				"@type": "WebSite",
@@ -129,4 +132,121 @@ export function homeJsonLd() {
 /** Serialises JSON-LD for a <script> tag, escaping "<" so the payload can never close the tag. */
 export function serializeJsonLd(data: unknown) {
 	return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Inner pages (features, guides, download)
+// ---------------------------------------------------------------------------------------------------------------
+
+export const pageUrl = (path: string) => abs(path);
+export const pageImageUrl = (page: ContentPage) => abs(`/shots/${page.image.name}-light@2x.webp`);
+
+/** Next.js metadata for an inner page. Always sets the canonical, because the root layout's canonical is "/". */
+export function pageMetadata(page: ContentPage): Metadata {
+	const title = `${page.title} | ${SITE_NAME}`;
+	const isGuide = page.kind === "guide";
+	return {
+		title: page.title,
+		description: page.description,
+		alternates: { canonical: page.path },
+		openGraph: {
+			type: isGuide ? "article" : "website",
+			url: page.path,
+			siteName: SITE_NAME,
+			locale: "en_US",
+			title,
+			description: page.description,
+			images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: OG_ALT }],
+			...(isGuide && page.published
+				? { publishedTime: page.published, modifiedTime: page.modified ?? page.published }
+				: {}),
+		},
+		twitter: {
+			card: "summary_large_image",
+			title,
+			description: page.description,
+			images: [{ url: "/twitter-image", width: 1200, height: 630, alt: OG_ALT }],
+		},
+	};
+}
+
+const CRUMB_LABELS: Record<string, string> = { features: "Features", guides: "Guides" };
+
+/** Breadcrumb trail for a page: Home, optional section hub, the page itself. */
+export function breadcrumbs(page: ContentPage): { name: string; path: string }[] {
+	const trail = [{ name: "Home", path: "/" }];
+	const [section] = page.path.split("/").filter(Boolean);
+	if (section && CRUMB_LABELS[section] && page.path !== `/${section}`) {
+		trail.push({ name: CRUMB_LABELS[section], path: `/${section}` });
+	}
+	trail.push({ name: page.kind === "hub" ? page.eyebrow : page.title, path: page.path });
+	return trail;
+}
+
+/** JSON-LD for an inner page: WebPage or Article, BreadcrumbList and (when the page has an FAQ) FAQPage. */
+export function pageJsonLd(page: ContentPage) {
+	const orgId = abs("/#organization");
+	const url = abs(page.path);
+	const isGuide = page.kind === "guide";
+	const crumbs = breadcrumbs(page);
+	const graph: Record<string, unknown>[] = [
+		{
+			"@type": "Organization",
+			"@id": orgId,
+			name: SITE_NAME,
+			url: abs("/"),
+			logo: { "@type": "ImageObject", url: abs("/icon.png"), width: 512, height: 512 },
+			sameAs: [GITHUB_URL],
+		},
+		isGuide
+			? {
+					"@type": "Article",
+					"@id": `${url}#article`,
+					headline: page.h1,
+					description: page.description,
+					image: [pageImageUrl(page)],
+					datePublished: page.published,
+					dateModified: page.modified ?? page.published,
+					author: { "@id": orgId },
+					publisher: { "@id": orgId },
+					mainEntityOfPage: { "@id": `${url}#webpage` },
+					inLanguage: "en",
+				}
+			: undefined,
+		{
+			"@type": "WebPage",
+			"@id": `${url}#webpage`,
+			url,
+			name: `${page.title} | ${SITE_NAME}`,
+			description: page.description,
+			inLanguage: "en",
+			isPartOf: { "@id": abs("/#website") },
+			primaryImageOfPage: pageImageUrl(page),
+			breadcrumb: { "@id": `${url}#breadcrumb` },
+			...(page.kind !== "hub" && page.kind !== "guide" ? { about: { "@id": abs("/#software") } } : {}),
+		},
+		{
+			"@type": "BreadcrumbList",
+			"@id": `${url}#breadcrumb`,
+			itemListElement: crumbs.map((c, i) => ({
+				"@type": "ListItem",
+				position: i + 1,
+				name: c.name,
+				item: abs(c.path),
+			})),
+		},
+		page.faq?.length
+			? {
+					"@type": "FAQPage",
+					"@id": `${url}#faq`,
+					isPartOf: { "@id": `${url}#webpage` },
+					mainEntity: page.faq.map((i) => ({
+						"@type": "Question",
+						name: i.q,
+						acceptedAnswer: { "@type": "Answer", text: i.a },
+					})),
+				}
+			: undefined,
+	].filter(Boolean) as Record<string, unknown>[];
+	return { "@context": "https://schema.org", "@graph": graph };
 }

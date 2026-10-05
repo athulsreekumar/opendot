@@ -10,6 +10,7 @@ import { Mascot } from "@/components/ui/Mascot";
 import { Screenshot } from "@/components/ui/Screenshot";
 import { alwaysOn } from "@/lib/copy";
 import "./AlwaysOn.css";
+import { LearnMore } from "./LearnMore";
 
 const SOURCE_ICON = [
 	{ icon: Mail, bg: "linear-gradient(160deg,#60a5fa,#2563eb)" },
@@ -107,7 +108,10 @@ export function AlwaysOn() {
 					<Reveal stagger={0.08} className="mx-auto flex max-w-5xl flex-col items-center text-center">
 						<p className="t-caption mb-4 uppercase tracking-[0.14em] text-accent">{alwaysOn.eyebrow}</p>
 						<h2 className="t-display-l">{alwaysOn.h2[0]}</h2>
-						<p className="t-lead mt-5 max-w-2xl text-fg-2">{alwaysOn.lead}</p>
+						<p className="t-lead mt-5 max-w-2xl text-fg-2">
+							{alwaysOn.lead}
+							<LearnMore href="/features/always-on" label="Learn more about always-on Dots" />
+						</p>
 					</Reveal>
 				</div>
 
