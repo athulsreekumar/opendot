@@ -1,11 +1,11 @@
-import { faq, GITHUB_URL, hero, meta } from "@/lib/copy";
+import { faq, hero, meta } from "@/lib/copy";
 import { SITE_URL } from "@/lib/site";
 
 export const SITE_NAME = "OpenDot";
 
 /** Keyword-rich but natural description, kept under 160 characters. */
 export const SEO_DESCRIPTION =
-	"OpenDot is a free, open source Mac app that gives you a team of private AI assistants. They run 24/7, use any model, and keep your data on your Mac.";
+	"OpenDot is a free Mac app that gives you a team of private AI assistants. They run 24/7, use any model, and keep your data on your Mac.";
 
 export const SEO_KEYWORDS = [
 	"AI assistants for Mac",
@@ -18,7 +18,6 @@ export const SEO_KEYWORDS = [
 	"Gmail AI assistant",
 	"AI email assistant Mac",
 	"AI calendar assistant",
-	"open source AI assistant",
 	"macOS AI agents",
 	"run AI locally on Mac",
 	"Claude GPT Gemini Mac app",
@@ -53,7 +52,6 @@ export const FEATURE_LIST = [
 	"Connects to Google Workspace, Microsoft 365, Mac Calendar, Reminders, Contacts, Notes and files",
 	"Unlimited MCP servers and webhooks",
 	"Replies stream from the first token",
-	"Open source under the MIT license",
 ];
 
 /** The schema.org @graph for the home page. FAQ text is taken verbatim from lib/copy.ts. */
@@ -71,7 +69,6 @@ export function homeJsonLd() {
 				name: SITE_NAME,
 				url: abs("/"),
 				logo: { "@type": "ImageObject", url: abs("/icon.png"), width: 512, height: 512 },
-				sameAs: [GITHUB_URL],
 			},
 			{
 				"@type": "WebSite",
@@ -99,11 +96,9 @@ export function homeJsonLd() {
 				})),
 				offers: { "@type": "Offer", price: "0", priceCurrency: "USD", availability: "https://schema.org/PreOrder" },
 				isAccessibleForFree: true,
-				license: "https://opensource.org/license/mit",
 				releaseNotes: "Early access. Not yet available to download.",
 				author: { "@id": orgId },
 				publisher: { "@id": orgId },
-				sameAs: [GITHUB_URL],
 			},
 			{
 				"@type": "WebPage",

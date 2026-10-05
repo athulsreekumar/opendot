@@ -162,7 +162,7 @@ export const faq = {
 		},
 		{
 			q: "Is OpenDot free?",
-			a: "Yes. OpenDot is free and open source under the MIT license. If you connect a cloud model such as Claude or GPT with your own API key, that provider bills you directly. Run a local model through Ollama or LM Studio and it costs nothing.",
+			a: "Yes. OpenDot is free. If you connect a cloud model such as Claude or GPT with your own API key, that provider bills you directly. Run a local model through Ollama or LM Studio and it costs nothing.",
 		},
 		{
 			q: "Which Macs does it run on?",
@@ -191,10 +191,6 @@ export const faq = {
 		{
 			q: "When can I download OpenDot, and how does early access work?",
 			a: "OpenDot is in early access and is not yet available to download. Join the early-access list with your email and we will send you the download as soon as it is ready. We will only email you about OpenDot.",
-		},
-		{
-			q: "Is OpenDot open source?",
-			a: "Yes. OpenDot is MIT-licensed and built on the pi agent harness, so you can read every line and run your own build.",
 		},
 	],
 };

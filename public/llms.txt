@@ -1,6 +1,6 @@
 # OpenDot
 
-> OpenDot is a free, open source Mac app (macOS 14 or later, Apple silicon and Intel) that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks. Your data stays on your Mac. OpenDot is in early access and is not yet available to download.
+> OpenDot is a free Mac app (macOS 14 or later, Apple silicon and Intel) that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks. Your data stays on your Mac. OpenDot is in early access and is not yet available to download.
 
 ## Key facts
 
@@ -11,7 +11,6 @@
 - Any model: Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter, Groq, or local models through Ollama, LM Studio, llama.cpp, vLLM, or any compatible URL.
 - Connections: Google Workspace (Gmail, Calendar, Drive), Microsoft 365 (Outlook, Calendar, OneDrive, Teams), Mac Calendar, Reminders, Contacts, Notes and files, unlimited MCP servers, and webhooks.
 - Replies stream from the first token.
-- Open source under the MIT license, built on the pi agent harness.
 - Price: free. Status: early access.
 
 ## Links
