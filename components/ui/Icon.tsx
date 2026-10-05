@@ -14,6 +14,7 @@ export {
 	FileText,
 	Folder,
 	Globe,
+	Laptop,
 	Link2,
 	Lock,
 	Mail,
