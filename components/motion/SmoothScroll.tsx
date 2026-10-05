@@ -24,6 +24,24 @@ export function startScroll() {
 const NAV_OFFSET = -64;
 
 /**
+ * Document Y of an anchor target. While a section is pinned, ScrollTrigger makes it position:fixed, so its own
+ * rect reports "top of the viewport". Measure the in-flow .pin-spacer that stands in for it instead.
+ */
+function anchorY(target: HTMLElement): number {
+	const inFlow = target.closest<HTMLElement>(".pin-spacer") ?? target;
+	return Math.max(0, inFlow.getBoundingClientRect().top + window.scrollY + NAV_OFFSET);
+}
+
+function targetFor(hash: string): HTMLElement | null {
+	if (!hash || hash === "#" || hash === "#top") return null;
+	try {
+		return document.getElementById(decodeURIComponent(hash.slice(1)));
+	} catch {
+		return null;
+	}
+}
+
+/**
  * Lenis smooth scrolling, driven by GSAP's ticker (one rAF) and synced to ScrollTrigger.
  * Mounted once in the root layout. Renders nothing. Fully disabled under reduced motion.
  */
@@ -60,20 +78,11 @@ export function SmoothScroll() {
 			const a = (e.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
 			if (!a || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
 			const hash = a.getAttribute("href") ?? "";
-			let target: HTMLElement | null = null;
-			if (hash === "#" || hash === "#top") {
-				target = document.body;
-			} else {
-				try {
-					target = document.getElementById(decodeURIComponent(hash.slice(1)));
-				} catch {
-					return;
-				}
-			}
+			const isTop = hash === "#" || hash === "#top";
+			const target = isTop ? document.body : targetFor(hash);
 			if (!target) return;
 			e.preventDefault();
-			if (hash === "#" || hash === "#top") lenis.scrollTo(0);
-			else lenis.scrollTo(target, { offset: NAV_OFFSET });
+			lenis.scrollTo(isTop ? 0 : anchorY(target), { force: true });
 			history.pushState(null, "", hash);
 			// Keep keyboard / screen-reader context in sync with where we scrolled.
 			if (target !== document.body) {
@@ -83,8 +92,21 @@ export function SmoothScroll() {
 		};
 		document.addEventListener("click", onClick);
 
+		// Opening the page with #section: the browser jumps before pins exist and lands in the wrong place.
+		// Re-scroll once ScrollTrigger has laid everything out.
+		const initial = targetFor(window.location.hash);
+		const onRefresh = () => {
+			if (initial) lenis.scrollTo(anchorY(initial), { immediate: true, force: true });
+		};
+		if (initial) {
+			if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+			ScrollTrigger.addEventListener("refresh", onRefresh);
+			window.setTimeout(() => ScrollTrigger.removeEventListener("refresh", onRefresh), 4000);
+		}
+
 		return () => {
 			document.removeEventListener("click", onClick);
+			ScrollTrigger.removeEventListener("refresh", onRefresh);
 			gsap.ticker.remove(tick);
 			gsap.ticker.lagSmoothing(500, 33);
 			lenis.destroy();
