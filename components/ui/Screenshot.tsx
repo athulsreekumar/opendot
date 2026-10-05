@@ -1,12 +1,12 @@
 "use client";
 
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type ScreenshotProps = {
 	/** File stem in /public/shots, e.g. "sidebar-full" → /shots/sidebar-full-dark@2x.avif … */
 	name: string;
-	/** Descriptive alt text (required — screenshots carry meaning). */
+	/** Descriptive alt text (required: screenshots carry meaning). */
 	alt: string;
 	/** Above-the-fold image: eager + high fetch priority. */
 	priority?: boolean;
@@ -26,17 +26,20 @@ const src = (name: string, theme: string, ext: string) => `/shots/${name}-${them
  * 8:5 box with a neutral background so a missing file never shifts layout.
  */
 export function Screenshot({ name, alt, priority = false, sizes = "100vw", theme, className }: ScreenshotProps) {
-	const [failed, setFailed] = useState(false);
+	// 0 = preferred variant(s); 1 = light-only fallback (e.g. a dark capture is missing); 2 = nothing loaded.
+	const [stage, setStage] = useState(0);
+	const failed = stage === 2;
 	const img = useRef<HTMLImageElement>(null);
+	const onError = useCallback(() => setStage((s) => Math.min(2, s + 1)), []);
 
 	// An error can fire before hydration attaches onError; catch that case too.
 	useEffect(() => {
 		const el = img.current;
-		if (el?.complete && el.naturalWidth === 0) setFailed(true);
-	}, []);
+		if (el?.complete && el.naturalWidth === 0) onError();
+	}, [onError]);
 
-	const themes = theme ? [theme] : (["dark", "light"] as const);
-	const fallbackTheme = theme ?? "light";
+	const themes = stage >= 1 ? (["light"] as const) : theme ? [theme] : (["dark", "light"] as const);
+	const fallbackTheme = stage >= 1 ? "light" : (theme ?? "light");
 
 	return (
 		<div
@@ -65,7 +68,7 @@ export function Screenshot({ name, alt, priority = false, sizes = "100vw", theme
 					loading={priority ? "eager" : "lazy"}
 					fetchPriority={priority ? "high" : "auto"}
 					decoding="async"
-					onError={() => setFailed(true)}
+					onError={onError}
 					className={clsx("block size-full object-cover transition-opacity duration-300", failed && "opacity-0")}
 					style={{ borderRadius: "inherit" }}
 				/>

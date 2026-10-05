@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Privacy — OpenDot",
+	title: "Privacy | OpenDot",
 	description: "What the OpenDot early-access list collects, why, where it lives and how to be removed.",
 };
 

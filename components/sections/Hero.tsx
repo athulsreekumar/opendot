@@ -9,6 +9,7 @@ import { MacOnlyPill } from "@/components/ui/MacOnlyPill";
 import { MacWindow } from "@/components/ui/MacWindow";
 import { hero } from "@/lib/copy";
 import { openEarlyAccess } from "@/lib/early-access-client";
+import { FEATURES } from "@/lib/features";
 import "./hero.css";
 import { HeroVideo } from "./HeroVideo";
 
@@ -73,9 +74,11 @@ export function Hero() {
 					<Button size="lg" onClick={() => openEarlyAccess("hero")}>
 						{hero.cta}
 					</Button>
-					<Button variant="secondary" size="lg" onClick={openFilm}>
-						{hero.film}
-					</Button>
+					{FEATURES.film && (
+						<Button variant="secondary" size="lg" onClick={openFilm}>
+							{hero.film}
+						</Button>
+					)}
 				</div>
 			</div>
 
@@ -87,13 +90,13 @@ export function Hero() {
 				/>
 				<div className="hero-in relative mx-auto max-w-[1100px]" style={{ "--i": 6 } as React.CSSProperties}>
 					<MacWindow ref={win} className="hero-window">
-						<HeroVideo onPlayFilm={openFilm} reduced={reduced} />
+						<HeroVideo onPlayFilm={FEATURES.film ? openFilm : undefined} reduced={reduced} />
 					</MacWindow>
 				</div>
 				<p className="t-caption mt-6 text-center text-fg-3">{hero.underVideo}</p>
 			</div>
 
-			<FilmDialog open={film} onClose={closeFilm} />
+			{FEATURES.film && <FilmDialog open={film} onClose={closeFilm} />}
 		</section>
 	);
 }

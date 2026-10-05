@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Screenshot } from "@/components/ui/Screenshot";
+import { FEATURES } from "@/lib/features";
 
 type Conn = { saveData?: boolean };
 
@@ -12,7 +13,7 @@ type Conn = { saveData?: boolean };
  * never shifts layout or shows a hole; the video fades in over it once it is actually playing.
  * Reduced motion / Save-Data: no autoplay, screenshot + round play button that opens the film.
  */
-export function HeroVideo({ onPlayFilm, reduced }: { onPlayFilm: () => void; reduced: boolean }) {
+export function HeroVideo({ onPlayFilm, reduced }: { onPlayFilm?: () => void; reduced: boolean }) {
 	const [saveData, setSaveData] = useState(false);
 	const [playing, setPlaying] = useState(false);
 	const ref = useRef<HTMLVideoElement>(null);
@@ -46,7 +47,7 @@ export function HeroVideo({ onPlayFilm, reduced }: { onPlayFilm: () => void; red
 				priority
 				sizes="(min-width: 1140px) 1100px, 100vw"
 			/>
-			{!still && (
+			{!still && FEATURES.heroLoop && (
 				<video
 					ref={ref}
 					muted
@@ -67,7 +68,7 @@ export function HeroVideo({ onPlayFilm, reduced }: { onPlayFilm: () => void; red
 					<source src="/film/hero-loop-1080.mp4" type="video/mp4" />
 				</video>
 			)}
-			{still && (
+			{still && onPlayFilm && (
 				<button
 					type="button"
 					onClick={onPlayFilm}
