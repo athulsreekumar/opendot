@@ -41,7 +41,7 @@ test("duplicate email shows the duplicate copy", async ({ page }) => {
 	const section = page.locator("#early-access");
 	await section.getByLabel("Email").fill(uniq("+dup").replace("@", "+dup@"));
 	await section.getByRole("button", { name: "Get early access" }).click();
-	await expect(section.getByText("You’re already on the list — we’ll be in touch.")).toBeVisible();
+	await expect(section.getByText("You’re already on the list. We’ll be in touch.")).toBeVisible();
 });
 
 test("invalid email shows the message and sends no request", async ({ page }) => {

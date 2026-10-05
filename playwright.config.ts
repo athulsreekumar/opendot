@@ -6,11 +6,16 @@ export default defineConfig({
 	testDir: "tests/e2e",
 	timeout: 60_000,
 	retries: process.env.CI ? 1 : 0,
+	expect: { timeout: 10_000 },
 	use: {
 		baseURL: `http://localhost:${PORT}`,
 		trace: "retain-on-failure",
-		// Optional override for sandboxes whose installed Chromium revision differs from Playwright's.
-		...(process.env.PW_CHROMIUM ? { launchOptions: { executablePath: process.env.PW_CHROMIUM } } : {}),
+		launchOptions: {
+			// No GPU on CI runners: software WebGL would hog the main thread. Odi falls back to its still images.
+			args: ["--disable-3d-apis", "--disable-webgl"],
+			// Optional override for sandboxes whose installed Chromium revision differs from Playwright's.
+			...(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {}),
+		},
 	},
 	webServer: {
 		command: `npx next start -p ${PORT}`,
