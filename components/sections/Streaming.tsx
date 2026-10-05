@@ -4,6 +4,7 @@ import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { streaming as copy } from "@/lib/copy";
+import { LearnMore } from "./LearnMore";
 
 const TOKEN_RE = /\n|[\p{L}\p{N}’']+ ?|[^\s\p{L}\p{N}] ?/gu;
 const TPS = 40;
@@ -113,7 +114,10 @@ export function Streaming() {
 				<Reveal>
 					<p className="t-caption mb-4 font-semibold uppercase tracking-[0.14em] text-accent">{copy.eyebrow}</p>
 					<h2 className="t-display-l">{copy.h2.join(" ")}</h2>
-					<p className="t-lead mt-5 max-w-lg text-fg-2">{copy.lead}</p>
+					<p className="t-lead mt-5 max-w-lg text-fg-2">
+						{copy.lead}
+						<LearnMore href="/features/always-on" label="Learn more about how Dots work in the background" />
+					</p>
 				</Reveal>
 
 				<Reveal y={32}>

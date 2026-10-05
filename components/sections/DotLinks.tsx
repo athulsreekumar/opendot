@@ -9,6 +9,7 @@ import { Icon } from "@/components/ui/Icon";
 import { MacWindow } from "@/components/ui/MacWindow";
 import { Screenshot } from "@/components/ui/Screenshot";
 import { dotLinks } from "@/lib/copy";
+import { LearnMore } from "./LearnMore";
 
 type Perm = "allow" | "ask" | "block" | "self";
 
@@ -83,7 +84,10 @@ export function DotLinks() {
 					<Reveal stagger={0.08}>
 						<p className="t-caption font-semibold uppercase tracking-[0.14em] text-accent">{dotLinks.eyebrow}</p>
 						<h2 className="t-display-l mt-4 max-w-[14ch]">{dotLinks.h2.join(" ")}</h2>
-						<p className="t-lead mt-6 max-w-[34rem] text-fg-2">{dotLinks.lead}</p>
+						<p className="t-lead mt-6 max-w-[34rem] text-fg-2">
+							{dotLinks.lead}
+							<LearnMore href="/features/privacy" label="Learn more about permissions and privacy" />
+						</p>
 					</Reveal>
 
 					<div ref={card} className="rounded-[var(--radius-lg)] bg-card p-4 shadow-card ring-1 ring-line sm:p-7">

@@ -4,6 +4,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Cloud, Laptop, Link2 } from "@/components/ui/Icon";
 import { anyModel } from "@/lib/copy";
 import "./AnyModel.css";
+import { LearnMore } from "./LearnMore";
 
 export function AnyModel() {
 	return (
@@ -16,7 +17,10 @@ export function AnyModel() {
 						<span className="block">{anyModel.h2[0]}</span>
 						<span className="block text-gradient">{anyModel.h2[1]}</span>
 					</h2>
-					<p className="t-lead text-fg-2 max-w-[40ch]">{anyModel.lead}</p>
+					<p className="t-lead text-fg-2 max-w-[40ch]">
+						{anyModel.lead}
+						<LearnMore href="/features/any-model" label="Learn more about using any AI model" />
+					</p>
 				</div>
 
 				{/* Marquee rows */}

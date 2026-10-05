@@ -122,8 +122,8 @@ export function Nav() {
 			/>
 			<nav aria-label="Primary" className="container-site flex h-[52px] items-center justify-between gap-4">
 				<a
-					href="#hero"
-					aria-label="OpenDot, back to top"
+					href="/"
+					aria-label="OpenDot home"
 					className="flex items-center gap-2 rounded-md text-[19px] font-semibold tracking-[-0.03em]"
 				>
 					<LogoMark />

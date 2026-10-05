@@ -37,6 +37,17 @@ export function FinalCta() {
 				</Reveal>
 				<Reveal delay={0.16} className="relative mt-10 w-full max-w-[560px]">
 					<EarlyAccessForm source="final" variant="inline" />
+					<p className="t-caption mt-6 text-fg-3">
+						Want it now?{" "}
+						<a href="/download" className="text-accent underline-offset-4 hover:underline">
+							See how to download or build OpenDot
+						</a>
+						, or{" "}
+						<a href="/features" className="text-accent underline-offset-4 hover:underline">
+							explore the features
+						</a>
+						.
+					</p>
 				</Reveal>
 			</div>
 		</section>

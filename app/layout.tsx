@@ -9,10 +9,12 @@ import { OG_ALT, SEO_DESCRIPTION, SEO_KEYWORDS } from "@/lib/seo";
 import { IS_PRODUCTION, SITE_URL } from "@/lib/site";
 
 const TITLE = "OpenDot: your AI team, living on your Mac";
+/** The <title> of the home page: brand plus the words people search for. */
+const HOME_TITLE = "OpenDot: Private AI Assistants for Mac, Any Model";
 
 export const metadata: Metadata = {
 	metadataBase: new URL(SITE_URL),
-	title: { default: TITLE, template: "%s | OpenDot" },
+	title: { default: HOME_TITLE, template: "%s | OpenDot" },
 	description: SEO_DESCRIPTION,
 	keywords: SEO_KEYWORDS,
 	applicationName: "OpenDot",

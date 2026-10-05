@@ -1,6 +1,6 @@
 # SEO: what to do after deploying
 
-Everything technical is already in the code: metadata, canonical URLs, sitemap, robots, structured data (Organization, WebSite, SoftwareApplication, WebPage, FAQPage), social images, icons, manifest, `llms.txt` and IndexNow. The steps below need an account or a DNS record, so only you can do them.
+Everything technical is already in the code: metadata, canonical URLs, sitemap (with images), robots, structured data (Organization, WebSite, SoftwareApplication, WebPage, FAQPage, BreadcrumbList, Article), social images, icons, manifest, `llms.txt`, IndexNow, a www to apex redirect and a helpful 404. See `docs/SEO-AUDIT.md` for the audit. The steps below need an account or a DNS record, so only you can do them.
 
 ## 1. Google Search Console
 
@@ -9,7 +9,12 @@ Everything technical is already in the code: metadata, canonical URLs, sitemap, 
    - Alternative: choose the **URL prefix** option, pick the HTML tag method, copy the `content` value and set it as `GOOGLE_SITE_VERIFICATION` in Vercel (Project, Settings, Environment Variables, Production). Redeploy, then click Verify.
 3. Open **Sitemaps** and submit `https://opendot.live/sitemap.xml`.
 4. Open **URL inspection**, paste `https://opendot.live/`, wait for the check, then click **Request indexing**.
-5. Check back in a few days: **Pages** should show 2 indexed pages (`/` and `/privacy`).
+5. Do the same URL inspection and **Request indexing** for each new page (Google limits manual requests, so spread them over a few days, home and `/download` first):
+   - `https://opendot.live/features`, `/features/superdot`, `/features/privacy`, `/features/always-on`, `/features/any-model`, `/features/connections`
+   - `https://opendot.live/guides`, `/guides/local-ai-assistant-mac-ollama`, `/guides/ai-email-assistant-gmail`, `/guides/mcp-servers-mac`
+   - `https://opendot.live/download`
+6. Check back in a few days: **Pages** should show 13 indexed pages. Under **Performance**, watch queries such as "local AI assistant Mac", "Ollama Mac app" and "MCP client Mac".
+7. In Vercel, make sure `opendot.live` is the primary domain and `www.opendot.live` redirects to it (the app also redirects).
 
 ## 2. Bing Webmaster Tools
 
@@ -42,12 +47,15 @@ Any deployment where `VERCEL_ENV` is not `production` is served with `noindex` (
 
 ## 7. Off-page checklist (what actually moves rankings)
 
-- [ ] Link to https://opendot.live from the GitHub README, repo "Website" field and the GitHub org profile.
+- [ ] GitHub repo: set the **Website** field to https://opendot.live, add topics (`macos`, `ai-assistant`, `ai-agents`, `ollama`, `mcp`, `local-first`, `privacy`, `electron`, `llm`), and link the site from the README and the org profile.
 - [ ] Product Hunt launch (when downloads open). Prepare the tagline, gallery and a maker comment.
 - [ ] Hacker News "Show HN" post once there is something to try.
-- [ ] Post in relevant communities: r/macapps, r/LocalLLaMA, r/ollama, r/selfhosted, MCP community lists.
+- [ ] Post in relevant communities (read each subreddit's self-promotion rules first, and lead with something useful such as the Ollama guide): r/macapps, r/LocalLLaMA, r/ollama, r/selfhosted, MCP community lists.
 - [ ] Submit to directories: AlternativeTo, Futurepedia, There's An AI For That, awesome-mcp lists, awesome-macOS lists, Mac app roundups.
 - [ ] Get listed in the MCP clients lists and the Ollama community integrations page.
 - [ ] Write one or two launch posts (for example "Why Dots, not one big chatbot") and link them to the site.
+- [ ] Share the guides, not just the home page: `/guides/local-ai-assistant-mac-ollama` for r/LocalLLaMA and r/ollama, `/guides/mcp-servers-mac` for MCP communities, `/guides/ai-email-assistant-gmail` for productivity audiences.
+- [ ] Submit a pull request to awesome-mcp-clients style lists and awesome-macOS with the one-line description from `llms.txt`.
 - [ ] Keep the same name, description and logo everywhere (GitHub, X, LinkedIn). The structured data links the GitHub repo as `sameAs`.
-- [ ] Once downloads open, update the sitemap `lastModified` in `app/sitemap.ts`, flip the structured data availability, and re-request indexing.
+- [ ] Add new pages by adding an entry to `lib/pages.ts`. It feeds the routes, sitemap, IndexNow, 404 links and tests automatically.
+- [ ] Once downloads open, update the sitemap `lastModified` in `app/sitemap.ts`, the "early access" wording on `/download`, flip the structured data availability, and re-request indexing.

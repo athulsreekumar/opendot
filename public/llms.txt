@@ -16,7 +16,17 @@
 ## Links
 
 - [Home](https://opendot.live/): product overview, FAQ and early-access signup
-- [FAQ](https://opendot.live/#faq): answers about pricing, privacy, models and early access
-- [Privacy](https://opendot.live/privacy): what the early-access list collects and how to be removed
+- [Features](https://opendot.live/features): overview of everything OpenDot does
+- [SuperDot](https://opendot.live/features/superdot): ask one question, every Dot answers, with sources
+- [Private by default](https://opendot.live/features/privacy): local storage, masking, approvals, Keychain
+- [Always on](https://opendot.live/features/always-on): Dots that run in the background and react to events
+- [Any model](https://opendot.live/features/any-model): cloud models, Ollama, LM Studio, llama.cpp, vLLM, any URL
+- [Connections](https://opendot.live/features/connections): Google Workspace, Microsoft 365, your Mac and MCP servers
+- [Guide: local AI assistant on Mac with Ollama](https://opendot.live/guides/local-ai-assistant-mac-ollama)
+- [Guide: AI email assistant for Gmail](https://opendot.live/guides/ai-email-assistant-gmail)
+- [Guide: MCP servers on Mac](https://opendot.live/guides/mcp-servers-mac)
+- [Download](https://opendot.live/download): early access, GitHub builds and building from source
+- [Privacy policy](https://opendot.live/privacy): what the early-access list collects and how to be removed
+- [Source code](https://github.com/athulsreekumar/opendot): MIT licensed
 - [Sitemap](https://opendot.live/sitemap.xml)
 - Contact: hello@opendot.live

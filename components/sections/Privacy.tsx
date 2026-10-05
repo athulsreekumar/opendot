@@ -144,7 +144,11 @@ export function Privacy() {
 			<div ref={inner} className="flex min-h-svh flex-col justify-center py-24 lg:py-16">
 				<div className="container-site">
 					<div className="text-center">
-						<p className="t-caption font-semibold uppercase tracking-[0.14em] text-accent">{privacy.eyebrow}</p>
+						<p className="t-caption font-semibold uppercase tracking-[0.14em] text-accent">
+							<a href="/features/privacy" className="hover:underline">
+								{privacy.eyebrow} ›
+							</a>
+						</p>
 						<h2 className="t-display-l mt-3">{privacy.h2.join(" ")}</h2>
 					</div>
 

@@ -8,6 +8,7 @@ import { Mascot } from "@/components/ui/Mascot";
 import { Screenshot } from "@/components/ui/Screenshot";
 import { superBot } from "@/lib/copy";
 import "./SuperBot.css";
+import { LearnMore } from "./LearnMore";
 
 const EMOJI = ["📬", "📅", "🔎", "💸", "✈️"];
 // TODO(copy): answer snippets (one per Dot, same order as superBot.dots)
@@ -308,7 +309,10 @@ export function SuperBot(): ReactNode {
 								<span className="text-gradient block">{superBot.h2[1]}</span>
 							</h2>
 						</div>
-						<p className="t-lead mt-5 max-w-xl text-fg-2 min-[900px]:mt-0">{superBot.lead}</p>
+						<p className="t-lead mt-5 max-w-xl text-fg-2 min-[900px]:mt-0">
+							{superBot.lead}
+							<LearnMore href="/features/superdot" label="Learn more about SuperDot" />
+						</p>
 					</Reveal>
 
 					<div className="mt-10 flex justify-center min-[900px]:mt-0">
