@@ -1,0 +1,16 @@
+{
+	"id": "memory",
+	"label": "Memory",
+	"description": "Store and retrieve notes and context between conversations.",
+	"category": "knowledge",
+	"icon": "brain",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "npx",
+		"args": ["-y", "@modelcontextprotocol/server-memory"]
+	},
+	"inputs": [],
+	"defaultExposure": "direct",
+	"requiresNode": true,
+	"verified": true
+}

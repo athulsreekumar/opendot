@@ -1,0 +1,10 @@
+{
+	"name": "tool-echo",
+	"steps": [
+		{
+			"content": [{ "type": "toolCall", "id": "tc_echo_1", "name": "mcp__echo__echo", "arguments": { "text": "hi" } }],
+			"stopReason": "toolUse"
+		},
+		{ "content": [{ "type": "text", "text": "The echo said hi." }] }
+	]
+}

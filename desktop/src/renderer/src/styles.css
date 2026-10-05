@@ -1,0 +1,127 @@
+@import "tailwindcss";
+@import "./design-system/tokens.css";
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme inline {
+	--color-app: var(--od-bg-app);
+	--color-rail: var(--od-bg-rail);
+	--color-sidebar: var(--od-bg-sidebar);
+	--color-chat: var(--od-bg-chat);
+	--color-elevated: var(--od-bg-elevated);
+	--color-sunken: var(--od-bg-sunken);
+	--color-hover: var(--od-bg-hover);
+	--color-active: var(--od-bg-active);
+	--color-selected: var(--od-bg-selected);
+	--color-overlay: var(--od-overlay);
+	--color-border-subtle: var(--od-border-subtle);
+	--color-border: var(--od-border);
+	--color-border-strong: var(--od-border-strong);
+	--color-fg: var(--od-text-primary);
+	--color-fg-2: var(--od-text-secondary);
+	--color-fg-3: var(--od-text-tertiary);
+	--color-fg-disabled: var(--od-text-disabled);
+	--color-fg-inverse: var(--od-text-inverse);
+	--color-link: var(--od-text-link);
+	--color-accent: var(--od-accent);
+	--color-accent-hover: var(--od-accent-hover);
+	--color-accent-pressed: var(--od-accent-pressed);
+	--color-accent-subtle: var(--od-accent-subtle);
+	--color-accent-fg: var(--od-accent-fg);
+	--color-bubble-out: var(--od-bubble-out);
+	--color-bubble-out-fg: var(--od-bubble-out-fg);
+	--color-bubble-in: var(--od-bubble-in);
+	--color-bubble-in-fg: var(--od-bubble-in-fg);
+	--color-bubble-system: var(--od-bubble-system);
+	--color-bubble-link: var(--od-bubble-link);
+	--color-success: var(--od-success);
+	--color-success-subtle: var(--od-success-subtle);
+	--color-warning: var(--od-warning);
+	--color-warning-subtle: var(--od-warning-subtle);
+	--color-danger: var(--od-danger);
+	--color-danger-subtle: var(--od-danger-subtle);
+	--color-info: var(--od-info);
+	--color-info-subtle: var(--od-info-subtle);
+
+	--font-sans: var(--od-font-sans);
+	--font-mono: var(--od-font-mono);
+	--text-2xs: var(--od-text-2xs);
+	--text-2xs--line-height: var(--od-lh-2xs);
+	--text-xs: var(--od-text-xs);
+	--text-xs--line-height: var(--od-lh-xs);
+	--text-sm: var(--od-text-sm);
+	--text-sm--line-height: var(--od-lh-sm);
+	--text-md: var(--od-text-md);
+	--text-md--line-height: var(--od-lh-md);
+	--text-lg: var(--od-text-lg);
+	--text-lg--line-height: var(--od-lh-lg);
+	--text-xl: var(--od-text-xl);
+	--text-xl--line-height: var(--od-lh-xl);
+	--text-2xl: var(--od-text-2xl);
+	--text-2xl--line-height: var(--od-lh-2xl);
+	--text-3xl: var(--od-text-3xl);
+	--text-3xl--line-height: var(--od-lh-3xl);
+	--text-4xl: var(--od-text-4xl);
+	--text-4xl--line-height: var(--od-lh-4xl);
+
+	--radius-xs: var(--od-radius-xs);
+	--radius-sm: var(--od-radius-sm);
+	--radius-md: var(--od-radius-md);
+	--radius-lg: var(--od-radius-lg);
+	--radius-xl: var(--od-radius-xl);
+	--radius-2xl: var(--od-radius-2xl);
+	--radius-bubble: var(--od-radius-bubble);
+
+	--shadow-xs: var(--od-shadow-xs);
+	--shadow-sm: var(--od-shadow-sm);
+	--shadow-md: var(--od-shadow-md);
+	--shadow-lg: var(--od-shadow-lg);
+	--shadow-bubble: var(--od-shadow-bubble);
+
+	--ease-standard: var(--od-ease-standard);
+	--ease-emphasized: var(--od-ease-emphasized);
+}
+
+html,
+body,
+#root {
+	height: 100%;
+}
+body {
+	margin: 0;
+	background: var(--od-bg-app);
+	color: var(--od-text-primary);
+	font-family: var(--od-font-sans);
+	font-size: var(--od-text-md);
+	line-height: var(--od-lh-md);
+	-webkit-font-smoothing: antialiased;
+	user-select: none; /* text in bubbles/inputs re-enables selection */
+}
+.od-selectable {
+	user-select: text;
+}
+.od-drag {
+	-webkit-app-region: drag;
+}
+.od-no-drag {
+	-webkit-app-region: no-drag;
+}
+:focus-visible {
+	outline: 2px solid var(--od-focus-ring);
+	outline-offset: 2px;
+	border-radius: var(--od-radius-sm);
+}
+.od-chat-wallpaper {
+	background-color: var(--od-bg-chat);
+	background-image: radial-gradient(var(--od-chat-dot) 1px, transparent 1.2px);
+	background-size: 18px 18px;
+}
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--od-border);
+	border-radius: 9999px;
+	border: 3px solid transparent;
+	background-clip: content-box;
+}

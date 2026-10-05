@@ -1,0 +1,16 @@
+{
+	"id": "playwright",
+	"label": "Playwright",
+	"description": "Automate web browser interactions and testing.",
+	"category": "dev",
+	"icon": "globe",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "npx",
+		"args": ["-y", "@playwright/mcp@latest"]
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"requiresNode": true,
+	"verified": true
+}

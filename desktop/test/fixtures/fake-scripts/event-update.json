@@ -1,0 +1,10 @@
+{
+	"name": "event-update",
+	"steps": [
+		{
+			"content": [
+				{ "type": "text", "text": "[UPDATE] New email from Priya about invoice #2041 — it's 14 days overdue." }
+			]
+		}
+	]
+}

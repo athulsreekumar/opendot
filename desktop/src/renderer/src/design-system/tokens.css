@@ -1,0 +1,240 @@
+:root {
+	/* ── Surfaces ── */
+	--od-bg-app: #e9edf1; /* window background behind panes */
+	--od-bg-rail: #f6f7f9; /* nav rail */
+	--od-bg-sidebar: #ffffff; /* dot list pane */
+	--od-bg-chat: #f4f1ea; /* chat canvas (warm paper) */
+	--od-bg-elevated: #ffffff; /* cards, dialogs, popovers */
+	--od-bg-sunken: #f2f4f7; /* inputs, code blocks */
+	--od-bg-hover: #f2f4f7;
+	--od-bg-active: #e9edf2;
+	--od-bg-selected: #e3f4f0; /* selected dot row */
+	--od-overlay: rgb(16 24 40 / 0.45);
+	--od-chat-dot: rgb(16 24 40 / 0.06); /* wallpaper dot color */
+
+	/* ── Borders ── */
+	--od-border-subtle: #e6e9ee;
+	--od-border: #d6dbe2;
+	--od-border-strong: #b9c1cc;
+
+	/* ── Text ── */
+	--od-text-primary: #111827;
+	--od-text-secondary: #4b5563;
+	--od-text-tertiary: #6b7280;
+	--od-text-disabled: #9ca3af;
+	--od-text-inverse: #ffffff;
+	--od-text-link: #0b7f70;
+
+	/* ── Brand / accent (teal) ── */
+	--od-accent: #0e9f8a;
+	--od-accent-hover: #0b8574;
+	--od-accent-pressed: #096b5e;
+	--od-accent-subtle: #e3f4f0;
+	--od-accent-fg: #ffffff;
+	--od-focus-ring: rgb(14 159 138 / 0.45);
+
+	/* ── Bubbles ── */
+	--od-bubble-out: #d7f3ea; /* user */
+	--od-bubble-out-fg: #0f2a24;
+	--od-bubble-in: #ffffff; /* dot */
+	--od-bubble-in-fg: #111827;
+	--od-bubble-system: #fff6e0;
+	--od-bubble-link: #eef2ff; /* dot-to-dot cards */
+
+	/* ── Semantic ── */
+	--od-success: #12a150;
+	--od-success-subtle: #e6f6ec;
+	--od-warning: #d97706;
+	--od-warning-subtle: #fdf3e2;
+	--od-danger: #dc3545;
+	--od-danger-subtle: #fdecee;
+	--od-info: #2563eb;
+	--od-info-subtle: #e8effd;
+
+	/* ── Dot palette: solid (avatar ring/stroke) + soft (avatar fill) ── */
+	--od-dot-teal: #0e9f8a;
+	--od-dot-teal-soft: #d5f2ec;
+	--od-dot-green: #16a34a;
+	--od-dot-green-soft: #dcf5e4;
+	--od-dot-lime: #65a30d;
+	--od-dot-lime-soft: #ecf6d6;
+	--od-dot-amber: #d97706;
+	--od-dot-amber-soft: #fcefd6;
+	--od-dot-orange: #ea580c;
+	--od-dot-orange-soft: #fde5d6;
+	--od-dot-rose: #e11d48;
+	--od-dot-rose-soft: #fde1e7;
+	--od-dot-pink: #db2777;
+	--od-dot-pink-soft: #fce1ef;
+	--od-dot-violet: #7c3aed;
+	--od-dot-violet-soft: #ece4fd;
+	--od-dot-indigo: #4f46e5;
+	--od-dot-indigo-soft: #e4e3fc;
+	--od-dot-blue: #2563eb;
+	--od-dot-blue-soft: #dfe9fd;
+	--od-dot-sky: #0284c7;
+	--od-dot-sky-soft: #daeffa;
+	--od-dot-slate: #475569;
+	--od-dot-slate-soft: #e5e9ef;
+
+	/* ── Typography ── */
+	--od-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter Variable", system-ui, sans-serif;
+	--od-font-mono: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+	--od-text-2xs: 11px;
+	--od-lh-2xs: 14px; /* badges, timestamps in bubbles */
+	--od-text-xs: 12px;
+	--od-lh-xs: 16px; /* meta, captions */
+	--od-text-sm: 13px;
+	--od-lh-sm: 18px; /* secondary UI, list previews */
+	--od-text-md: 14px;
+	--od-lh-md: 20px; /* body, chat text */
+	--od-text-lg: 15px;
+	--od-lh-lg: 20px; /* list titles, buttons lg */
+	--od-text-xl: 17px;
+	--od-lh-xl: 22px; /* pane titles */
+	--od-text-2xl: 20px;
+	--od-lh-2xl: 26px; /* section headings */
+	--od-text-3xl: 24px;
+	--od-lh-3xl: 30px; /* dialog titles, onboarding */
+	--od-text-4xl: 32px;
+	--od-lh-4xl: 38px; /* welcome */
+	--od-weight-regular: 400;
+	--od-weight-medium: 500;
+	--od-weight-semibold: 600;
+	--od-weight-bold: 700;
+
+	/* ── Space (4px grid) ── */
+	--od-space-0: 0;
+	--od-space-0_5: 2px;
+	--od-space-1: 4px;
+	--od-space-1_5: 6px;
+	--od-space-2: 8px;
+	--od-space-2_5: 10px;
+	--od-space-3: 12px;
+	--od-space-4: 16px;
+	--od-space-5: 20px;
+	--od-space-6: 24px;
+	--od-space-8: 32px;
+	--od-space-10: 40px;
+	--od-space-12: 48px;
+	--od-space-16: 64px;
+
+	/* ── Radius ── */
+	--od-radius-xs: 4px;
+	--od-radius-sm: 6px;
+	--od-radius-md: 8px;
+	--od-radius-lg: 12px;
+	--od-radius-xl: 16px;
+	--od-radius-2xl: 20px;
+	--od-radius-bubble: 14px;
+	--od-radius-full: 9999px;
+
+	/* ── Elevation ── */
+	--od-shadow-xs: 0 1px 1px rgb(16 24 40 / 0.06);
+	--od-shadow-sm: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.08);
+	--od-shadow-md: 0 4px 8px -2px rgb(16 24 40 / 0.08), 0 2px 4px -2px rgb(16 24 40 / 0.05);
+	--od-shadow-lg: 0 12px 24px -6px rgb(16 24 40 / 0.14), 0 4px 8px -4px rgb(16 24 40 / 0.06);
+	--od-shadow-bubble: 0 1px 0.5px rgb(11 20 26 / 0.13);
+
+	/* ── Motion ── */
+	--od-dur-instant: 80ms;
+	--od-dur-fast: 140ms;
+	--od-dur-base: 200ms;
+	--od-dur-slow: 280ms;
+	--od-dur-slower: 400ms;
+	--od-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+	--od-ease-emphasized: cubic-bezier(0.3, 0, 0, 1.2);
+	--od-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+	/* ── Layout ── */
+	--od-rail-w: 64px;
+	--od-list-w: 360px;
+	--od-drawer-w: 380px;
+	--od-header-h: 60px;
+	--od-titlebar-h: 40px;
+	--od-chat-max-w: 860px; /* message column max width */
+
+	/* ── Z ── */
+	--od-z-base: 0;
+	--od-z-sticky: 10;
+	--od-z-drawer: 30;
+	--od-z-popover: 40;
+	--od-z-modal: 50;
+	--od-z-toast: 60;
+	--od-z-tooltip: 70;
+}
+
+[data-theme="dark"] {
+	--od-bg-app: #0a0e13;
+	--od-bg-rail: #0f141a;
+	--od-bg-sidebar: #111821;
+	--od-bg-chat: #0c1117;
+	--od-bg-elevated: #18212c;
+	--od-bg-sunken: #0f151c;
+	--od-bg-hover: #1a2430;
+	--od-bg-active: #202c3a;
+	--od-bg-selected: #12312c;
+	--od-overlay: rgb(0 0 0 / 0.6);
+	--od-chat-dot: rgb(255 255 255 / 0.045);
+
+	--od-border-subtle: #1f2934;
+	--od-border: #2a3644;
+	--od-border-strong: #3a4858;
+
+	--od-text-primary: #eef2f6;
+	--od-text-secondary: #b3bdc9;
+	--od-text-tertiary: #8794a4;
+	--od-text-disabled: #586373;
+	--od-text-inverse: #0b1015;
+	--od-text-link: #4fd1bf;
+
+	--od-accent: #2cc9b2;
+	--od-accent-hover: #4fd8c4;
+	--od-accent-pressed: #22a894;
+	--od-accent-subtle: #10322d;
+	--od-accent-fg: #04201c;
+	--od-focus-ring: rgb(44 201 178 / 0.5);
+
+	--od-bubble-out: #11463f;
+	--od-bubble-out-fg: #e7f7f3;
+	--od-bubble-in: #1a232e;
+	--od-bubble-in-fg: #eef2f6;
+	--od-bubble-system: #2b2513;
+	--od-bubble-link: #1c2140;
+
+	--od-success: #3ccf7c;
+	--od-success-subtle: #10291b;
+	--od-warning: #f5a524;
+	--od-warning-subtle: #2e2210;
+	--od-danger: #f26b78;
+	--od-danger-subtle: #351519;
+	--od-info: #6d9cff;
+	--od-info-subtle: #152240;
+
+	--od-dot-teal-soft: #113a34;
+	--od-dot-green-soft: #12301d;
+	--od-dot-lime-soft: #23300f;
+	--od-dot-amber-soft: #36270d;
+	--od-dot-orange-soft: #3a2010;
+	--od-dot-rose-soft: #3a1520;
+	--od-dot-pink-soft: #39152a;
+	--od-dot-violet-soft: #2a1d47;
+	--od-dot-indigo-soft: #23224a;
+	--od-dot-blue-soft: #172747;
+	--od-dot-sky-soft: #0f2c3d;
+	--od-dot-slate-soft: #232c38;
+
+	--od-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+	--od-shadow-md: 0 4px 10px -2px rgb(0 0 0 / 0.5);
+	--od-shadow-lg: 0 16px 32px -8px rgb(0 0 0 / 0.6);
+	--od-shadow-bubble: 0 1px 0.5px rgb(0 0 0 / 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--od-dur-fast: 0ms;
+		--od-dur-base: 0ms;
+		--od-dur-slow: 0ms;
+		--od-dur-slower: 0ms;
+	}
+}

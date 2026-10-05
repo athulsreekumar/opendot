@@ -1,0 +1,69 @@
+name: Mac app CI
+
+on:
+  pull_request:
+    paths: ["desktop/**", ".github/workflows/desktop-*.yml"]
+  push:
+    branches: [main]
+    paths: ["desktop/**", ".github/workflows/desktop-*.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: desktop-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: macos-14
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - name: End-to-end tests (real Electron app, fake model)
+        run: npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-screens
+          path: |
+            desktop/e2e-screens
+            desktop/test-results
+          if-no-files-found: ignore
+
+  dmg:
+    needs: check
+    runs-on: macos-14
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - name: Build unsigned (ad-hoc signed) DMGs for Apple Silicon and Intel
+        run: npm run dist:mac
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - name: Verify ad-hoc signature
+        run: codesign -dv --verbose=2 release/mac-arm64/OpenDot.app 2>&1 | head -5 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenDot-mac
+          path: |
+            desktop/release/*.dmg
+            desktop/release/*.zip
+          if-no-files-found: error

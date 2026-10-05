@@ -1,0 +1,15 @@
+{
+	"id": "figma",
+	"label": "Figma",
+	"description": "Access and manage Figma designs.",
+	"category": "files",
+	"icon": "figma",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.figma.com/mcp",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": false
+}

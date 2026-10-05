@@ -1,0 +1,16 @@
+{
+	"id": "linear",
+	"label": "Linear",
+	"description": "Manage issues and projects in Linear.",
+	"category": "dev",
+	"icon": "list-checks",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.linear.app/mcp",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": true,
+	"docsUrl": "https://github.com/modelcontextprotocol/servers"
+}

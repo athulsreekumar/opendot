@@ -15,7 +15,8 @@
 			"!film/out",
 			"!capture",
 			"!film",
-			"!tsconfig.json"
+			"!tsconfig.json",
+			"!desktop"
 		]
 	},
 	"formatter": {

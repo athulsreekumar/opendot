@@ -1,0 +1,15 @@
+{
+	"id": "stripe",
+	"label": "Stripe",
+	"description": "Manage Stripe payments and accounts.",
+	"category": "data",
+	"icon": "credit-card",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.stripe.com",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": false
+}

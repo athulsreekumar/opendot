@@ -1,0 +1,27 @@
+{
+	"id": "github",
+	"label": "GitHub",
+	"description": "Access and manage GitHub repositories and issues.",
+	"category": "dev",
+	"icon": "github",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://api.githubcopilot.com/mcp/",
+		"headers": {
+			"Authorization": "Bearer ${secret:GITHUB_TOKEN}"
+		}
+	},
+	"inputs": [
+		{
+			"key": "GITHUB_TOKEN",
+			"label": "GitHub Personal Access Token",
+			"secret": true,
+			"placeholder": "ghp_...",
+			"help": "Create at https://github.com/settings/tokens with repo scope",
+			"target": "header"
+		}
+	],
+	"defaultExposure": "deferred",
+	"verified": true,
+	"docsUrl": "https://github.com/modelcontextprotocol/servers"
+}

@@ -1,0 +1,31 @@
+{
+	"name": "super-fanout",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_ask_1",
+					"name": "ask_dots",
+					"arguments": {
+						"requests": [
+							{ "dot": "Inbox", "question": "Anything important today?" },
+							{ "dot": "Calendar", "question": "What's on today?" }
+						]
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{ "content": [{ "type": "text", "text": "Reply from a Dot via the fake model." }] },
+		{ "content": [{ "type": "text", "text": "Reply from a Dot via the fake model." }] },
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Here's your day: Priya emailed about the invoice [Inbox], and you have a design review at 15:00 [Calendar]."
+				}
+			]
+		}
+	]
+}

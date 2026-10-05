@@ -1,0 +1,38 @@
+name: Mac app release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-14
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - name: Tag must match package.json version
+        run: |
+          v=$(node -p "require('./package.json').version")
+          test "${GITHUB_REF_NAME}" = "v$v" || (echo "Tag ${GITHUB_REF_NAME} != v$v" && exit 1)
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npx electron-builder --mac --arm64 --x64 --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          # Notarization (enable once an Apple Developer account exists):
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # CSC_LINK / CSC_KEY_PASSWORD for the Developer ID certificate

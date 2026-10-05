@@ -1,0 +1,18 @@
+{
+	"name": "link-ask",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_link_1",
+					"name": "message_dot",
+					"arguments": { "to": "Inbox", "message": "Any emails from Priya today?" }
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{ "content": [{ "type": "text", "text": "Inbox says: one email from Priya about the invoice." }] },
+		{ "content": [{ "type": "text", "text": "Inbox says: one email from Priya about the invoice." }] }
+	]
+}

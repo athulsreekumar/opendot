@@ -1,0 +1,26 @@
+{
+	"id": "huggingface",
+	"label": "Hugging Face",
+	"description": "Access models and datasets from Hugging Face.",
+	"category": "knowledge",
+	"icon": "smile",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://huggingface.co/mcp",
+		"headers": {
+			"Authorization": "Bearer ${secret:HF_TOKEN}"
+		}
+	},
+	"inputs": [
+		{
+			"key": "HF_TOKEN",
+			"label": "Hugging Face API Token",
+			"secret": true,
+			"placeholder": "hf_...",
+			"help": "Create at https://huggingface.co/settings/tokens",
+			"target": "header"
+		}
+	],
+	"defaultExposure": "deferred",
+	"verified": true
+}

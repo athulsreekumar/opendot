@@ -1,0 +1,15 @@
+{
+	"id": "supabase",
+	"label": "Supabase",
+	"description": "Interact with Supabase databases and APIs.",
+	"category": "data",
+	"icon": "database",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.supabase.com/mcp",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": false
+}

@@ -1,6 +1,5 @@
 import { LogoMark } from "@/components/ui/LogoMark";
 import { footer } from "@/lib/copy";
-import { FEATURES } from "@/lib/features";
 import "./Footer.css";
 
 export function Footer() {
@@ -22,18 +21,16 @@ export function Footer() {
 
 					{/* Right: Footer links */}
 					<div className="flex gap-6">
-						{footer.links
-							.filter((link) => FEATURES.openSource || link.label !== "GitHub")
-							.map((link) => (
-								<a
-									key={link.href}
-									href={link.href}
-									className="t-caption text-fg hover:text-accent transition-colors duration-200"
-									{...(link.label === "GitHub" && { target: "_blank", rel: "noopener noreferrer" })}
-								>
-									{link.label}
-								</a>
-							))}
+						{footer.links.map((link) => (
+							<a
+								key={link.href}
+								href={link.href}
+								className="t-caption text-fg hover:text-accent transition-colors duration-200"
+								{...(link.label === "GitHub" && { target: "_blank", rel: "noopener noreferrer" })}
+							>
+								{link.label}
+							</a>
+						))}
 					</div>
 				</div>
 

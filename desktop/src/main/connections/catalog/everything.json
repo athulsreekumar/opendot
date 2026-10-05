@@ -1,0 +1,16 @@
+{
+	"id": "everything",
+	"label": "Everything",
+	"description": "Test MCP server with sample tools.",
+	"category": "other",
+	"icon": "globe",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "npx",
+		"args": ["-y", "@modelcontextprotocol/server-everything"]
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"requiresNode": true,
+	"verified": true
+}
