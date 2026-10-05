@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "@/styles/globals.css";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { EarlyAccessDialog } from "@/components/site/EarlyAccessDialog";
 import { Footer } from "@/components/site/Footer";
 import { Nav } from "@/components/site/Nav";
 import { meta } from "@/lib/copy";
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 				<Nav />
 				<main id="main">{children}</main>
 				<Footer />
+				<EarlyAccessDialog />
 			</body>
 		</html>
 	);
