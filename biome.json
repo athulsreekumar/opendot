@@ -12,13 +12,38 @@
 			"!playwright-report",
 			"!**/*.md",
 			"!next-env.d.ts",
-			"!film/out"
+			"!film/out",
+			"!capture",
+			"!film"
 		]
 	},
-	"formatter": { "indentStyle": "tab", "lineWidth": 120 },
-	"linter": {
-		"rules": { "recommended": true, "suspicious": { "noArrayIndexKey": "off" }, "a11y": { "useMediaCaption": "off" } }
+	"formatter": {
+		"indentStyle": "tab",
+		"lineWidth": 120
 	},
-	"javascript": { "formatter": { "quoteStyle": "double", "semicolons": "always" } },
-	"css": { "parser": { "tailwindDirectives": true } }
+	"linter": {
+		"rules": {
+			"recommended": true,
+			"suspicious": {
+				"noArrayIndexKey": "off"
+			},
+			"a11y": {
+				"useMediaCaption": "off"
+			},
+			"complexity": {
+				"noImportantStyles": "off"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"semicolons": "always"
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	}
 }
