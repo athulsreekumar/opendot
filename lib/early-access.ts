@@ -195,10 +195,8 @@ export async function handleSignup(input: unknown, ctx: SignupContext, deps: Sig
 		if (env.confirmFrom) {
 			const c = buildConfirmation(env.siteUrl);
 			const conf = await resend.emails.send({ from: env.confirmFrom, to: signup.email, ...c });
-			if (conf.error) {
-				logFailure("emails.send(confirm)", conf.error);
-				return SERVER;
-			}
+			// The signup is already saved and the owner notified; a failed courtesy email is only logged.
+			if (conf.error) logFailure("emails.send(confirm)", conf.error);
 		}
 	} catch (e) {
 		// Network-level failure (the SDK itself does not throw for API errors).

@@ -199,13 +199,13 @@ describe("handleSignup", () => {
 		expect(c.html).toContain("OpenDot");
 	});
 
-	it("confirmation failure -> 502", async () => {
+	it("confirmation failure is logged, signup still succeeds", async () => {
 		const s = setup({ env: { confirmFrom: "OpenDot <hello@opendot.live>" } });
 		s.send
 			.mockResolvedValueOnce(ok)
 			.mockResolvedValueOnce({ data: null, error: { name: "invalid_from_address", message: "x", statusCode: 422 } });
 		vi.spyOn(console, "error").mockImplementation(() => {});
-		expect((await handleSignup(valid, ctx, s.deps)).status).toBe(502);
+		expect((await handleSignup(valid, ctx, s.deps)).status).toBe(200);
 	});
 
 	it("no audience id -> skips contacts, always notifies", async () => {
