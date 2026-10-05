@@ -1,0 +1,137 @@
+import { faq, GITHUB_URL, hero, meta } from "@/lib/copy";
+import { SITE_URL } from "@/lib/site";
+
+export const SITE_NAME = "OpenDot";
+
+/** Keyword-rich but natural description, kept under 160 characters. */
+export const SEO_DESCRIPTION =
+	"OpenDot is a free, open source Mac app that gives you a team of private AI assistants. They run 24/7, use any model, and keep your data on your Mac.";
+
+export const SEO_KEYWORDS = [
+	"AI assistants for Mac",
+	"AI agents Mac app",
+	"personal AI team",
+	"local AI",
+	"private AI assistant",
+	"Ollama Mac app",
+	"MCP client Mac",
+	"Gmail AI assistant",
+	"AI email assistant Mac",
+	"AI calendar assistant",
+	"open source AI assistant",
+	"macOS AI agents",
+	"run AI locally on Mac",
+	"Claude GPT Gemini Mac app",
+];
+
+export const OG_ALT = "OpenDot: your AI team, living on your Mac. Only available for Mac.";
+
+const abs = (path: string) => `${SITE_URL}${path}`;
+
+const SHOTS = [
+	{ name: "sidebar-full", alt: "OpenDot on a Mac: the sidebar with a team of Dots" },
+	{ name: "superbot-answer", alt: "SuperDot's combined answer, assembled from every Dot, with sources." },
+	{ name: "links-screen", alt: "OpenDot's Dot Links settings showing which Dots may message each other" },
+	{ name: "settings-models", alt: "OpenDot model settings with cloud and local model providers" },
+	{
+		name: "connections",
+		alt: "OpenDot connections settings listing Google Workspace, Microsoft 365, Mac and MCP servers",
+	},
+	{ name: "privacy", alt: "OpenDot privacy settings" },
+];
+
+export const FEATURE_LIST = [
+	"A team of AI assistants called Dots, each with one job, a personality and scoped access",
+	"Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks",
+	"SuperDot asks the right Dots and combines their answers with sources",
+	"Dot Links control which Dots can message which, with role-based access, schedules, rate limits and approvals",
+	"Private by default: data stays in ~/.opendot on your Mac and keys live in the macOS Keychain",
+	"Emails, phone numbers and card details are masked before reaching cloud models",
+	"Actions that change things ask for your approval first",
+	"Works with Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter and Groq",
+	"Runs local models through Ollama, LM Studio, llama.cpp, vLLM or any compatible URL",
+	"Connects to Google Workspace, Microsoft 365, Mac Calendar, Reminders, Contacts, Notes and files",
+	"Unlimited MCP servers and webhooks",
+	"Replies stream from the first token",
+	"Open source under the MIT license",
+];
+
+/** The schema.org @graph for the home page. FAQ text is taken verbatim from lib/copy.ts. */
+export function homeJsonLd() {
+	const orgId = abs("/#organization");
+	const siteId = abs("/#website");
+	const appId = abs("/#software");
+	const pageId = abs("/#webpage");
+	return {
+		"@context": "https://schema.org",
+		"@graph": [
+			{
+				"@type": "Organization",
+				"@id": orgId,
+				name: SITE_NAME,
+				url: abs("/"),
+				logo: { "@type": "ImageObject", url: abs("/icon.png"), width: 512, height: 512 },
+				sameAs: [GITHUB_URL],
+			},
+			{
+				"@type": "WebSite",
+				"@id": siteId,
+				name: SITE_NAME,
+				url: abs("/"),
+				inLanguage: "en",
+				publisher: { "@id": orgId },
+			},
+			{
+				"@type": "SoftwareApplication",
+				"@id": appId,
+				name: SITE_NAME,
+				url: abs("/"),
+				operatingSystem: "macOS 14 or later",
+				applicationCategory: "ProductivityApplication",
+				applicationSubCategory: "AI assistant",
+				description: SEO_DESCRIPTION,
+				softwareRequirements: "macOS 14 or later, Apple silicon or Intel",
+				featureList: FEATURE_LIST,
+				screenshot: SHOTS.map((s) => ({
+					"@type": "ImageObject",
+					url: abs(`/shots/${s.name}-light@2x.webp`),
+					caption: s.alt,
+				})),
+				offers: { "@type": "Offer", price: "0", priceCurrency: "USD", availability: "https://schema.org/PreOrder" },
+				isAccessibleForFree: true,
+				license: "https://opensource.org/license/mit",
+				releaseNotes: "Early access. Not yet available to download.",
+				author: { "@id": orgId },
+				publisher: { "@id": orgId },
+				sameAs: [GITHUB_URL],
+			},
+			{
+				"@type": "WebPage",
+				"@id": pageId,
+				url: abs("/"),
+				name: meta.title,
+				description: SEO_DESCRIPTION,
+				headline: hero.h1.join(" "),
+				inLanguage: "en",
+				isPartOf: { "@id": siteId },
+				about: { "@id": appId },
+				primaryImageOfPage: abs("/opengraph-image"),
+			},
+			{
+				"@type": "FAQPage",
+				"@id": abs("/#faq"),
+				isPartOf: { "@id": pageId },
+				mainEntity: faq.items.map((i) => ({
+					"@type": "Question",
+					name: i.q,
+					acceptedAnswer: { "@type": "Answer", text: i.a },
+				})),
+			},
+		],
+	};
+}
+
+/** Serialises JSON-LD for a <script> tag, escaping "<" so the payload can never close the tag. */
+export function serializeJsonLd(data: unknown) {
+	return JSON.stringify(data).replace(/</g, "\\u003c");
+}

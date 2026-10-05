@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
+import { OG_ALT } from "@/lib/seo";
 
 export const metadata: Metadata = {
-	title: "Privacy | OpenDot",
+	title: "Privacy",
 	description: "What the OpenDot early-access list collects, why, where it lives and how to be removed.",
+	alternates: { canonical: "/privacy" },
+	openGraph: {
+		type: "website",
+		url: "/privacy",
+		siteName: "OpenDot",
+		locale: "en_US",
+		title: "Privacy | OpenDot",
+		description: "What the OpenDot early-access list collects, why, where it lives and how to be removed.",
+		images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: OG_ALT }],
+	},
 };
 
 const sections: { title: string; body: React.ReactNode }[] = [

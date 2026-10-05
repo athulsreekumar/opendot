@@ -1,0 +1,37 @@
+/* FAQ accordion: native <details>, hairlines from tokens, rotating plus icon, animated height where supported. */
+.od-faq {
+	interpolate-size: allow-keywords;
+}
+.od-faq-summary {
+	list-style: none;
+}
+.od-faq-summary::-webkit-details-marker {
+	display: none;
+}
+.od-faq-icon {
+	transition:
+		transform 0.3s var(--ease-out),
+		color 0.2s;
+}
+.od-faq-item[open] .od-faq-icon {
+	transform: rotate(45deg);
+}
+.od-faq-item::details-content {
+	block-size: 0;
+	overflow: clip;
+	transition:
+		block-size 0.35s var(--ease-out),
+		content-visibility 0.35s allow-discrete;
+}
+.od-faq-item[open]::details-content {
+	block-size: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+	.od-faq-item::details-content,
+	.od-faq-icon {
+		transition: none;
+	}
+}
+.od-faq-summary:hover .od-faq-icon {
+	color: var(--fg);
+}
