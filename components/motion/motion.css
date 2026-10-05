@@ -1,0 +1,45 @@
+/*
+ * Motion infrastructure CSS (imported by Reveal / ScrubText).
+ *
+ * Content is server-rendered in its FINAL state. It is only hidden when scripting is enabled and the user has not
+ * asked for reduced motion, and a 4s failsafe animation reveals it even if the JS bundle never arrives. As soon as
+ * the component mounts it sets a `data-*-state` attribute, which removes these rules and hands control to GSAP.
+ */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+	[data-reveal="single"]:not([data-reveal-state]),
+	[data-reveal="stagger"]:not([data-reveal-state]) > * {
+		opacity: 0;
+		transform: translate3d(0, var(--reveal-y, 24px), 0);
+		filter: blur(4px);
+		animation: od-failsafe-reveal 0.01s linear 4s forwards;
+	}
+	[data-scrub]:not([data-scrub-state]) .od-word {
+		opacity: 0.15;
+		animation: od-failsafe-word 0.01s linear 4s forwards;
+	}
+}
+
+@keyframes od-failsafe-reveal {
+	to {
+		opacity: 1;
+		transform: none;
+		filter: none;
+	}
+}
+@keyframes od-failsafe-word {
+	to {
+		opacity: 1;
+	}
+}
+
+.od-word {
+	display: inline-block;
+	will-change: opacity;
+}
+
+/* Without Lenis (reduced motion), native anchor jumps must clear the sticky nav. */
+@media (prefers-reduced-motion: reduce) {
+	:target {
+		scroll-margin-top: 64px;
+	}
+}
