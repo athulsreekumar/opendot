@@ -296,7 +296,7 @@ export function SuperBot(): ReactNode {
 	);
 
 	return (
-		<section ref={section} id="superdot" className="chapter-dark">
+		<section ref={section} id="superdot" className="chapter-dark sb-root">
 			<div ref={pin} className="sb-pin">
 				<div aria-hidden="true" className="sb-glow" />
 				<div className="container-site relative flex min-h-0 flex-1 flex-col gap-[inherit]">

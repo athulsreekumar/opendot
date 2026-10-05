@@ -1,8 +1,12 @@
 /* SuperBot. Default = stacked layout (mobile / reduced motion): static, fully lit diagram, then the screenshot.
    Pinned layout only on desktop with motion allowed; its pre-JS default is the FINAL state (screenshot shown). */
+/* Clip on the (unpinned) section, not the pinned element: overflow on the GSAP-pinned element makes Chrome report a
+   ~1.0 layout shift when it flips to position: fixed (CLS). */
+.sb-root {
+	overflow: clip;
+}
 .sb-pin {
 	position: relative;
-	overflow: hidden;
 	padding-block: clamp(5rem, 3rem + 8vw, 10rem);
 }
 .sb-glow {
