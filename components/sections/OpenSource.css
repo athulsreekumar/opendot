@@ -1,0 +1,15 @@
+/* OpenSource section styling */
+
+.od-mit-text {
+	font-size: clamp(120px, 22vw, 320px);
+	font-weight: 800;
+	-webkit-text-stroke: 1.5px var(--d-fg-3);
+	-webkit-text-fill-color: transparent;
+	text-stroke: 1.5px var(--d-fg-3);
+	color: transparent;
+	letter-spacing: -0.04em;
+	white-space: nowrap;
+	text-transform: uppercase;
+	opacity: 0.15;
+	font-variation-settings: "opsz" 48;
+}
