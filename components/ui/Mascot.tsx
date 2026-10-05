@@ -108,6 +108,8 @@ export function Mascot({ pose = "hero", size = 240, className, label, still = fa
 						aria-hidden
 						width={size}
 						height={size}
+						loading="lazy"
+						fetchPriority="low"
 						decoding="async"
 						draggable={false}
 						onError={() => setFailedPose(pose)}
