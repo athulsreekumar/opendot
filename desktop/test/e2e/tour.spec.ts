@@ -44,3 +44,20 @@ test("screen tour renders without errors", async () => {
 		await app.close();
 	}
 });
+
+test("This Mac lists its built-in tools", async () => {
+	const { app, page } = await launchApp();
+	try {
+		await quickSetup(page);
+		const mac = (await page.evaluate(() => window.opendot.connections.list())).find((c) => c.type === "mac")!;
+		await page.evaluate((id) => {
+			window.location.hash = `#/connections/${id}`;
+		}, mac.id);
+		await expect(page.getByText("mac_calendar_events")).toBeVisible({ timeout: 15000 });
+		await expect(page.getByText("bash", { exact: true })).toBeVisible();
+		await expect(page.getByText(/^\d+ tools$/)).not.toHaveText("0 tools");
+		await screenshot(page, "connection-this-mac");
+	} finally {
+		await app.close();
+	}
+});
