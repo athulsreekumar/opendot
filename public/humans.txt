@@ -1,0 +1,10 @@
+/* TEAM */
+Product: OpenDot
+Site: https://opendot.live
+Contact: hello@opendot.live
+
+/* SITE */
+Language: English
+Standards: HTML5, CSS3
+Components: Next.js, React, Tailwind CSS, GSAP, Three.js
+Hosting: Vercel

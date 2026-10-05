@@ -153,6 +153,52 @@ export const footer = {
 	],
 };
 
+export const faq = {
+	h2: "Questions? Answers.",
+	items: [
+		{
+			q: "What is OpenDot?",
+			a: "OpenDot is a Mac app that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. They run in the background, watch your email, calendar and files, and tell you when something needs you.",
+		},
+		{
+			q: "Is OpenDot free?",
+			a: "Yes. OpenDot is free and open source under the MIT license. If you connect a cloud model such as Claude or GPT with your own API key, that provider bills you directly. Run a local model through Ollama or LM Studio and it costs nothing.",
+		},
+		{
+			q: "Which Macs does it run on?",
+			a: "OpenDot needs macOS 14 or later and runs on both Apple silicon and Intel Macs. It is a Mac-only app for now.",
+		},
+		{
+			q: "Does my data leave my Mac?",
+			a: "Not by default. Everything lives in ~/.opendot on your Mac, in plain files you can read. Emails, phone numbers and card details are masked before anything reaches a cloud model, your keys are stored in the macOS Keychain, and any action that changes something, like sending, deleting or paying, asks you first.",
+		},
+		{
+			q: "Which AI models can I use, and does it work offline?",
+			a: "Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter and Groq, or local models through Ollama, LM Studio, llama.cpp and vLLM. Any compatible URL works too, and you can pick a different model for each Dot. With a local model a Dot's thinking never leaves your Mac, though Dots that read Gmail, Outlook or other online services still need a connection to reach them.",
+		},
+		{
+			q: "What is a Dot?",
+			a: "A Dot is a single-purpose AI assistant. You describe what it should do in plain English, choose what it can touch, such as Gmail, Calendar or a folder, and OpenDot gives it a name, a look and a personality. Dots run 24/7 and react to new email, calendar changes, files and webhooks.",
+		},
+		{
+			q: "What is SuperDot?",
+			a: "SuperDot is the assistant that sits above your Dots. Ask it one question, such as what you need to prepare for tomorrow. It asks the right Dots at once, combines their answers and shows you the sources.",
+		},
+		{
+			q: "Can Dots talk to each other safely?",
+			a: "Yes, with Dot Links. You decide which Dots can message which, with role-based access, schedules, rate limits and approvals. For example, your Travel Dot can ask your Calendar Dot only on weekdays, five times an hour, and only if you approve. Every message is logged.",
+		},
+		{
+			q: "When can I download OpenDot, and how does early access work?",
+			a: "OpenDot is in early access and is not yet available to download. Join the early-access list with your email and we will send you the download as soon as it is ready. We will only email you about OpenDot.",
+		},
+		{
+			q: "Is OpenDot open source?",
+			a: "Yes. OpenDot is MIT-licensed and built on the pi agent harness, so you can read every line and run your own build.",
+		},
+	],
+};
+
 export const meta = {
 	title: "OpenDot: your AI team, living on your Mac",
 	description: hero.lead,
