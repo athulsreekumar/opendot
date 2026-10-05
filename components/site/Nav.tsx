@@ -5,28 +5,11 @@ import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./nav.css";
 import { Button } from "@/components/ui/Button";
+import { LogoMark } from "@/components/ui/LogoMark";
 import { nav } from "@/lib/copy";
 import { openEarlyAccess } from "@/lib/early-access-client";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-/** The app icon: teal rounded square with three white dots (build/icon.svg). */
-function LogoMark({ size = 22 }: { size?: number }) {
-	return (
-		<svg width={size} height={size} viewBox="64 64 896 896" aria-hidden="true" className="shrink-0">
-			<defs>
-				<linearGradient id="od-nav-logo" x1="0" y1="0" x2="1" y2="1">
-					<stop offset="0" stopColor="#16b39b" />
-					<stop offset="1" stopColor="#0b7f70" />
-				</linearGradient>
-			</defs>
-			<rect x="64" y="64" width="896" height="896" rx="200" fill="url(#od-nav-logo)" />
-			<circle cx="322" cy="560" r="78" fill="#fff" />
-			<circle cx="512" cy="470" r="78" fill="#fff" />
-			<circle cx="702" cy="560" r="78" fill="#fff" />
-		</svg>
-	);
-}
 
 /**
  * Fixed top navigation. Transparent over the hero, translucent + blurred after 40px of scroll, and switches to a

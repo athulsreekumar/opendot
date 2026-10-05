@@ -64,7 +64,7 @@ export const signupSchema = z.object({
 	mac: z.enum(["apple-silicon", "intel", "unsure"]).optional(),
 	company_website: z.string().optional(),
 	t: z.number().finite(),
-	source: z.enum(["hero", "nav", "final"]).optional(),
+	source: z.enum(["hero", "nav", "final", "section"]).optional(),
 });
 
 export type Signup = z.infer<typeof signupSchema>;

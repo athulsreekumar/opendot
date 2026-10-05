@@ -119,8 +119,7 @@ export function EarlyAccessForm({ source, variant, onSuccess }: EarlyAccessFormP
 					company_website: honeypot,
 					// dialog mounts on demand, so measure from page load there (a fast typist must not look like a bot)
 					t: variant === "dialog" ? Math.round(performance.now()) : Date.now() - mountedAt.current,
-					// "section" is not a server-side source value
-					source: source === "section" ? undefined : source,
+					source,
 				}),
 			});
 			const data = (await res.json().catch(() => null)) as { ok?: boolean; duplicate?: boolean } | null;

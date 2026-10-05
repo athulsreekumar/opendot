@@ -3,12 +3,12 @@
 .od-mit-text {
 	font-size: clamp(120px, 22vw, 320px);
 	font-weight: 800;
-	-webkit-text-stroke: 1.5px var(--d-fg-3);
+	-webkit-text-stroke: 1.5px rgba(94, 234, 212, 0.35);
 	-webkit-text-fill-color: transparent;
 	color: transparent;
 	letter-spacing: -0.04em;
 	white-space: nowrap;
 	text-transform: uppercase;
-	opacity: 0.15;
+	opacity: 0.6;
 	font-variation-settings: "opsz" 48;
 }
