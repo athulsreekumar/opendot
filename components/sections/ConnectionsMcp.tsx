@@ -51,14 +51,26 @@ export function ConnectionsMcp() {
 
 	const inf = n === "inf";
 	return (
-		<div ref={ref} className="pointer-events-none relative mt-6 flex min-h-[200px] flex-1 items-end md:min-h-[240px]">
-			<div aria-hidden className="absolute inset-0 grid grid-cols-8 content-center gap-3 text-accent sm:gap-4">
+		<div
+			ref={ref}
+			className="pointer-events-none relative mt-6 flex min-h-[240px] flex-1 items-center justify-center md:min-h-[300px] md:justify-end"
+		>
+			<div
+				aria-hidden
+				className="absolute inset-0 grid grid-cols-5 content-center gap-4 text-accent [--mx:50%] sm:grid-cols-8 md:[--mx:76%]"
+				style={{
+					WebkitMaskImage:
+						"radial-gradient(ellipse 70% 75% at var(--mx) 50%, transparent 0%, transparent 26%, #000 55%, transparent 100%)",
+					maskImage:
+						"radial-gradient(ellipse 70% 75% at var(--mx) 50%, transparent 0%, transparent 26%, #000 55%, transparent 100%)",
+				}}
+			>
 				{Array.from({ length: GLYPHS }, (_, i) => (
 					<span
 						key={i}
 						className="flex justify-center transition-[opacity,transform] duration-500 ease-out"
 						style={{
-							opacity: filled ? 0.14 : 0,
+							opacity: filled ? 0.3 : 0,
 							transform: filled ? "scale(1)" : "scale(0.6)",
 							transitionDelay: `${((i * 37) % GLYPHS) * 30}ms`,
 						}}
@@ -68,8 +80,8 @@ export function ConnectionsMcp() {
 				))}
 			</div>
 			<div
-				className="relative font-semibold leading-none tracking-tight tabular-nums"
-				style={{ fontSize: "clamp(88px, 12vw, 168px)" }}
+				className="relative font-semibold leading-none tracking-tight tabular-nums md:pr-8"
+				style={{ fontSize: "clamp(140px, 20vw, 260px)" }}
 			>
 				<span className="sr-only">Unlimited</span>
 				<span aria-hidden className={inf ? "text-gradient inline-block" : "inline-block text-fg"}>
