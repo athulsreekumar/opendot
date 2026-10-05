@@ -18,22 +18,21 @@ instead of inventing.
 | Hosting | **Vercel** (Hobby, personal account), Git-connected to `athulsreekumar/opendot`, branch `main` = production. |
 | Signups | `POST /api/early-access` (Vercel serverless, Node runtime) → **Resend**: notification email to the owner + contact saved in a Resend **Audience** (that is the signup list; exportable as CSV). |
 | Hero video | **Real app footage**: the actual OpenDot app, driven by a script with realistic dummy data, screen-recorded, then edited into a polished film. |
-| Mascot | **AI-generated, glossy 3D look** (image model), cut out on transparent backgrounds, several poses. |
+| Mascot | **Odi, a real-time 3D character** rendered in the browser (React Three Fiber), glossy look, posable and animated. |
 | Platform tag | "Only available for Mac" pill in the hero and next to every signup button. |
 | Fonts | Big, tight display type; smaller calm body type (see §4). |
 | Process | Plan reviewed by the owner before building (this document). |
 
-### Decisions still open (owner)
-1. **Domain** — e.g. `opendot.app` / `getopendot.com`, or start on `opendot.vercel.app`. Affects OG URLs and the
-   "from" address of emails (Resend can only email *the account owner* until a domain is verified — fine for
-   notifications; confirmation emails to signups need a verified domain).
-2. **Mascot credits** — the Higgsfield account has **0 credits** and the Figma plan is Starter/View seat (AI image
-   generation is paid there too). Choose one: (a) top up Higgsfield (~a few dollars covers ~15 images),
-   (b) use Figma AI credits if your plan has them, (c) fall back to a real-time 3D mascot rendered in the browser
-   (React Three Fiber, glossy material, blinks and follows the cursor — no credits, fully animatable). See §7.
-3. **Mascot name** — proposal: **"Odi"** (O-D, from OpenDot). Alternatives: Pip, Dotty, Orbi.
-4. **"View source" link** — the app currently lives in `athulsreekumar/claude-code-remote/opendot`. Link there, move
-   it to its own repo first, or hide the link until launch.
+### Owner decisions (resolved)
+1. **Domain: `opendot.live`** — `SITE_URL=https://opendot.live`. Until the domain is verified in Resend, emails go
+   from `onboarding@resend.dev` (can only reach the owner — fine for notifications). After verification,
+   `EARLY_ACCESS_FROM=OpenDot <hello@opendot.live>` and signup confirmations can be switched on.
+2. **Mascot: designed in the browser** — a real-time 3D character built with React Three Fiber (no image credits).
+   See §7.3.
+3. **Mascot name: Odi.**
+4. **"View on GitHub"** links to `https://github.com/athulsreekumar/claude-code-remote/tree/claude/grok-bot-openai-dots-eyctdr/opendot`
+   for now (one constant in `lib/copy.ts`; the owner will change it later).
+5. **Resend API key** is provided by the owner directly in Vercel; it is never written to the repo.
 
 ---
 
@@ -50,7 +49,7 @@ instead of inventing.
 **Rules for every worker**
 1. Read §2–§5 plus the section(s) for your task. Do not change tokens, copy or file names; propose changes to the orchestrator.
 2. Work only inside the files your task lists. Shared files (`tokens.css`, `copy.ts`, `layout.tsx`) are orchestrator-owned.
-3. Before handing back: `pnpm lint && pnpm typecheck && pnpm test` pass, and your task's acceptance checks are met.
+3. Before handing back: `npm run lint && npm run typecheck && npm test` pass, and your task's acceptance checks are met.
    Attach screenshots (desktop 1440 and mobile 390, light/dark if relevant) for any visual task.
 4. Never commit secrets or the owner's email address. Configuration comes from env vars (§8).
 5. Respect `prefers-reduced-motion` and keyboard access in everything (§6.4).
@@ -75,9 +74,11 @@ is taken over by the orchestrator.
 | Rate limiting | `@upstash/ratelimit` + Upstash Redis **if** env present, else in-memory best effort | Optional; honeypot + timing trap always on. |
 | Film edit | **Remotion** (in `film/`, separate package) using the system Chromium + ffmpeg | Programmatic edit: window chrome, zooms, titles, cursor, mascot. |
 | Footage capture | Playwright `_electron` drives the app; **ffmpeg x11grab** records an Xvfb display at 2× | Crisp, 60 fps, real UI. |
+| 3D mascot | **three + @react-three/fiber + @react-three/drei**, lazy-loaded per section (`next/dynamic`, `ssr:false`), one shared canvas per visible mascot | Real-time glossy character; no image credits. |
+| Fonts | **@fontsource-variable/inter** (`opsz` axis files) + **@fontsource-variable/jetbrains-mono**, self-hosted | No build-time network to Google Fonts. |
 | Lint/format | Biome | Same as the app. |
 | Tests | Vitest (API, utils), Playwright (site e2e + visual), Lighthouse CI | §10. |
-| Package manager | pnpm (workspace: root site + `film/` + `capture/`) | |
+| Package manager | npm (root site; `capture/` and `film/` are separate npm packages, excluded from Vercel) | |
 
 ---
 
@@ -132,8 +133,7 @@ Apple-page principles: one idea per screen, huge confident type, generous space,
 motion that explains rather than decorates, alternating light and dark "chapters".
 
 ### 4.1 Typography
-- **Display & body: Inter** (variable, with the `opsz` optical-size axis) via `next/font/google`, `display: swap`,
-  subsets latin. Use `font-variation-settings: "opsz" 32` for display sizes so it reads like a display face.
+- **Display & body: Inter** (variable, with the `opsz` optical-size axis) self-hosted via `@fontsource-variable/inter`. Use `font-variation-settings: "opsz" 32` for display sizes so it reads like a display face.
   (SF Pro is not licensed for the web; Inter Display is the closest free match.)
 - **Mono: JetBrains Mono** (only for the `~/.opendot` tree and the PII token demo).
 - Scale (fluid with `clamp`, px values at 390 → 1440 wide):
@@ -228,7 +228,7 @@ Reminders, Notes and files — plus unlimited MCP servers.*
 even from Dots working in the background.* (live demo text streams in on enter)
 
 **Open source** — H2: **Open source. Built in the open.** Lead: *MIT-licensed, built on the pi agent harness.
-Read every line, run your own build.* Link: *View on GitHub ›* (see open decision 4)
+Read every line, run your own build.* Link: *View on GitHub ›* (URL in `lib/copy.ts`, see §0)
 
 **Final CTA** — H2: **Be first in line.** Lead: *OpenDot is coming to the Mac. Join the early-access list and we'll
 send you the download as soon as it's ready.* Form → pill under button: *Only available for Mac · macOS 14+*
@@ -354,21 +354,24 @@ Scripts (fake-model JSON, same format as the app's `test/fixtures/fake-scripts`)
 `capture/seed/scripts`; `OPENDOT_CAPTURE=1` → frameless window at a fixed 1440×900 with no Linux title bar (the
 film adds macOS chrome). Both are dev-only and off by default.
 
-### 7.3 Mascot "Odi"
-- **Character brief** (prompt base): *a small, friendly, glossy 3D character shaped like a perfect sphere — the
-  OpenDot app icon come to life; soft subsurface glow in the brand gradient; two simple oval eyes with highlights,
-  a tiny smile, little rounded arms, no legs, floats with a soft shadow; Pixar-like studio lighting, clean
-  minimalist product render, plain light-grey background, centered, full body.*
-- **Poses (8)**: `hero` (front, waving), `thinking` (hand on chin, small thought dots), `cheer` (arms up, sparkles),
-  `night` (cozy, small moon + stars, eyes open), `conductor` (tiny baton), `shield` (holding a rounded shield),
-  `envelope` (holding a letter), `peek` (only top half, peeking over an edge).
-- **Process**: generate 4 variants of `hero` → owner/orchestrator picks one → generate the other poses using the
-  chosen image as reference (image-to-image) for consistency → remove backgrounds → trim, 2× size, export AVIF/WebP
-  plus PNG fallback; also a 512px `odi-head` for the nav/favicon.
-- **Tool order**: Higgsfield `nano_banana_pro` / `flux_3_image` with reference (needs credits) → Figma
-  `generate_image` (`gpt-image-2.5`) → fallback (c): procedural R3F mascot (§0 open decision 2).
-- **Motion on the site**: idle float (±6px, 4s sine, CSS), gentle tilt toward the cursor on desktop (≤6°), pops in
-  with a squash-and-stretch spring when its section activates. Static for reduced motion.
+### 7.3 Mascot "Odi" (real-time 3D)
+- **Look**: a small glossy sphere — the OpenDot icon come to life. Body: `MeshPhysicalMaterial` in the brand gradient
+  (vertex colours or a gradient texture), `clearcoat 1`, `roughness ~0.25`, soft `transmission`-free subsurface feel
+  via emissive rim; studio lighting with `Environment` (drei, a locally bundled HDR or `preset` generated with
+  `Lightformer`s — no network fetch). Face: two glossy black capsule eyes with white specular dots, a small curved
+  smile (tube geometry). Tiny rounded arms (capsules) on pivots. Floats above a soft `ContactShadows` blob.
+- **Component**: `<Odi pose="hero|thinking|cheer|night|conductor|shield|envelope|peek" size={…} />` in
+  `components/ui/Mascot.tsx` (wrapper with `next/dynamic` + IntersectionObserver to mount the canvas only when near
+  the viewport and unmount when far) and `components/mascot/OdiScene.tsx` (R3F). Poses are data: arm rotations, eye
+  shape (open/happy-closed `^ ^`/sleepy), mouth curve, head tilt, and a prop (thought dots, sparkles, moon+stars,
+  baton, shield, envelope) built from simple geometry.
+- **Motion**: idle float (±0.06 units, 4s sine), blink every 3–6s, eyes and body tilt toward the cursor (≤8°, damped),
+  pose changes tween over 400ms with a squash-and-stretch on entry. `frameloop="demand"` when off-screen; `dpr`
+  clamped to [1, 2]; pauses when the tab is hidden.
+- **Fallbacks**: reduced motion → static pose (rendered once, no loop). No WebGL → static PNG of that pose
+  (`public/mascot/odi-<pose>.png`), produced by `scripts/render-mascot.ts` (Playwright screenshots of a transparent
+  canvas at 2×). The same PNGs are used for the OG image, favicon (`odi-head`) and the film.
+- **Budget**: three + R3F + drei subset loaded only after first paint (not in the LCP path), ≤ 170 KB gz extra.
 
 ### 7.4 Film
 - **Hero loop (12–15s, silent)**: sidebar → describe a Dot → personality streams → SuperBot answer streaming. Seamless loop.
@@ -496,8 +499,8 @@ Model: **O** = orchestrator (Opus), **S** = builder (Sonnet), **H** = helper (Ha
 | T21 | 1 | Dummy data + 7 fake-model scripts (`capture/seed`) per §7.2 | H | — | JSON validates against the app's script format; all fictional |
 | T22 | 2 | `capture/shots.ts` → all §7.1 stills, light+dark, optimised to AVIF/WebP | S | T20, T21 | 28 images in `public/shots/`, each < 350 KB |
 | T23 | 2 | `capture/record.sh` + scene drivers s1–s8 with cursor logs | S | T20, T21 | 8 recordings, 60 fps, 2880×1800, cursor JSON |
-| T30 | 1 | Mascot: generate hero variants (§7.3) | O | open decision 2 | 4 candidates shown to owner |
-| T31 | 2 | Mascot: remaining 7 poses from chosen reference, bg removal, exports | S | T30 | 8 poses + head, AVIF/WebP/PNG, consistent look |
+| T30 | 1 | Odi 3D character + 8 poses + `/_dev/odi` showcase (§7.3) | S | T01 | All poses look polished; 60 fps; orchestrator approves |
+| T31 | 2 | `scripts/render-mascot.ts`: static PNG/WebP per pose + `odi-head` | H | T30 | Transparent, trimmed, 2× |
 | T32 | 2 | `Mascot` component (float, cursor tilt, spring pop, reduced motion) | S | T04, T31 | Demo route |
 | T40 | 3 | Remotion film + hero loop (§7.4) + `render.sh` encodes | S | T23, T31 | Files in `public/film/` within size budgets; VTT captions |
 | T41 | 3 | FilmDialog + hero video element with fallbacks | S | T04, T40 | E2E dialog tests pass |
@@ -516,8 +519,7 @@ Model: **O** = orchestrator (Opus), **S** = builder (Sonnet), **H** = helper (Ha
 | T70 | 5 | Vercel project + preview deploy + smoke signup (§11) | O | T63, owner env vars | Notification email received |
 | T71 | 5 | Final review with owner; launch | O | T70 | Owner sign-off |
 
-**Critical path**: T20/T21 → T23 → T40 → T41 → T50 → T60 → T70. Mascot (T30) waits on open decision 2; everything
-else can proceed with placeholder art (`Mascot` renders a simple sphere until poses exist).
+**Critical path**: T20/T21 → T23 → T40 → T41 → T50 → T60 → T70. Sections can use `<Odi>` as soon as T30 lands.
 
 ---
 

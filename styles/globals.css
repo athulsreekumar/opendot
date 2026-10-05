@@ -1,0 +1,158 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter/opsz.css";
+@import "@fontsource-variable/jetbrains-mono/index.css";
+@import "./tokens.css";
+
+@theme inline {
+	--color-bg: var(--bg);
+	--color-bg-alt: var(--bg-alt);
+	--color-fg: var(--fg);
+	--color-fg-2: var(--fg-2);
+	--color-fg-3: var(--fg-3);
+	--color-line: var(--line);
+	--color-card: var(--card);
+	--color-card-alt: var(--card-alt);
+	--color-accent: var(--accent);
+	--color-accent-hover: var(--accent-hover);
+	--color-accent-fg: var(--accent-fg);
+	--color-brand: var(--brand);
+	--color-brand-light: var(--brand-light);
+	--color-brand-deep: var(--brand-deep);
+	--color-brand-glow: var(--brand-glow);
+	--color-brand-mint: var(--brand-mint);
+	--font-sans: var(--font-sans);
+	--font-mono: var(--font-mono);
+	--radius-sm: var(--radius-sm);
+	--radius-md: var(--radius);
+	--radius-lg: var(--radius-lg);
+	--shadow-window: var(--shadow-window);
+	--shadow-card: var(--shadow-card);
+	--ease-out-expo: var(--ease-out);
+}
+
+/* ── Type scale (PLAN §4.1). Fluid 390px → 1440px. ── */
+@utility t-display-xl {
+	font-size: clamp(3.5rem, 2.2rem + 5.35vw, 8rem);
+	font-weight: 700;
+	letter-spacing: -0.045em;
+	line-height: 0.95;
+	font-variation-settings: "opsz" 32;
+	text-wrap: balance;
+}
+@utility t-display-l {
+	font-size: clamp(2.75rem, 1.8rem + 4vw, 6rem);
+	font-weight: 700;
+	letter-spacing: -0.04em;
+	line-height: 1;
+	font-variation-settings: "opsz" 32;
+	text-wrap: balance;
+}
+@utility t-display-m {
+	font-size: clamp(2rem, 1.3rem + 3vw, 4rem);
+	font-weight: 650;
+	letter-spacing: -0.03em;
+	line-height: 1.05;
+	font-variation-settings: "opsz" 32;
+	text-wrap: balance;
+}
+@utility t-title {
+	font-size: clamp(1.375rem, 1.2rem + 0.75vw, 2rem);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	line-height: 1.15;
+	font-variation-settings: "opsz" 28;
+	text-wrap: balance;
+}
+@utility t-lead {
+	font-size: clamp(1.1875rem, 1.06rem + 0.5vw, 1.5rem);
+	font-weight: 450;
+	letter-spacing: -0.01em;
+	line-height: 1.45;
+	text-wrap: pretty;
+}
+@utility t-body {
+	font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+	font-weight: 400;
+	line-height: 1.55;
+	text-wrap: pretty;
+}
+@utility t-caption {
+	font-size: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+	font-weight: 500;
+	letter-spacing: 0.01em;
+	line-height: 1.4;
+}
+@utility text-gradient {
+	background: var(--grad-text);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+@utility container-site {
+	width: 100%;
+	max-width: calc(var(--container) + 2 * var(--gutter));
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+@utility container-text {
+	width: 100%;
+	max-width: calc(var(--container-text) + 2 * var(--gutter));
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+@utility section-pad {
+	padding-block: clamp(5rem, 3rem + 8vw, 12.5rem);
+}
+
+@layer base {
+	html {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-rendering: optimizeLegibility;
+		overflow-x: clip;
+	}
+	body {
+		background: var(--bg);
+		color: var(--fg);
+		font-family: var(--font-sans);
+		font-feature-settings: "ss01", "cv11";
+		overflow-x: clip;
+	}
+	section,
+	footer,
+	header {
+		background: var(--bg);
+		color: var(--fg);
+	}
+	:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 3px;
+		border-radius: 6px;
+	}
+	::selection {
+		background: color-mix(in srgb, var(--brand) 25%, transparent);
+	}
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+	height: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+	overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+	overflow: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"files": {
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/.next",
+			"!**/out",
+			"!capture/out",
+			"!public",
+			"!test-results",
+			"!playwright-report",
+			"!**/*.md",
+			"!next-env.d.ts",
+			"!film/out"
+		]
+	},
+	"formatter": { "indentStyle": "tab", "lineWidth": 120 },
+	"linter": {
+		"rules": { "recommended": true, "suspicious": { "noArrayIndexKey": "off" }, "a11y": { "useMediaCaption": "off" } }
+	},
+	"javascript": { "formatter": { "quoteStyle": "double", "semicolons": "always" } },
+	"css": { "parser": { "tailwindDirectives": true } }
+}

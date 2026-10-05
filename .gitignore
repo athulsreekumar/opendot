@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+.env
+.env*.local
+.vercel
+test-results/
+playwright-report/
+capture/out/
+capture/node_modules/
+film/node_modules/
+film/out/
+public/film/raw/
+.DS_Store

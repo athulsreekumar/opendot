@@ -1,0 +1,139 @@
+/* OpenDot website design tokens (PLAN §4). Orchestrator-owned: propose changes, don't edit in feature tasks. */
+:root {
+	/* Brand (from the app: tokens.css + build/icon.svg) */
+	--brand: #0e9f8a;
+	--brand-light: #16b39b;
+	--brand-deep: #0b7f70;
+	--brand-glow: #2dd4bf;
+	--brand-mint: #5eead4;
+
+	/* Light surfaces */
+	--bg: #ffffff;
+	--bg-alt: #f5f5f7;
+	--fg: #1d1d1f;
+	--fg-2: #6e6e73;
+	--fg-3: #86868b;
+	--line: rgba(0, 0, 0, 0.08);
+	--card: #ffffff;
+	--card-alt: #fbfbfd;
+	--accent: var(--brand);
+	--accent-hover: #0b8574;
+	--accent-fg: #ffffff;
+	--focus: #0071e3;
+
+	/* Dark chapter surfaces (used by .chapter-dark regardless of OS theme) */
+	--d-bg: #000000;
+	--d-bg-alt: #0b0b0d;
+	--d-fg: #f5f5f7;
+	--d-fg-2: #a1a1a6;
+	--d-fg-3: #6e6e73;
+	--d-line: rgba(255, 255, 255, 0.12);
+	--d-card: #141416;
+	--d-accent: var(--brand-glow);
+
+	--grad-text: linear-gradient(100deg, var(--brand-light) 0%, var(--brand-mint) 45%, var(--brand) 100%);
+	--grad-brand: linear-gradient(135deg, var(--brand-light), var(--brand-deep));
+
+	--radius-sm: 10px;
+	--radius: 18px;
+	--radius-lg: 28px;
+	--radius-pill: 999px;
+
+	--shadow-window:
+		0 1px 1px rgba(0, 0, 0, 0.04), 0 8px 24px -8px rgba(0, 0, 0, 0.18), 0 40px 80px -24px rgba(0, 0, 0, 0.28);
+	--shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -12px rgba(0, 0, 0, 0.14);
+
+	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+	--ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+	--font-sans: "Inter Variable", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+	--font-mono: "JetBrains Mono Variable", "SF Mono", ui-monospace, Menlo, monospace;
+
+	--gutter: 16px;
+	--container: 1200px;
+	--container-text: 980px;
+	color-scheme: light;
+}
+
+@media (min-width: 768px) {
+	:root {
+		--gutter: 24px;
+	}
+}
+@media (min-width: 1100px) {
+	:root {
+		--gutter: 40px;
+	}
+}
+
+/* OS dark mode affects the nav, hero and neutral chapters. */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		--bg: #000000;
+		--bg-alt: #0b0b0d;
+		--fg: #f5f5f7;
+		--fg-2: #a1a1a6;
+		--fg-3: #6e6e73;
+		--line: rgba(255, 255, 255, 0.12);
+		--card: #141416;
+		--card-alt: #1c1c1f;
+		--accent: var(--brand-glow);
+		--accent-hover: var(--brand-mint);
+		--accent-fg: #00140f;
+		--shadow-window: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 40px 80px -24px rgba(0, 0, 0, 0.8);
+		--shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.06);
+		color-scheme: dark;
+	}
+}
+:root[data-theme="dark"] {
+	--bg: #000000;
+	--bg-alt: #0b0b0d;
+	--fg: #f5f5f7;
+	--fg-2: #a1a1a6;
+	--fg-3: #6e6e73;
+	--line: rgba(255, 255, 255, 0.12);
+	--card: #141416;
+	--card-alt: #1c1c1f;
+	--accent: var(--brand-glow);
+	--accent-hover: var(--brand-mint);
+	--accent-fg: #00140f;
+	--shadow-window: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 40px 80px -24px rgba(0, 0, 0, 0.8);
+	--shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.06);
+	color-scheme: dark;
+}
+
+/* A dark chapter: remaps the neutral tokens so children just use bg/fg/... */
+.chapter-dark {
+	--bg: var(--d-bg);
+	--bg-alt: var(--d-bg-alt);
+	--fg: var(--d-fg);
+	--fg-2: var(--d-fg-2);
+	--fg-3: var(--d-fg-3);
+	--line: var(--d-line);
+	--card: var(--d-card);
+	--card-alt: #1c1c1f;
+	--accent: var(--d-accent);
+	--accent-hover: var(--brand-mint);
+	--accent-fg: #00140f;
+	--shadow-window: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 40px 80px -24px rgba(0, 0, 0, 0.8);
+	--shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.06);
+	color-scheme: dark;
+}
+/* A light chapter forced light even in OS dark mode. */
+.chapter-light {
+	--bg: #ffffff;
+	--bg-alt: #f5f5f7;
+	--fg: #1d1d1f;
+	--fg-2: #6e6e73;
+	--fg-3: #86868b;
+	--line: rgba(0, 0, 0, 0.08);
+	--card: #ffffff;
+	--card-alt: #fbfbfd;
+	--accent: var(--brand);
+	--accent-hover: #0b8574;
+	--accent-fg: #ffffff;
+	--shadow-window:
+		0 1px 1px rgba(0, 0, 0, 0.04), 0 8px 24px -8px rgba(0, 0, 0, 0.18), 0 40px 80px -24px rgba(0, 0, 0, 0.28);
+	--shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -12px rgba(0, 0, 0, 0.14);
+	color-scheme: light;
+}
