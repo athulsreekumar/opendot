@@ -1,0 +1,121 @@
+/* SuperBot. Default = stacked layout (mobile / reduced motion): static, fully lit diagram, then the screenshot.
+   Pinned layout only on desktop with motion allowed; its pre-JS default is the FINAL state (screenshot shown). */
+.sb-pin {
+	position: relative;
+	overflow: hidden;
+	padding-block: clamp(5rem, 3rem + 8vw, 10rem);
+}
+.sb-glow {
+	position: absolute;
+	left: 50%;
+	top: 58%;
+	width: min(1400px, 150vw);
+	aspect-ratio: 1;
+	margin: calc(min(1400px, 150vw) / -2) 0 0 calc(min(1400px, 150vw) / -2);
+	border-radius: 50%;
+	background: radial-gradient(closest-side, rgba(45, 212, 191, 0.34), rgba(14, 159, 138, 0.14) 45%, transparent 100%);
+	opacity: 0.8;
+	pointer-events: none;
+	will-change: transform, opacity;
+}
+.sb-bubble {
+	border-radius: 22px;
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	background: rgba(255, 255, 255, 0.07);
+	backdrop-filter: blur(18px);
+	-webkit-backdrop-filter: blur(18px);
+	padding: 14px 22px;
+	font-size: clamp(1rem, 0.9rem + 0.4vw, 1.1875rem);
+	font-weight: 500;
+	color: var(--fg);
+	max-width: 100%;
+}
+.sb-diagram {
+	position: relative;
+	margin-inline: auto;
+	width: 100%;
+	max-width: 420px;
+}
+.sb-diagram svg {
+	display: block;
+	width: 100%;
+	height: auto;
+	overflow: visible;
+}
+.sb-diagram .sb-svg-d {
+	display: none;
+}
+.sb-mascot {
+	display: flex;
+	justify-content: center;
+	margin-bottom: -12px;
+}
+.sb-win {
+	margin: 40px auto 0;
+	width: min(100%, 1000px);
+}
+.sb-ask,
+.sb-ans {
+	opacity: 0;
+}
+
+@media (min-width: 900px) {
+	.sb-diagram {
+		max-width: 1000px;
+	}
+	.sb-diagram .sb-svg-m,
+	.sb-list {
+		display: none;
+	}
+	.sb-diagram .sb-svg-d {
+		display: block;
+	}
+	.sb-mascot {
+		position: absolute;
+		left: 50%;
+		bottom: 0;
+		margin: 0;
+		transform: translateX(-50%);
+	}
+}
+
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+	.sb-pin {
+		display: flex;
+		flex-direction: column;
+		height: 100svh;
+		padding-block: clamp(72px, 9svh, 92px) clamp(16px, 3svh, 32px);
+		gap: clamp(12px, 2.2svh, 24px);
+	}
+	.sb-head {
+		max-width: none;
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: end;
+		gap: 0 clamp(32px, 5vw, 80px);
+		text-align: left;
+	}
+	.sb-stage {
+		position: relative;
+		flex: 1 1 0;
+		min-height: 0;
+		container-type: size;
+	}
+	.sb-diagram {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: min(100cqw, 100cqh * 2.2727);
+		max-width: none;
+		translate: -50% -50%;
+		opacity: 0;
+	}
+	.sb-win {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin: 0;
+		width: min(100cqw, 100cqh * 1.6);
+		translate: -50% -50%;
+	}
+}
