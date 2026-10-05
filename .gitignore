@@ -14,3 +14,5 @@ film/node_modules/
 film/out/
 public/film/raw/
 .DS_Store
+AGENTS.md
+CLAUDE.md
