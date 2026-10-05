@@ -1,4 +1,5 @@
 // Installed connections (MCP, Google, Microsoft, Mac) and grants resolution (spec 05).
+
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { OpenDotError } from "../../shared/errors";
@@ -24,6 +25,7 @@ import type { Store } from "../store/store";
 import { CATALOG } from "./catalog";
 import { fetchGoogleAccount, googleOAuthConfig } from "./google/config";
 import { fetchMicrosoftAccount, microsoftOAuthConfig } from "./microsoft/config";
+import { nativeToolCatalog } from "./native-catalog";
 import type { OAuthProviderConfig } from "./native-types";
 
 const pexec = promisify(execFile);
@@ -446,22 +448,25 @@ export class ConnectionService {
 		const c = await this.get(id);
 		const now = () => new Date().toISOString();
 		if (c.type === "google" || c.type === "microsoft") {
+			// Built-in tools are known without connecting, so list them even before sign-in.
+			const tools = nativeToolCatalog(c);
 			const st: ConnectionStatus = {
 				connectionId: id,
 				state: !c.configured ? "disconnected" : (await this.secrets.has(`oauth:${id}`)) ? "connected" : "needs-auth",
-				toolCount: 0,
-				tools: [],
+				toolCount: tools.length,
+				tools,
 				checkedAt: now(),
 			};
 			this.reportStatus(st);
 			return st;
 		}
 		if (c.type === "mac") {
+			const tools = nativeToolCatalog(c);
 			const st: ConnectionStatus = {
 				connectionId: id,
 				state: c.enabled ? "connected" : "disabled",
-				toolCount: 0,
-				tools: [],
+				toolCount: tools.length,
+				tools,
 				checkedAt: now(),
 			};
 			this.reportStatus(st);

@@ -1,5 +1,5 @@
 import type { Connection, McpExposure } from "@shared/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { navigate } from "@/app/router";
 import { Avatar, Badge, Button, Dialog, DialogFooter, Select, Switch, toast } from "@/design-system/components";
 import { api, errorText } from "@/lib/api";
@@ -20,6 +20,19 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 	const dots = useDots((s) => s.dots);
 	const [busy, setBusy] = useState<string | undefined>();
 	const [confirmRemove, setConfirmRemove] = useState(false);
+	const type = connection?.type;
+	const featureKey = connection?.features?.join(",") ?? "";
+
+	// Built-in connections (This Mac, Google, Microsoft) list their tools without starting anything, so refresh on open
+	// and whenever their features change. MCP servers are only checked when you press Test.
+	useEffect(() => {
+		if (type !== "mac" && type !== "google" && type !== "microsoft") return;
+		void featureKey; // re-list when the enabled features change
+		api.connections
+			.check(connectionId as Connection["id"])
+			.then((st) => useRuntime.getState().setConnectionStatus(st))
+			.catch(() => undefined);
+	}, [connectionId, type, featureKey]);
 
 	if (!connection) {
 		return (
