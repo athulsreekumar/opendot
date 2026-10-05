@@ -28,13 +28,7 @@ export function OpenSource() {
 				<p className="t-lead text-fg-2 max-w-[40ch]">{openSource.lead}</p>
 
 				{/* GitHub Button */}
-				<Button
-					variant="secondary"
-					size="md"
-					href={GITHUB_URL}
-					target="_blank"
-					rel="noopener noreferrer"
-				>
+				<Button variant="secondary" size="md" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
 					{openSource.link}
 				</Button>
 			</Reveal>
