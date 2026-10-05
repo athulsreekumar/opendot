@@ -1,0 +1,48 @@
+{
+	"name": "approval-send-email",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Here's the reply I'll send to Maya:\n\n> Hi Maya, v3 is approved. Let's keep the contractor line at 38k; we can revisit it after the board sync if needed. See you at 09:30. Jordan\n\nSaving it as a draft first."
+				},
+				{
+					"type": "toolCall",
+					"id": "tc_draft_1",
+					"name": "gmail_create_draft",
+					"arguments": {
+						"to": "maya.chen@example.com",
+						"subject": "Re: Q4 planning: need your sign-off on the budget",
+						"body": "Hi Maya,\n\nv3 is approved. Let's keep the contractor line at 38k; we can revisit it after the board sync if needed.\n\nSee you at 09:30.\n\nJordan",
+						"threadId": "t_m_maya"
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_send_1",
+					"name": "gmail_send_draft",
+					"arguments": {
+						"draftId": "r-48213",
+						"to": "maya.chen@example.com",
+						"subject": "Re: Q4 planning: need your sign-off on the budget"
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Sent. Maya has your approval on budget v3, with contractors staying at 38k, well before the 09:30 board sync."
+				}
+			]
+		}
+	]
+}

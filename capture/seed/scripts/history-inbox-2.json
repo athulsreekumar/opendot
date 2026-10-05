@@ -1,0 +1,27 @@
+{
+	"name": "history-inbox-2",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_h_inbox_2",
+					"name": "gmail_search",
+					"arguments": {
+						"query": "from:leo",
+						"max": 5
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Leo Park sent round 2 of the onboarding designs yesterday. He simplified step 3 and moved the permissions ask to the end, and wants your eyes on it before Thursday's review. No reply needed yet. Want a reminder on Wednesday?"
+				}
+			]
+		}
+	]
+}

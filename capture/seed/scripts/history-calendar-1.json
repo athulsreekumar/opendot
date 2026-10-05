@@ -1,0 +1,27 @@
+{
+	"name": "history-calendar-1",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_h_cal_1",
+					"name": "calendar_list_events",
+					"arguments": {
+						"from": "2026-10-05T00:00:00Z",
+						"to": "2026-10-09T23:59:59Z"
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "This week is **busy but balanced**: 11 meetings, about 9 hours.\n\n- **Tuesday** is the heavy day: board sync, design review and the investor call.\n- **Wednesday** has two hours of free focus time from 10:30.\n- **Thursday** ends at 15:00, before your 17:30 cut-off.\n\nNothing clashes."
+				}
+			]
+		}
+	]
+}

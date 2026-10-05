@@ -1,0 +1,21 @@
+{
+	"name": "opendot-capture",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"description": "Screenshot and footage capture for the OpenDot website (drives the real Electron app with a scripted fake model).",
+	"scripts": {
+		"shots": "tsx shots.ts",
+		"seed": "tsx seed/build-data-dir.ts",
+		"record": "bash record.sh"
+	},
+	"dependencies": {
+		"playwright-core": "1.63.0",
+		"sharp": "^0.34.0"
+	},
+	"devDependencies": {
+		"@types/node": "22.20.5",
+		"tsx": "^4.20.0",
+		"typescript": "^5.6.0"
+	}
+}

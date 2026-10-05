@@ -1,0 +1,27 @@
+{
+	"name": "calendar-tomorrow",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_cal_1",
+					"name": "calendar_list_events",
+					"arguments": {
+						"from": "2026-10-06T00:00:00Z",
+						"to": "2026-10-06T23:59:59Z"
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Tomorrow is **meeting-heavy but clean**: three meetings and no clashes.\n\n| Time | Event | With |\n|---|---|---|\n| 09:30–10:30 | Board sync | Maya Chen |\n| 13:00–13:45 | Design review | Leo Park |\n| 16:00–16:30 | Investor call | Sam Rivera |\n\n- Your only prep window is **before 09:30**.\n- 10:30–13:00 is wide open. I'd keep it as focus time.\n\nWant me to block 10:30–12:30 so nobody books it?"
+				}
+			]
+		}
+	]
+}

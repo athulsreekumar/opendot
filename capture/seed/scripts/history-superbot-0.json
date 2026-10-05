@@ -1,0 +1,47 @@
+{
+	"name": "history-superbot-0",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_h_ask_0",
+					"name": "ask_dots",
+					"arguments": {
+						"requests": [
+							{
+								"dot": "Calendar",
+								"question": "Summarise the user's week: load, clashes and free focus time."
+							},
+							{
+								"dot": "Inbox",
+								"question": "Which unanswered emails could block the user this week?"
+							}
+						]
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"byDot": {
+				"Calendar": "Eleven meetings, about 9 hours. Tuesday is the heavy day. Wednesday has two free hours from 10:30. Nothing clashes.",
+				"Inbox": "Two could block you: Maya Chen's budget sign-off (needed before Tuesday 09:30) and Sam Rivera's request for the October numbers."
+			}
+		},
+		{
+			"byDot": {
+				"Calendar": "Eleven meetings, about 9 hours. Tuesday is the heavy day. Wednesday has two free hours from 10:30. Nothing clashes.",
+				"Inbox": "Two could block you: Maya Chen's budget sign-off (needed before Tuesday 09:30) and Sam Rivera's request for the October numbers."
+			}
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Your week is **busy but manageable**.\n\n- **Load:** 11 meetings, about 9 hours. Tuesday is the heavy day, and nothing clashes [Calendar].\n- **Focus time:** Wednesday has two free hours from 10:30 [Calendar].\n- **Blockers:** Maya Chen's budget sign-off and Sam Rivera's October numbers are the only open requests [Inbox].\n\nIf you answer those two today, the rest of the week is clear."
+				}
+			]
+		}
+	]
+}

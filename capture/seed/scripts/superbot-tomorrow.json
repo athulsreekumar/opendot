@@ -1,0 +1,75 @@
+{
+	"name": "superbot-tomorrow",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_ask_1",
+					"name": "ask_dots",
+					"arguments": {
+						"requests": [
+							{
+								"dot": "Inbox",
+								"question": "What needs a reply or a decision from me before tomorrow?"
+							},
+							{
+								"dot": "Calendar",
+								"question": "What is on my calendar tomorrow, and are there clashes or gaps?"
+							},
+							{
+								"dot": "Travel",
+								"question": "Is there any travel or travel admin I need to handle in the next 48 hours?"
+							},
+							{
+								"dot": "Research",
+								"question": "Give me a three-line brief on Sam Rivera and Cobalt Peak Capital for tomorrow's investor call."
+							}
+						]
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"byDot": {
+				"Inbox": "Two things before tomorrow:\n- Maya Chen needs your sign-off on the Q4 budget (v3) before the 09:30 board sync. Open question: contractors at 38k or 45k.\n- Sam Rivera wants the October numbers (MRR, churn, runway) before the 16:00 call.\nAcme Cloud's invoice #2041 ($1,284) is overdue, but it isn't tomorrow's problem.",
+				"Calendar": "Three meetings tomorrow, no clashes:\n- 09:30–10:30 Board sync (Maya Chen)\n- 13:00–13:45 Design review (Leo Park)\n- 16:00–16:30 Investor call (Sam Rivera)\nThe hours before 09:30 are your only real prep window.",
+				"Travel": "Nothing to do tomorrow. The Lisbon trip is on Nov 12, and check-in opens 24 hours before departure.\nYour passport is valid until 2029, so no paperwork is needed.\nNext step: pick seats once check-in opens.",
+				"Research": "Brief on Sam Rivera (Cobalt Peak Capital):\n- Led two seed rounds in developer tools last quarter (example.com/cobalt-peak/portfolio).\n- Wrote recently that investors now want proof of usage-based revenue.\n- Likely to ask about churn and runway."
+			}
+		},
+		{
+			"byDot": {
+				"Inbox": "Two things before tomorrow:\n- Maya Chen needs your sign-off on the Q4 budget (v3) before the 09:30 board sync. Open question: contractors at 38k or 45k.\n- Sam Rivera wants the October numbers (MRR, churn, runway) before the 16:00 call.\nAcme Cloud's invoice #2041 ($1,284) is overdue, but it isn't tomorrow's problem.",
+				"Calendar": "Three meetings tomorrow, no clashes:\n- 09:30–10:30 Board sync (Maya Chen)\n- 13:00–13:45 Design review (Leo Park)\n- 16:00–16:30 Investor call (Sam Rivera)\nThe hours before 09:30 are your only real prep window.",
+				"Travel": "Nothing to do tomorrow. The Lisbon trip is on Nov 12, and check-in opens 24 hours before departure.\nYour passport is valid until 2029, so no paperwork is needed.\nNext step: pick seats once check-in opens.",
+				"Research": "Brief on Sam Rivera (Cobalt Peak Capital):\n- Led two seed rounds in developer tools last quarter (example.com/cobalt-peak/portfolio).\n- Wrote recently that investors now want proof of usage-based revenue.\n- Likely to ask about churn and runway."
+			}
+		},
+		{
+			"byDot": {
+				"Inbox": "Two things before tomorrow:\n- Maya Chen needs your sign-off on the Q4 budget (v3) before the 09:30 board sync. Open question: contractors at 38k or 45k.\n- Sam Rivera wants the October numbers (MRR, churn, runway) before the 16:00 call.\nAcme Cloud's invoice #2041 ($1,284) is overdue, but it isn't tomorrow's problem.",
+				"Calendar": "Three meetings tomorrow, no clashes:\n- 09:30–10:30 Board sync (Maya Chen)\n- 13:00–13:45 Design review (Leo Park)\n- 16:00–16:30 Investor call (Sam Rivera)\nThe hours before 09:30 are your only real prep window.",
+				"Travel": "Nothing to do tomorrow. The Lisbon trip is on Nov 12, and check-in opens 24 hours before departure.\nYour passport is valid until 2029, so no paperwork is needed.\nNext step: pick seats once check-in opens.",
+				"Research": "Brief on Sam Rivera (Cobalt Peak Capital):\n- Led two seed rounds in developer tools last quarter (example.com/cobalt-peak/portfolio).\n- Wrote recently that investors now want proof of usage-based revenue.\n- Likely to ask about churn and runway."
+			}
+		},
+		{
+			"byDot": {
+				"Inbox": "Two things before tomorrow:\n- Maya Chen needs your sign-off on the Q4 budget (v3) before the 09:30 board sync. Open question: contractors at 38k or 45k.\n- Sam Rivera wants the October numbers (MRR, churn, runway) before the 16:00 call.\nAcme Cloud's invoice #2041 ($1,284) is overdue, but it isn't tomorrow's problem.",
+				"Calendar": "Three meetings tomorrow, no clashes:\n- 09:30–10:30 Board sync (Maya Chen)\n- 13:00–13:45 Design review (Leo Park)\n- 16:00–16:30 Investor call (Sam Rivera)\nThe hours before 09:30 are your only real prep window.",
+				"Travel": "Nothing to do tomorrow. The Lisbon trip is on Nov 12, and check-in opens 24 hours before departure.\nYour passport is valid until 2029, so no paperwork is needed.\nNext step: pick seats once check-in opens.",
+				"Research": "Brief on Sam Rivera (Cobalt Peak Capital):\n- Led two seed rounds in developer tools last quarter (example.com/cobalt-peak/portfolio).\n- Wrote recently that investors now want proof of usage-based revenue.\n- Likely to ask about churn and runway."
+			}
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Tomorrow is meeting-heavy, so tonight is for prep:\n\n1. **Reply to Maya before 09:30.** She needs your sign-off on budget v3. The only open item is the contractor line, 38k vs 45k [Inbox].\n2. **Send Sam the October numbers** (MRR, churn, runway) before the 16:00 investor call [Inbox]. Expect him to ask about churn and runway [Research].\n3. **Use the free morning.** The board sync starts at 09:30, then design review at 13:00 and the investor call at 16:00. Nothing clashes [Calendar].\n\nNo travel tasks tomorrow. Lisbon check-in doesn't open until Nov 11 [Travel]."
+				}
+			]
+		}
+	]
+}

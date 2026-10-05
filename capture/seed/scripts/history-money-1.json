@@ -1,0 +1,13 @@
+{
+	"name": "history-money-1",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Last month you spent **$418 on software** across 9 receipts. The biggest three:\n\n| Service | Amount |\n|---|---|\n| Acme Cloud | $107 |\n| Orbit CRM | $89 |\n| Pixelforge Design | $45 |\n\nThat is $31 less than the month before."
+				}
+			]
+		}
+	]
+}

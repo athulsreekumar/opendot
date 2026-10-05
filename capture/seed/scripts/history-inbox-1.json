@@ -1,0 +1,27 @@
+{
+	"name": "history-inbox-1",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_h_inbox_1",
+					"name": "gmail_search",
+					"arguments": {
+						"query": "is:unread newer_than:1d",
+						"max": 10
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Two things need you today:\n\n1. **Maya Chen, Q4 planning.** She needs your sign-off on budget v3 before tomorrow's 09:30 board sync. Only open item: contractors, 38k vs 45k.\n2. **Acme Cloud, invoice #2041.** 14 days overdue, $1,284.00.\n\nEverything else (a product newsletter, two receipts) can wait.\n\n**Top priority:** reply to Maya."
+				}
+			]
+		}
+	]
+}

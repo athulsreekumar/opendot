@@ -1,0 +1,13 @@
+{
+	"name": "inbox-update",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "[UPDATE] Leo Park posted round 2 of the onboarding designs. He simplified step 3 and moved the permissions ask to the end. He'd like your eyes on it before Thursday's review."
+				}
+			]
+		}
+	]
+}
