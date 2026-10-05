@@ -16,3 +16,9 @@ public/film/raw/
 .DS_Store
 AGENTS.md
 CLAUDE.md
+desktop/node_modules/
+desktop/out/
+desktop/release/
+desktop/test-results/
+desktop/e2e-screens/
+desktop/*.tsbuildinfo

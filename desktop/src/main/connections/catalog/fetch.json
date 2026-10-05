@@ -1,0 +1,16 @@
+{
+	"id": "fetch",
+	"label": "Fetch",
+	"description": "Fetch and parse web pages and APIs.",
+	"category": "knowledge",
+	"icon": "globe",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "uvx",
+		"args": ["mcp-server-fetch"]
+	},
+	"inputs": [],
+	"defaultExposure": "direct",
+	"requiresUv": true,
+	"verified": true
+}

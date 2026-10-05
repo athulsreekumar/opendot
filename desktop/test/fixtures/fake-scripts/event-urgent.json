@@ -1,0 +1,4 @@
+{
+	"name": "event-urgent",
+	"steps": [{ "content": [{ "type": "text", "text": "[URGENT] The production server is down." }] }]
+}

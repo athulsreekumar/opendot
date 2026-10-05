@@ -1,0 +1,57 @@
+appId: dev.opendot.app
+productName: OpenDot
+copyright: Copyright © 2026 OpenDot contributors
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**
+  - package.json
+  - "!**/*.map"
+  - "!**/*.d.ts"
+extraResources:
+  - from: build/trayTemplate.png
+    to: trayTemplate.png
+  - from: build/trayTemplate@2x.png
+    to: trayTemplate@2x.png
+asar: true
+asarUnpack:
+  # pi loads workers, wasm and assets relative to its own files; keep them on disk.
+  - node_modules/@earendil-works/**
+  - node_modules/@silvia-odwyer/photon-node/**
+  - "**/*.node"
+mac:
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+    - target: zip
+      arch: [arm64, x64]
+  category: public.app-category.productivity
+  artifactName: OpenDot-${version}-${arch}-mac.${ext}
+  icon: build/icon.png
+  identity: "-"
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    NSAppleEventsUsageDescription: OpenDot lets your Dots use Calendar, Reminders, Contacts and Notes only when you allow it.
+    NSCalendarsUsageDescription: OpenDot lets your Dots read and add calendar events only when you allow it.
+    NSCalendarsFullAccessUsageDescription: OpenDot lets your Dots read and add calendar events only when you allow it.
+    NSRemindersUsageDescription: OpenDot lets your Dots read and add reminders only when you allow it.
+    NSRemindersFullAccessUsageDescription: OpenDot lets your Dots read and add reminders only when you allow it.
+    NSContactsUsageDescription: OpenDot lets your Dots look up contacts only when you allow it.
+    NSMicrophoneUsageDescription: OpenDot uses the microphone only for voice messages you record.
+dmg:
+  title: OpenDot ${version}
+  artifactName: OpenDot-${version}-${arch}.dmg
+linux:
+  target: [dir]
+  icon: build/icon.png
+  category: Utility
+npmRebuild: false
+publish:
+  provider: github
+  owner: athulsreekumar
+  repo: opendot
+  releaseType: release

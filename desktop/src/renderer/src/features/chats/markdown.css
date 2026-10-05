@@ -1,0 +1,101 @@
+/* highlight.js token colours mapped to --od-* tokens (light + dark follow the tokens). */
+.hljs {
+	color: var(--od-text-primary);
+}
+.hljs-comment,
+.hljs-quote {
+	color: var(--od-text-tertiary);
+	font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-doctag {
+	color: var(--od-dot-violet);
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-meta .hljs-string {
+	color: var(--od-success);
+}
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet {
+	color: var(--od-warning);
+}
+.hljs-title,
+.hljs-title.function_,
+.hljs-section {
+	color: var(--od-info);
+}
+.hljs-type,
+.hljs-title.class_,
+.hljs-built_in {
+	color: var(--od-dot-sky);
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable {
+	color: var(--od-dot-orange);
+}
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-tag {
+	color: var(--od-accent);
+}
+.hljs-deletion {
+	color: var(--od-danger);
+}
+.hljs-meta {
+	color: var(--od-text-secondary);
+}
+.hljs-emphasis {
+	font-style: italic;
+}
+.hljs-strong {
+	font-weight: 600;
+}
+.hljs-link {
+	color: var(--od-text-link);
+	text-decoration: underline;
+}
+
+/* Chat motion: typing dots and the streaming dot (the brand motif). */
+@keyframes od-typing {
+	0%,
+	60%,
+	100% {
+		opacity: 0.3;
+		transform: translateY(0);
+	}
+	30% {
+		opacity: 1;
+		transform: translateY(-2px);
+	}
+}
+@keyframes od-stream-pulse {
+	0%,
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.45;
+		transform: scale(0.8);
+	}
+}
+.od-typing-dot {
+	animation: od-typing 1200ms ease-in-out infinite;
+}
+.od-stream-dot {
+	animation: od-stream-pulse 1000ms ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+	.od-typing-dot,
+	.od-stream-dot {
+		animation: none;
+	}
+}

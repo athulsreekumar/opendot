@@ -1,0 +1,16 @@
+{
+	"id": "sentry",
+	"label": "Sentry",
+	"description": "Monitor and debug application errors.",
+	"category": "dev",
+	"icon": "bug",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.sentry.dev/mcp",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": true,
+	"docsUrl": "https://github.com/modelcontextprotocol/servers"
+}

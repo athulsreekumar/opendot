@@ -1,0 +1,16 @@
+{
+	"id": "sequential-thinking",
+	"label": "Sequential Thinking",
+	"description": "Break down complex problems into structured thinking steps.",
+	"category": "knowledge",
+	"icon": "list-checks",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "npx",
+		"args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+	},
+	"inputs": [],
+	"defaultExposure": "direct",
+	"requiresNode": true,
+	"verified": true
+}

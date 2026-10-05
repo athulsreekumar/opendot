@@ -1,0 +1,16 @@
+{
+	"id": "time",
+	"label": "Time",
+	"description": "Get current time and timezone information.",
+	"category": "system",
+	"icon": "clock",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "uvx",
+		"args": ["mcp-server-time"]
+	},
+	"inputs": [],
+	"defaultExposure": "direct",
+	"requiresUv": true,
+	"verified": true
+}

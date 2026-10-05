@@ -1,0 +1,17 @@
+{
+	"name": "remember",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_mem_1",
+					"name": "remember",
+					"arguments": { "text": "The user's favourite colour is teal", "about": "user" }
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{ "content": [{ "type": "text", "text": "Noted — I'll remember that." }] }
+	]
+}

@@ -1,0 +1,24 @@
+{
+	"id": "git",
+	"label": "Git",
+	"description": "Interact with Git repositories.",
+	"category": "dev",
+	"icon": "git-branch",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "uvx",
+		"args": ["mcp-server-git", "--repository", "{REPO}"]
+	},
+	"inputs": [
+		{
+			"key": "REPO",
+			"label": "Repository path",
+			"secret": false,
+			"placeholder": "/Users/you/projects/my-repo",
+			"target": "arg"
+		}
+	],
+	"defaultExposure": "deferred",
+	"requiresUv": true,
+	"verified": true
+}

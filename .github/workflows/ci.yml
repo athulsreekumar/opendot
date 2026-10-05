@@ -1,12 +1,14 @@
-name: CI
+name: Website CI
 
 on:
   push:
     branches: [main]
+    paths-ignore: ["desktop/**", ".github/workflows/desktop-*.yml"]
   pull_request:
+    paths-ignore: ["desktop/**", ".github/workflows/desktop-*.yml"]
 
 concurrency:
-  group: ${{ github.ref }}
+  group: website-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

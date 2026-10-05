@@ -1,253 +1,283 @@
-# OpenDot Marketing Website
+<div align="center">
 
-The marketing site for **OpenDot**, the open-source Mac app that gives you a team of AI assistants ("Dots").
+<img src="public/mascot/odi-hero.webp" alt="Odi, the OpenDot mascot, waving" width="180" />
 
-[Screenshot: hero section with animated Odi mascot, early-access form, and macOS window showing the app interface]
+# OpenDot
 
----
+### Your AI team. Living on your Mac.
 
-## Run locally
+A Mac app that gives you **Dots**: AI assistants that each do one job brilliantly,
+work around the clock, and keep your data on your Mac.
 
-**Requirements**: Node.js 22.19 or later.
+[![macOS 14+](https://img.shields.io/badge/macOS-14%2B-000000?logo=apple&logoColor=white)](#requirements)
+[![Apple silicon and Intel](https://img.shields.io/badge/Apple%20silicon%20%26%20Intel-supported-0e9f8a)](#build-it-yourself)
+[![License: MIT](https://img.shields.io/badge/license-MIT-0e9f8a)](LICENSE)
+[![Status: early access](https://img.shields.io/badge/status-early%20access-16b39b)](https://opendot.live)
+
+[**Website**](https://opendot.live) · [**Get early access**](https://opendot.live/#early-access) · [**Build it yourself**](#build-it-yourself) · [**How it works**](#how-it-works) · [**FAQ**](#faq)
+
+<br />
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/shots/superbot-answer-dark@2x.webp" />
+  <img src="public/shots/superbot-answer-light@2x.webp" alt="OpenDot on a Mac: SuperDot asks Inbox, Calendar, Travel and Research at once and answers with sources" width="900" />
+</picture>
+
+</div>
+
+<br />
+
+## What is OpenDot?
+
+Most AI apps give you one chat that forgets everything and can't do anything on its own. OpenDot gives you a **team**.
+
+Each **Dot** has one job, a personality that fits it, and only the access you give it. Your Inbox Dot reads Gmail. Your
+Calendar Dot guards your time. Your Research Dot reads the web. They keep running in the background, notice things the
+moment they happen, and only tap you when it matters. When you have a question that spans everything, **SuperDot** asks the
+right Dots at once and hands you one answer, with sources.
+
+Everything lives on your Mac. Personal details are masked before anything reaches a cloud model, and nothing that
+changes the world happens without your yes.
+
+<br />
+
+## Highlights
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>✨ Describe it. It comes alive.</h3>
+      Write one sentence about what a Dot should do and tick the tools it may use. OpenDot writes its name, emoji,
+      colour and personality, live, as you watch.
+    </td>
+    <td width="50%" valign="top">
+      <h3>🌙 Works while you don't.</h3>
+      Dots run 24/7 while OpenDot is open. New email, a moved meeting, a changed file or a webhook reaches the right Dot
+      instantly. It replies <code>[URGENT]</code>, <code>[UPDATE]</code> or stays quiet, inside budgets you set.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🪄 One question. Every Dot.</h3>
+      SuperDot knows which Dot knows what. It asks them in parallel, streams their answers live and combines them into one
+      reply with <code>[Inbox]</code>-style citations.
+    </td>
+    <td width="50%" valign="top">
+      <h3>🔗 You decide who talks to whom.</h3>
+      Dot Links are permission rules between Dots: allow, ask or block, on a schedule, with rate limits and approvals.
+      Every message is logged.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🔒 Your data stays home.</h3>
+      Everything is plain JSON in <code>~/.opendot</code>. Emails, phone numbers and card details are masked before a cloud
+      model sees them. Keys live in the macOS Keychain.
+    </td>
+    <td width="50%" valign="top">
+      <h3>🧠 Any model. Even the one on your Mac.</h3>
+      Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter, Groq, or fully local with Ollama, LM Studio, llama.cpp or
+      any compatible URL. Pick a different model per Dot.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🔌 Plugs into everything.</h3>
+      Google Workspace, Microsoft 365, your Mac's Calendar, Reminders, Contacts, Notes and files, plus unlimited MCP
+      servers. Import your Claude Desktop or Cursor MCP config in one paste.
+    </td>
+    <td width="50%" valign="top">
+      <h3>⚡ Answers from the first word.</h3>
+      No spinners. Every reply streams in as it's written, including background replies and SuperDot fan-outs.
+    </td>
+  </tr>
+</table>
+
+<br />
+
+## See it
+
+<table>
+  <tr>
+    <td width="50%"><img src="public/shots/new-dot-describe-light@2x.webp" alt="Creating a Dot: describe the job and pick connectors" /></td>
+    <td width="50%"><img src="public/shots/new-dot-review-light@2x.webp" alt="OpenDot writes the new Dot's identity and personality" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Describe a Dot</b> and pick the tools it may touch</sub></td>
+    <td align="center"><sub><b>Meet your Dot</b>: its name, look and personality, written live</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="public/shots/always-on-update-dark@2x.webp" alt="An Inbox Dot flags an urgent email the moment it arrives" /></td>
+    <td width="50%"><img src="public/shots/approval-card-light@2x.webp" alt="An approval card: Allow once, Always allow or Deny" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Always on</b>: an urgent email, flagged the moment it lands</sub></td>
+    <td align="center"><sub><b>You approve</b> anything that sends, deletes or pays</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="public/shots/links-screen-light@2x.webp" alt="Dot Links: permission rules between Dots" /></td>
+    <td width="50%"><img src="public/shots/connections-light@2x.webp" alt="The Connections hub with Google, Microsoft, Mac and MCP servers" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Dot Links</b>: who may talk to whom, and when</sub></td>
+    <td align="center"><sub><b>Connections</b>: Google, Microsoft, your Mac and any MCP server</sub></td>
+  </tr>
+</table>
+
+<br />
+
+## Build it yourself
+
+OpenDot is in early access, so there is no signed download yet. You can build and run it from source in a few minutes.
+
+### Requirements
+
+| | |
+|---|---|
+| **Mac** | macOS 14 Sonoma or later, Apple silicon or Intel |
+| **Node.js** | 22.19 or later ([nodejs.org](https://nodejs.org) or `brew install node`) |
+| **Git** | Comes with Xcode Command Line Tools: `xcode-select --install` |
+| **A model** | An API key from any cloud provider, or a local model through [Ollama](https://ollama.com) or LM Studio. Optional: a built-in test model needs nothing. |
+
+### 1. Get the code
 
 ```bash
+git clone https://github.com/athulsreekumar/opendot.git
+cd opendot/desktop
 npm ci
-cp .env.example .env.local
-RESEND_MOCK=1 npm run dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000). The form won't send emails (mocked); to test with real Resend, add your API key to `.env.local`.
-
-**Scripts**:
-
-- `npm run dev` — Start the dev server
-- `npm run build` — Build for production
-- `npm run start` — Start the production server (requires `build` first)
-- `npm run lint` — Lint with Biome
-- `npm run typecheck` — Type-check with TypeScript
-- `npm run test` — Run unit tests (Vitest)
-- `npm run e2e` — Run e2e tests (Playwright)
-
----
-
-## Deploy on Vercel
-
-### 1. Connect the repo
-
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
-2. Click **Add New Project**
-3. Select **Import Git Repository** and paste `https://github.com/athulsreekumar/opendot`
-4. Choose **Next.js** as the framework (auto-detected)
-5. Click **Deploy**
-
-### 2. Set environment variables
-
-In **Vercel → Project Settings → Environment Variables**, add each variable from `.env.example`:
-
-| Variable | Type | What it does |
-|---|---|---|
-| `SITE_URL` | Optional | The deployed site URL (default: `https://opendot.live`). Used for canonical links and metadata. |
-| `RESEND_API_KEY` | Required* | Resend API key with Sending and Contacts full access. |
-| `RESEND_AUDIENCE_ID` | Optional | ID of the Resend Audience (segment) that stores signups. If empty, signups are only emailed to you. |
-| `EARLY_ACCESS_NOTIFY_TO` | Required* | Your email address where signup notifications land. |
-| `EARLY_ACCESS_FROM` | Optional | Sender address. Until `opendot.live` is verified in Resend: keep `OpenDot <onboarding@resend.dev>` (only that sender can email the account owner). After domain verification, set to `OpenDot <hello@opendot.live>`. |
-| `EARLY_ACCESS_CONFIRM_FROM` | Optional | Once the domain is verified in Resend, set this to send signups a confirmation email (e.g., `hello@opendot.live`). |
-| `UPSTASH_REDIS_REST_URL` | Optional | Upstash Redis REST endpoint. If omitted, rate limiting uses in-memory best effort. |
-| `UPSTASH_REDIS_REST_TOKEN` | Optional | Upstash Redis REST token. |
-
-*Required only if you want the form to send emails. For testing, set `RESEND_MOCK=1` locally instead.
-
-After adding variables, **Vercel will auto-deploy** your project. Visit your preview URL.
-
-### 3. Connect the domain (optional)
-
-1. Go to **Vercel → Domains**
-2. Click **Add Domain** and enter `opendot.live`
-3. Follow the DNS setup shown in Vercel (add the CNAME or A records to your DNS provider)
-4. Once verified, add the same domain to Resend for email sending (see below)
-
----
-
-## Early-access emails with Resend
-
-### Create a Resend account
-
-1. Sign up at [resend.com](https://resend.com)
-2. Verify your email address
-
-### Get your API key
-
-1. Go to **Settings → API Keys**
-2. Create a new key with:
-   - **Sending access**: enabled
-   - **Contacts full access**: enabled
-3. Copy the key to `EARLY_ACCESS_NOTIFY_TO` env var in Vercel
-
-### Set up the Audience
-
-1. Go to **Contacts → Audiences**
-2. Click **Create Audience** and name it "OpenDot early access"
-3. Copy its ID and paste it into `RESEND_AUDIENCE_ID` in Vercel
-4. (Optional) If you leave `RESEND_AUDIENCE_ID` empty, signups still email you but won't be saved to a list
-
-### Test after deploy
-
-1. Visit your deployed site and submit a signup with `you+test@example.com` (change `you` to your email)
-2. Check your inbox — you should get a notification email within seconds
-3. In Resend → **Contacts**, find and delete the test contact
-
-### Export the signup list
-
-Anytime after people have signed up:
-
-1. Go to **Resend → Contacts → Audiences**
-2. Click your "OpenDot early access" audience
-3. Click **Export** and download the CSV
-
-### Verify the domain (optional, for nicer sender address)
-
-By default, emails come from `OpenDot <onboarding@resend.dev>` (Resend's only-works-for-account-owner sender).  
-To send from `hello@opendot.live`:
-
-1. Go to **Settings → Domains** in Resend
-2. Click **Add Domain** and enter your domain (e.g., `opendot.live`)
-3. Add the DNS records shown (TXT, DKIM, DMARC)
-4. Once verified, set in Vercel:
-   - `EARLY_ACCESS_FROM=OpenDot <hello@opendot.live>`
-   - (Optional) `EARLY_ACCESS_CONFIRM_FROM=hello@opendot.live` (signup confirmations)
-
-### Security note
-
-**Never commit API keys.** If a key is ever posted publicly, rotate it immediately in Resend → Settings → API Keys.
-
----
-
-## Project structure
-
-```
-opendot/
-├─ README.md                    this file
-├─ PLAN.md                      build plan & detailed specs
-├─ package.json  tsconfig.json  biome.json  next.config.ts
-├─ .env.example                 every env var, no values
-│
-├─ app/
-│  ├─ layout.tsx                fonts, metadata, <SmoothScroll>, theme
-│  ├─ page.tsx                  the landing page
-│  ├─ privacy/page.tsx          privacy notice
-│  ├─ api/early-access/route.ts signup endpoint
-│  └─ opengraph-image.png       OG image for sharing
-│
-├─ components/
-│  ├─ site/                     Nav, Footer, EarlyAccessForm, etc.
-│  ├─ sections/                 Hero, Statement, CreateDot, etc.
-│  ├─ motion/                   SmoothScroll, Reveal, ScrubText, GSAP helpers
-│  ├─ mascot/                   Odi (3D character, React Three Fiber)
-│  └─ ui/                       Button, MacWindow, Screenshot, etc.
-│
-├─ lib/
-│  ├─ copy.ts                   all text copy (headings, CTAs, etc.)
-│  ├─ early-access.ts           signup logic (pure, unit-tested)
-│  ├─ env.ts                    typed environment variable reader
-│  ├─ rate-limit.ts             request rate limiter
-│  └─ site.ts                   site metadata
-│
-├─ styles/
-│  ├─ tokens.css                design tokens (colors, sizes, etc.)
-│  └─ globals.css               base styles
-│
-├─ public/
-│  ├─ film/                     hero loop & full film videos
-│  └─ mascot/                   Odi fallback images (PNG/WebP)
-│
-├─ scripts/
-│  └─ render-mascot.ts          render Odi's static images
-│
-├─ tests/
-│  ├─ unit/                     API and utility unit tests (Vitest)
-│  └─ e2e/                      site e2e tests (Playwright)
-│
-├─ .github/workflows/ci.yml     GitHub Actions CI (lint, build, test, e2e)
-└─ (future: capture/            footage recording & screenshot tools)
-   (future: film/               Remotion edit project)
-```
-
----
-
-## Updating assets
-
-### Screenshots
-
-Site screenshots (for sections like "Create a Dot", "Always on", etc.) are captured from the OpenDot app. When available:
-
-1. See `capture/README.md` for the full capture pipeline
-2. Run `capture/shots.ts` to generate all stills (light & dark, optimized to AVIF/WebP)
-3. Output lands in `public/shots/`
-
-(The capture tooling is not yet in this repo; see [PLAN.md §7.1](PLAN.md#71-screenshots-real-app-dummy-data) for details.)
-
-### Mascot images (Odi)
-
-Odi is a real-time 3D character rendered in the browser. To generate static fallback images:
+### 2. Run it
 
 ```bash
-npm run dev        # in one terminal (the /dev-odi route is dev-only)
+npm run dev
 ```
 
-In another terminal:
+OpenDot opens with a short setup. Pick a model:
+
+- **Fastest:** paste an API key (Anthropic, OpenAI, Google, xAI, OpenRouter and more).
+- **Free and private:** start Ollama with a model, for example `ollama pull llama3.1`. OpenDot finds it automatically.
+- **Just looking around:** run `OPENDOT_FAKE_PROVIDER=1 npm run dev` and choose **Fake (tests)**, a scripted model that needs no key.
+
+> Tip: `OPENDOT_DATA_DIR=/tmp/opendot-test npm run dev` keeps a test run separate from your real `~/.opendot`.
+
+### 3. Build the Mac app
 
 ```bash
-node --experimental-strip-types scripts/render-mascot.ts
+npm run dist:mac:arm64   # Apple silicon (M1 and later)
+npm run dist:mac:x64     # Intel Macs
+npm run dist:mac         # both
 ```
 
-This renders each of Odi's poses (`hero`, `thinking`, `cheer`, `night`, `conductor`, `shield`, `envelope`, `peek`) to `public/mascot/odi-<pose>.{png,webp}` at 2× DPR, optimized with sharp.
+You get `desktop/release/OpenDot-<version>-<arch>-mac.dmg`. Open it and drag OpenDot to **Applications**.
 
-**Env vars** (optional):
-- `BASE_URL` — dev server URL (default: `http://localhost:3000`)
-- `PW_CHROMIUM` — explicit Chromium executable path (uses Playwright's by default)
+The build is not notarized by Apple yet, so the first launch needs one extra step. Either right-click OpenDot in
+Applications, choose **Open**, then **Open** again, or run:
 
-### Film
+```bash
+xattr -dr com.apple.quarantine /Applications/OpenDot.app
+```
 
-(Coming soon: Remotion edit project in `film/` that produces the hero loop and full film video.)
+### Prefer a ready-made build?
 
----
+Every change to the app on `main` builds DMGs for both chip types in
+[**Mac app CI**](https://github.com/athulsreekumar/opendot/actions/workflows/desktop-ci.yml). Open the latest green run
+and download the **OpenDot-mac** artifact. Tagged versions (`v0.1.0`, …) are published on
+[**Releases**](https://github.com/athulsreekumar/opendot/releases).
 
-## Design system
+<br />
 
-### Copy
+## How it works
 
-All text copy (headlines, buttons, CTAs, form labels) lives in `lib/copy.ts`. Change wording there, and it updates everywhere.
+```
+                 ┌──────────────────────────────── your Mac ────────────────────────────────┐
+  Gmail, Outlook │  Watchers ──► events ──► Dot (own session, persona, tools, budget)        │
+  Calendar, Files│                              │         ▲                                  │
+  Webhooks, RSS  │                              ▼         │ Dot Links (allow · ask · block)  │
+                 │                         SuperDot ◄─────┘                                  │
+                 │                              │                                            │
+                 │   PII masking ◄──────────────┼──────────────► approvals for risky tools    │
+                 │        │                     ▼                                            │
+                 │        └──────────► any model: cloud, local (Ollama) or custom URL         │
+                 │                                                                           │
+                 │   ~/.opendot  (JSON settings, sessions, memory, audit log, Keychain keys) │
+                 └───────────────────────────────────────────────────────────────────────────┘
+```
 
-GitHub link constant: `lib/copy.ts` exports `GITHUB_URL`.
+- **Built on [pi](https://github.com/earendil-works/pi/tree/main/packages/coding-agent)**, an open agent harness. Every Dot is
+  its own pi session with its own persona, tools and memory.
+- **Electron + React**, with a WhatsApp-style layout: Dots on the left, the chat on the right.
+- **Your files, your Mac.** Settings, chats and memory are plain files you can read in `~/.opendot`.
 
-### Tokens
+The full design lives in [`desktop/PLAN.md`](desktop/PLAN.md) and [`desktop/docs/spec/`](desktop/docs/spec/), and the
+app's own guide (Google and Microsoft setup, MCP, data layout) is in [`desktop/README.md`](desktop/README.md).
 
-Design tokens (colors, fonts, sizes) are in `styles/tokens.css`:
+<br />
 
-- **Colors**: `--bg`, `--bg-alt`, `--fg`, `--fg-2`, `--accent`, `--accent-grad`, `--line` (mirrored for light/dark)
-- **Type scale**: `display-xl`, `display-l`, `display-m`, `title`, `lead`, `body`, `caption` (fluid sizes with Tailwind `clamp`)
-- **Spacing, shadows, radii**: standard Tailwind + custom values
+## FAQ
 
-Dark mode is toggled via `prefers-color-scheme` (hero & nav only; chapter backgrounds are designed fixed).
+<details>
+<summary><b>Is OpenDot free?</b></summary>
+<br />
+Yes. If you connect a cloud model with your own API key, that provider bills you directly. Local models through Ollama
+or LM Studio cost nothing.
+</details>
 
-### Fonts
+<details>
+<summary><b>Does my data leave my Mac?</b></summary>
+<br />
+Only what a cloud model needs to answer, and personal details are masked before it is sent. With a local model, nothing
+leaves your Mac at all.
+</details>
 
-- **Inter Variable** (self-hosted) — headlines and body text, with optical-size axis for crisp display type
-- **JetBrains Mono** (self-hosted) — mono code examples and masked data demos
+<details>
+<summary><b>Do Dots run when my Mac is asleep?</b></summary>
+<br />
+No. Dots run while OpenDot is open, including in the background with the window closed. When your Mac wakes, watchers
+catch up on what they missed.
+</details>
 
-Loaded in `app/layout.tsx` via `@fontsource-variable`.
+<details>
+<summary><b>Why does macOS warn me the first time I open it?</b></summary>
+<br />
+Early-access builds are not notarized by Apple yet. Right-click the app and choose Open once, or run the
+<code>xattr</code> command above.
+</details>
 
----
+<details>
+<summary><b>Windows or Linux?</b></summary>
+<br />
+OpenDot is made for the Mac. It uses the macOS Keychain and Mac apps like Calendar and Notes.
+</details>
 
-## Questions?
+<br />
 
-See [PLAN.md](PLAN.md) for:
+## Repository layout
 
-- Detailed build plan & tech stack (§2)
-- Copy deck & exact strings (§5)
-- Scroll choreography & animations (§6)
-- Assets pipeline (§7)
-- Early-access backend logic (§8)
-- Capture & film rendering (§9)
-- Testing & QA approach (§10)
+| Path | What it is |
+|---|---|
+| [`desktop/`](desktop/) | **The OpenDot Mac app** (Electron, React, pi). Start here to build it. |
+| `app/`, `components/`, `lib/`, `styles/`, `public/` | The [opendot.live](https://opendot.live) website (Next.js). See [`docs/WEBSITE.md`](docs/WEBSITE.md). |
+| `capture/` | Scripts that drive the app with dummy data to take the screenshots you see here. |
+| `.github/workflows/` | `desktop-ci.yml` builds and tests the app on macOS, `desktop-release.yml` publishes tagged releases, `ci.yml` checks the website. |
 
+## Contributing
+
+Issues and pull requests are welcome. Before opening a pull request for the app:
+
+```bash
+cd desktop
+npm run typecheck && npm run lint && npm test
+npm run e2e   # drives the real app with a scripted model
+```
+
+## License
+
+[MIT](LICENSE). Made for Mac.
+
+<div align="center">
+<br />
+<img src="public/mascot/odi-envelope.webp" alt="Odi holding an envelope" width="110" />
+<br />
+<sub><b><a href="https://opendot.live/#early-access">Get early access</a></b> and we'll send you the download as soon as it's ready.</sub>
+</div>

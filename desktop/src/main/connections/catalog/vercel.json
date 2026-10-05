@@ -1,0 +1,15 @@
+{
+	"id": "vercel",
+	"label": "Vercel",
+	"description": "Manage deployments and projects on Vercel.",
+	"category": "dev",
+	"icon": "triangle",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.vercel.com",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": false
+}

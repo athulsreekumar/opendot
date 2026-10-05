@@ -1,0 +1,15 @@
+{
+	"id": "context7",
+	"label": "Context7",
+	"description": "Access research and reference materials.",
+	"category": "knowledge",
+	"icon": "book-open",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.context7.com/mcp"
+	},
+	"inputs": [],
+	"defaultExposure": "direct",
+	"verified": true,
+	"docsUrl": "https://github.com/modelcontextprotocol/servers"
+}

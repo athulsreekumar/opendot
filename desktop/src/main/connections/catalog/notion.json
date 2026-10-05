@@ -1,0 +1,16 @@
+{
+	"id": "notion",
+	"label": "Notion",
+	"description": "Read and write Notion databases and pages.",
+	"category": "productivity",
+	"icon": "book-open",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.notion.com/mcp",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": true,
+	"docsUrl": "https://github.com/modelcontextprotocol/servers"
+}

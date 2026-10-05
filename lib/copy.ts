@@ -1,7 +1,6 @@
 // Copy deck (PLAN §5). Orchestrator-owned: sections import strings from here instead of hard-coding text.
 
-export const GITHUB_URL =
-	"https://github.com/athulsreekumar/claude-code-remote/tree/claude/grok-bot-openai-dots-eyctdr/opendot";
+export const GITHUB_URL = "https://github.com/athulsreekumar/opendot";
 
 export const MAC_ONLY = {
 	label: "Only available for Mac",

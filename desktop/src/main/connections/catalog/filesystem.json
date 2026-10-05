@@ -1,0 +1,24 @@
+{
+	"id": "filesystem",
+	"label": "Filesystem",
+	"description": "Read and write files in any directory on your computer.",
+	"category": "system",
+	"icon": "folder",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "npx",
+		"args": ["-y", "@modelcontextprotocol/server-filesystem", "{FOLDER}"]
+	},
+	"inputs": [
+		{
+			"key": "FOLDER",
+			"label": "Folder to grant access to",
+			"secret": false,
+			"placeholder": "/Users/you/Projects",
+			"target": "arg"
+		}
+	],
+	"defaultExposure": "direct",
+	"requiresNode": true,
+	"verified": true
+}

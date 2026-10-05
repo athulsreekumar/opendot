@@ -1,0 +1,10 @@
+{
+	"name": "tool-destructive",
+	"steps": [
+		{
+			"content": [{ "type": "toolCall", "id": "tc_del_1", "name": "mcp__echo__delete_everything", "arguments": {} }],
+			"stopReason": "toolUse"
+		},
+		{ "content": [{ "type": "text", "text": "Okay — I didn't delete anything because you declined." }] }
+	]
+}
