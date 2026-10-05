@@ -1,12 +1,13 @@
 "use client";
+import type React from "react";
 
-import { type CSSProperties, type ElementType, type ReactNode, useRef } from "react";
+import { type CSSProperties, type ReactNode, useRef } from "react";
 import "./motion.css";
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "./gsap";
 
 export type RevealProps = {
 	/** Element to render. Default "div". */
-	as?: ElementType;
+	as?: keyof HTMLElementTagNameMap;
 	/** Seconds to wait before the reveal starts. */
 	delay?: number;
 	/** Rise distance in px (default 24). */
@@ -23,7 +24,7 @@ export type RevealProps = {
  * Reduced motion: nothing moves.
  */
 export function Reveal({ as, delay = 0, y = 24, stagger, className, children }: RevealProps) {
-	const Tag = (as ?? "div") as ElementType;
+	const Tag = (as ?? "div") as "div";
 	const ref = useRef<HTMLElement>(null);
 
 	useGSAP(
@@ -75,7 +76,7 @@ export function Reveal({ as, delay = 0, y = 24, stagger, className, children }: 
 
 	return (
 		<Tag
-			ref={ref}
+			ref={ref as React.RefObject<HTMLDivElement>}
 			data-reveal={stagger === undefined ? "single" : "stagger"}
 			className={className}
 			style={{ "--reveal-y": `${y}px` } as CSSProperties}

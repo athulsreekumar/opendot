@@ -1,6 +1,7 @@
 "use client";
+import type React from "react";
 
-import { type ElementType, type RefObject, useEffect, useRef } from "react";
+import { type RefObject, useEffect, useRef } from "react";
 import "./motion.css";
 import { gsap, prefersReducedMotion } from "./gsap";
 
@@ -8,7 +9,7 @@ export type ScrubTextProps = {
 	/** The sentence. Words light up from 15% to 100% opacity, one after another, as you scroll. */
 	text: string;
 	/** Element to render. Default "p". */
-	as?: ElementType;
+	as?: keyof HTMLElementTagNameMap;
 	className?: string;
 	/** Element whose scroll progress drives the effect (e.g. a pinned section). Defaults to the text itself. */
 	trigger?: RefObject<HTMLElement | null>;
@@ -27,7 +28,7 @@ export type ScrubTextProps = {
  * Reduced motion / no JS: fully visible.
  */
 export function ScrubText({ text, as, className, trigger, start = "top 80%", end = "bottom 35%" }: ScrubTextProps) {
-	const Tag = (as ?? "p") as ElementType;
+	const Tag = (as ?? "p") as "div";
 	const ref = useRef<HTMLElement>(null);
 	const words = text.split(/\s+/).filter(Boolean);
 
@@ -57,7 +58,7 @@ export function ScrubText({ text, as, className, trigger, start = "top 80%", end
 	}, [text, trigger]);
 
 	return (
-		<Tag ref={ref} data-scrub="" className={className}>
+		<Tag ref={ref as React.RefObject<HTMLDivElement>} data-scrub="" className={className}>
 			<span className="sr-only">{text}</span>
 			<span aria-hidden="true">
 				{words.map((w, i) => (
