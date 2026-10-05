@@ -1,0 +1,28 @@
+/* Footer styling */
+
+.od-footer {
+	border-top: 1px solid var(--line);
+	padding-top: clamp(3rem, 2rem + 4vw, 6rem);
+	padding-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+}
+
+.od-logo-mark {
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+}
+
+.od-footer-bottom {
+	border-top: 1px solid var(--line);
+	padding-top: clamp(2rem, 1.5rem + 2vw, 3rem);
+}
+
+@media (max-width: 768px) {
+	.od-footer {
+		text-align: center;
+	}
+
+	.od-footer-bottom {
+		text-align: center;
+	}
+}
