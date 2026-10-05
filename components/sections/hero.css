@@ -1,0 +1,34 @@
+/* Hero: CSS-only load stagger (no hidden state to get stuck), window radius var, glow. */
+@media (prefers-reduced-motion: no-preference) {
+	.hero-in {
+		animation: hero-in 0.9s var(--ease-out) both;
+		animation-delay: calc(var(--i, 0) * 80ms + 60ms);
+	}
+}
+@keyframes hero-in {
+	from {
+		opacity: 0;
+		transform: translate3d(0, 22px, 0);
+		filter: blur(4px);
+	}
+}
+.hero-window {
+	--win-r: 20px;
+	border-radius: var(--win-r) !important;
+	transform-origin: 50% 0%;
+	will-change: transform;
+}
+/* MacWindow's hairline carries the radius inline; keep it in step with the animated radius. */
+.hero-window > div[aria-hidden="true"]:last-child {
+	border-radius: var(--win-r) !important;
+}
+.hero-glow {
+	background: radial-gradient(
+		closest-side,
+		color-mix(in srgb, var(--brand-glow) 55%, transparent),
+		color-mix(in srgb, var(--brand) 18%, transparent) 55%,
+		transparent 100%
+	);
+	filter: blur(30px);
+	opacity: 0.3;
+}
