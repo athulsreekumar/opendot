@@ -6,7 +6,12 @@ export default defineConfig({
 	testDir: "tests/e2e",
 	timeout: 60_000,
 	retries: process.env.CI ? 1 : 0,
-	use: { baseURL: `http://localhost:${PORT}`, trace: "retain-on-failure" },
+	use: {
+		baseURL: `http://localhost:${PORT}`,
+		trace: "retain-on-failure",
+		// Optional override for sandboxes whose installed Chromium revision differs from Playwright's.
+		...(process.env.PW_CHROMIUM ? { launchOptions: { executablePath: process.env.PW_CHROMIUM } } : {}),
+	},
 	webServer: {
 		command: `npx next start -p ${PORT}`,
 		port: PORT,
