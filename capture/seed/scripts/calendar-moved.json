@@ -1,0 +1,13 @@
+{
+	"name": "calendar-moved",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "[UPDATE] The board sync moved from 10:00 to 09:30 tomorrow. Nothing else on your calendar clashes with it."
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,81 @@
+{
+	"SuperDot": [
+		{
+			"user": "How is my week shaping up?",
+			"script": "history-superbot-0",
+			"agoMin": 1500
+		},
+		{
+			"user": "Has Acme replied about invoice #2041?",
+			"script": "history-superbot-1",
+			"agoMin": 75
+		}
+	],
+	"Inbox": [
+		{
+			"user": "Anything urgent in my inbox this morning?",
+			"script": "history-inbox-1",
+			"agoMin": 250
+		},
+		{
+			"user": "What did Leo send yesterday?",
+			"script": "history-inbox-2",
+			"agoMin": 240
+		},
+		{
+			"user": "When can I call Maya? Check with Calendar.",
+			"script": "history-inbox-3",
+			"agoMin": 14
+		}
+	],
+	"Calendar": [
+		{
+			"user": "How does my week look?",
+			"script": "history-calendar-1",
+			"agoMin": 230
+		},
+		{
+			"user": "Is there a good slot for a 30-minute 1:1 with Leo?",
+			"script": "history-calendar-2",
+			"agoMin": 38
+		}
+	],
+	"Research": [
+		{
+			"user": "SQLite or Postgres for a small SaaS?",
+			"script": "history-research-1",
+			"agoMin": 1560
+		}
+	],
+	"Money": [
+		{
+			"user": "How much did I spend on software last month?",
+			"script": "history-money-1",
+			"agoMin": 1700
+		},
+		{
+			"user": "Anything renewing soon?",
+			"script": "history-money-2",
+			"agoMin": 150
+		}
+	],
+	"Travel": [
+		{
+			"user": "Remind me what's booked for Lisbon",
+			"script": "history-travel-1",
+			"agoMin": 1800
+		},
+		{
+			"user": "Is my passport okay for the trip?",
+			"script": "history-travel-2",
+			"agoMin": 1790
+		}
+	],
+	"Code Buddy": [
+		{
+			"user": "Review PR #482 for me",
+			"script": "history-codebuddy-1",
+			"agoMin": 300
+		}
+	]
+}

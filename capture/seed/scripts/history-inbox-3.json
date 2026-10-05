@@ -1,0 +1,35 @@
+{
+	"name": "history-inbox-3",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_h_inbox_3",
+					"name": "message_dot",
+					"arguments": {
+						"to": "Calendar",
+						"message": "When is the user's next free 30-minute slot tomorrow?"
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Free from 10:30 to 13:00 tomorrow, right after the board sync."
+				}
+			]
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Calendar says you're free from **10:30 to 13:00** tomorrow, straight after the board sync. That's the best time to call Maya about the contractor line."
+				}
+			]
+		}
+	]
+}

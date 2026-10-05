@@ -1,0 +1,13 @@
+{
+	"name": "history-research-1",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "**Short answer: start with SQLite, move to Postgres when you need more than one writer.**\n\n- SQLite handles tens of thousands of reads per second on one machine and needs no server (sqlite.org/whentouse.html).\n- Postgres wins once several services write at once, or you need row-level security and replicas.\n- Migrating later is routine. Keep your SQL portable and it takes about a day.\n\n**Confidence: high.** Both the docs and independent benchmarks agree."
+				}
+			]
+		}
+	]
+}

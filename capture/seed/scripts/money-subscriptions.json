@@ -1,0 +1,13 @@
+{
+	"name": "money-subscriptions",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "You have **11 recurring charges**, **$386 a month** ($4,632 a year).\n\n| Service | Monthly | Next renewal | Found in |\n|---|---|---|---|\n| Acme Cloud (Team) | $107 | Nov 21 | Invoice #2041 |\n| Orbit CRM | $89 | Nov 3 | Gmail receipt |\n| Cadence Fitness | $49 | Nov 9 | Gmail receipt |\n| Pixelforge Design | $45 | Nov 14 | Gmail receipt |\n| Streamline Mail | $29 | Nov 2 | Gmail receipt |\n| Beam Video | $24 | Oct 11 | Gmail receipt |\n| 5 smaller charges | $43 | various | Workspace folder |\n\n**Worth a look**\n- Acme Cloud went from $89 to $107 in September (+20%).\n- Orbit CRM and Streamline Mail both include a contact-sync add-on, so you may be paying twice.\n- Beam Video renews in 6 days.\n\nWant me to list every receipt behind these numbers?"
+				}
+			]
+		}
+	]
+}

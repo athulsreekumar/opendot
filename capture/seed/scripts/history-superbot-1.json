@@ -1,0 +1,39 @@
+{
+	"name": "history-superbot-1",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_h_ask_1",
+					"name": "ask_dots",
+					"arguments": {
+						"requests": [
+							{
+								"dot": "Inbox",
+								"question": "Has anyone replied about invoice #2041?"
+							}
+						]
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "No reply yet. The last message from Acme Cloud is this morning's overdue notice."
+				}
+			]
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Not yet. The last word from Acme Cloud is this morning's overdue notice, and nobody has replied since [Inbox]. Want me to ask Inbox to draft a payment reminder for you to review?"
+				}
+			]
+		}
+	]
+}

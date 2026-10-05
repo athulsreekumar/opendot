@@ -1,0 +1,13 @@
+{
+	"name": "inbox-urgent",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "[URGENT] Maya Chen needs your sign-off on the Q4 budget (v3) by 18:00 today. The board sync is tomorrow at 09:30, and the only open item is the contractor line: 38k vs 45k. Want me to draft a reply?"
+				}
+			]
+		}
+	]
+}
