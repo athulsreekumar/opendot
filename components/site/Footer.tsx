@@ -1,3 +1,4 @@
+import { LogoMark } from "@/components/ui/LogoMark";
 import { footer } from "@/lib/copy";
 import "./Footer.css";
 
@@ -10,19 +11,7 @@ export function Footer() {
 					{/* Left: Logo + OpenDot + tagline */}
 					<div className="flex items-center gap-3">
 						<div className="od-logo-mark">
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 20 20"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-								aria-hidden="true"
-							>
-								<rect width="20" height="20" rx="4" fill="var(--accent)" />
-								<circle cx="6" cy="6" r="1.5" fill="white" />
-								<circle cx="10" cy="10" r="1.5" fill="white" />
-								<circle cx="14" cy="14" r="1.5" fill="white" />
-							</svg>
+							<LogoMark size={20} />
 						</div>
 						<div className="flex flex-col">
 							<p className="t-caption font-semibold text-fg">OpenDot</p>

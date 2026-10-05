@@ -13,9 +13,8 @@ export function AnyModel() {
 				<div className="flex flex-col items-center gap-6 text-center">
 					<p className="t-caption text-accent uppercase tracking-wider">{anyModel.eyebrow}</p>
 					<h2 className="t-display-l max-w-4xl">
-						<span>{anyModel.h2[0]}</span>
-						{"\n"}
-						<span className="text-gradient">{anyModel.h2[1]}</span>
+						<span className="block">{anyModel.h2[0]}</span>
+						<span className="block text-gradient">{anyModel.h2[1]}</span>
 					</h2>
 					<p className="t-lead text-fg-2 max-w-[40ch]">{anyModel.lead}</p>
 				</div>
@@ -29,14 +28,14 @@ export function AnyModel() {
 							{anyModel.rowA.map((model, i) => (
 								<span key={`row-a-1-${i}`} className="od-marquee-item">
 									{model}
-									{i < anyModel.rowA.length - 1 && <span className="od-marquee-sep">•</span>}
+									<span className="od-marquee-sep">•</span>
 								</span>
 							))}
 							{/* Duplicate for seamless loop */}
 							{anyModel.rowA.map((model, i) => (
 								<span key={`row-a-2-${i}`} className="od-marquee-item" aria-hidden="true">
 									{model}
-									{i < anyModel.rowA.length - 1 && <span className="od-marquee-sep">•</span>}
+									<span className="od-marquee-sep">•</span>
 								</span>
 							))}
 						</div>
@@ -49,14 +48,14 @@ export function AnyModel() {
 							{anyModel.rowB.map((model, i) => (
 								<span key={`row-b-1-${i}`} className="od-marquee-item">
 									{model}
-									{i < anyModel.rowB.length - 1 && <span className="od-marquee-sep">•</span>}
+									<span className="od-marquee-sep">•</span>
 								</span>
 							))}
 							{/* Duplicate for seamless loop */}
 							{anyModel.rowB.map((model, i) => (
 								<span key={`row-b-2-${i}`} className="od-marquee-item" aria-hidden="true">
 									{model}
-									{i < anyModel.rowB.length - 1 && <span className="od-marquee-sep">•</span>}
+									<span className="od-marquee-sep">•</span>
 								</span>
 							))}
 						</div>
