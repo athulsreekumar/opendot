@@ -16,6 +16,8 @@ export interface MascotProps {
 	className?: string;
 	/** Accessible label; defaults to a description of the pose. */
 	label?: string;
+	/** Always use the pre-rendered image (no WebGL). For small, short-lived spots like dialogs and toasts. */
+	still?: boolean;
 }
 
 let webglOk: boolean | null = null;
@@ -37,7 +39,7 @@ function hasWebGL() {
  * when within ~1 viewport and unmounts it again beyond ~2 viewports to release the GL context.
  * Without WebGL it shows /mascot/odi-<pose>.png (or a soft teal circle if that file is missing).
  */
-export function Mascot({ pose = "hero", size = 240, className, label }: MascotProps) {
+export function Mascot({ pose = "hero", size = 240, className, label, still = false }: MascotProps) {
 	const box = useRef<HTMLDivElement>(null);
 	const [mounted, setMounted] = useState(false);
 	const [gl, setGl] = useState<boolean | null>(null);
@@ -48,6 +50,10 @@ export function Mascot({ pose = "hero", size = 240, className, label }: MascotPr
 	useEffect(() => {
 		const el = box.current;
 		if (!el) return;
+		if (still) {
+			setGl(false);
+			return;
+		}
 		setGl(hasWebGL());
 		const near = new IntersectionObserver((e) => e.some((x) => x.isIntersecting) && setMounted(true), {
 			rootMargin: "100% 0px 100% 0px",
@@ -67,10 +73,10 @@ export function Mascot({ pose = "hero", size = 240, className, label }: MascotPr
 			near.disconnect();
 			far.disconnect();
 		};
-	}, []);
+	}, [still]);
 
 	const aria = label ?? POSES[pose].label;
-	const poster = `/mascot/odi-${pose}.png`;
+	const poster = `/mascot/odi-${pose}.webp`;
 	const showCanvas = mounted && gl === true;
 	const showImg = !imgFailed && (gl === false || !ready);
 

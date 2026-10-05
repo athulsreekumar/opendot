@@ -44,7 +44,10 @@ export function EarlyAccessDialog() {
 		window.clearTimeout(closeTimer.current);
 		const card = cardRef.current;
 		const backdrop = backdropRef.current;
+		let done = false;
 		const finish = () => {
+			if (done) return;
+			done = true;
 			setOpen(false);
 			startScroll();
 			document.body.style.overflow = "";
@@ -66,6 +69,8 @@ export function EarlyAccessDialog() {
 			opts,
 		);
 		a.onfinish = finish;
+		// Don't depend on the animation event alone (it can be late on a busy main thread).
+		window.setTimeout(finish, dur + 80);
 	}, []);
 
 	// Entrance animation, scroll lock, initial focus.
@@ -151,7 +156,7 @@ export function EarlyAccessDialog() {
 					<Icon as={X} size={20} />
 				</button>
 				<div className="flex flex-col items-center text-center">
-					<Mascot pose="envelope" size={96} />
+					<Mascot pose="envelope" size={96} still />
 					<h2 id="early-access-title" className="t-title mt-1">
 						Get early access
 					</h2>

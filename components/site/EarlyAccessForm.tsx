@@ -144,7 +144,7 @@ export function EarlyAccessForm({ source, variant, onSuccess }: EarlyAccessFormP
 	if (outcome) {
 		return (
 			<div role="status" className="flex flex-col items-center gap-2 py-2 text-center">
-				<Mascot pose="cheer" size={120} />
+				<Mascot pose="cheer" size={120} still />
 				<p className="t-lead text-fg">{outcome === "duplicate" ? copy.duplicate : copy.success}</p>
 			</div>
 		);

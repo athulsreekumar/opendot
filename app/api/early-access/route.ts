@@ -85,7 +85,8 @@ export async function POST(req: Request) {
 			userAgent: req.headers.get("user-agent") ?? undefined,
 			now: new Date(),
 		},
-		{ limit, resend, env: effectiveEnv },
+		// Test mode (RESEND_MOCK=1): e2e suites sign up many times from one IP, so skip the rate limiter there.
+		{ limit: mock ? async () => ({ ok: true }) : limit, resend, env: effectiveEnv },
 	);
 	return json(res.status, res.body);
 }
