@@ -14,7 +14,8 @@
 			"!next-env.d.ts",
 			"!film/out",
 			"!capture",
-			"!film"
+			"!film",
+			"!tsconfig.json"
 		]
 	},
 	"formatter": {
