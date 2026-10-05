@@ -101,7 +101,7 @@ export function AlwaysOn() {
 	);
 
 	return (
-		<section ref={section} id="always-on" className="chapter-dark">
+		<section ref={section} id="always-on" className="chapter-dark ao-root">
 			<div ref={pin} className="ao-pin">
 				<div className="container-site">
 					<Reveal stagger={0.08} className="mx-auto flex max-w-5xl flex-col items-center text-center">
