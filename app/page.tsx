@@ -10,6 +10,7 @@ import { Privacy } from "@/components/sections/Privacy";
 import { Statement } from "@/components/sections/Statement";
 import { Streaming } from "@/components/sections/Streaming";
 import { SuperBot } from "@/components/sections/SuperBot";
+import { FEATURES } from "@/lib/features";
 
 export default function Home() {
 	return (
@@ -24,7 +25,7 @@ export default function Home() {
 			<AnyModel />
 			<Connections />
 			<Streaming />
-			<OpenSource />
+			{FEATURES.openSource && <OpenSource />}
 			<FinalCta />
 		</>
 	);

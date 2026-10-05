@@ -32,7 +32,7 @@ const CHIP: Record<Perm, { label: string; cls: string }> = {
 	allow: { label: "Allow", cls: "bg-[#0e9f8a]/15 text-[#0b7f70] ring-[#0e9f8a]/30" },
 	ask: { label: "Ask", cls: "bg-[#f5a524]/18 text-[#a15c00] ring-[#f5a524]/40" },
 	block: { label: "Block", cls: "bg-black/[0.05] text-fg-3 ring-black/10 line-through decoration-fg-3/60" },
-	self: { label: "—", cls: "text-fg-3" },
+	self: { label: "·", cls: "text-fg-3" },
 };
 
 const DAYS = ["M", "T", "W", "T", "F", "S", "S"];

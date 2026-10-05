@@ -67,7 +67,7 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 			viewBox={`0 0 ${l.w} ${l.h}`}
 			preserveAspectRatio="xMidYMid meet"
 			role="img"
-			aria-label={`SuperBot connected to ${superBot.dots.join(", ")}.`}
+			aria-label={`SuperDot connected to ${superBot.dots.join(", ")}.`}
 			fontFamily="inherit"
 		>
 			<defs>
@@ -106,7 +106,7 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 					✨
 				</text>
 				<text y={l.coreR * 0.5} textAnchor="middle" fontSize={13 * f} fontWeight="650" fill="#f5f5f7">
-					SuperBot
+					SuperDot
 				</text>
 			</g>
 
@@ -296,7 +296,7 @@ export function SuperBot(): ReactNode {
 	);
 
 	return (
-		<section ref={section} id="superbot" className="chapter-dark">
+		<section ref={section} id="superdot" className="chapter-dark">
 			<div ref={pin} className="sb-pin">
 				<div aria-hidden="true" className="sb-glow" />
 				<div className="container-site relative flex min-h-0 flex-1 flex-col gap-[inherit]">
@@ -345,7 +345,7 @@ export function SuperBot(): ReactNode {
 								name="superbot-answer"
 								theme="dark"
 								sizes="(min-width: 1000px) 1000px, 100vw"
-								alt="SuperBot's combined answer, assembled from every Dot, with sources."
+								alt="SuperDot's combined answer, assembled from every Dot, with sources."
 							/>
 						</MacWindow>
 					</div>

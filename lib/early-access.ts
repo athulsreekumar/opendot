@@ -97,11 +97,11 @@ function formatUtc(d: Date): string {
 export function buildNotification(signup: Signup, ctx: SignupContext) {
 	const rows: [string, string][] = [
 		["Email", signup.email],
-		["First Dot idea", signup.firstDot ?? "—"],
-		["Mac", signup.mac ? (MAC_LABEL[signup.mac] ?? signup.mac) : "—"],
-		["Source", signup.source ?? "—"],
+		["First Dot idea", signup.firstDot ?? "-"],
+		["Mac", signup.mac ? (MAC_LABEL[signup.mac] ?? signup.mac) : "-"],
+		["Source", signup.source ?? "-"],
 		["Time", formatUtc(ctx.now)],
-		["Country", ctx.country ? ctx.country.slice(0, 2).toUpperCase() : "—"],
+		["Country", ctx.country ? ctx.country.slice(0, 2).toUpperCase() : "-"],
 		["Browser", browserFamily(ctx.userAgent)],
 	];
 	const text = `New OpenDot early-access signup\n\n${rows.map(([k, v]) => `${k}: ${v}`).join("\n")}\n`;
@@ -116,8 +116,8 @@ export function buildNotification(signup: Signup, ctx: SignupContext) {
 }
 
 export function buildConfirmation(siteUrl: string) {
-	const text = `You're on the list.\n\nThanks for your interest in OpenDot — AI assistants (Dots) that live on your Mac. We'll email you the moment early access opens, and only about OpenDot.\n\nNothing to do in the meantime. If you'd rather not hear from us, just reply to this email and we'll remove you.\n\n— The OpenDot team\n${siteUrl}\n`;
-	const html = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;color:#111;max-width:520px"><p style="margin:0 0 20px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b6b76">OpenDot</p><h1 style="margin:0 0 16px;font-size:26px;line-height:1.15;letter-spacing:-.02em">You're on the list.</h1><p style="margin:0 0 16px">Thanks for your interest in OpenDot — AI assistants (Dots) that live on your Mac. We'll email you the moment early access opens, and only about OpenDot.</p><p style="margin:0 0 24px">Nothing to do in the meantime. If you'd rather not hear from us, just reply to this email and we'll remove you.</p><p style="margin:0;color:#6b6b76">— The OpenDot team<br><a href="${escapeHtml(siteUrl)}" style="color:#6b6b76">${escapeHtml(siteUrl.replace(/^https?:\/\//, ""))}</a></p></div>`;
+	const text = `You're on the list.\n\nThanks for your interest in OpenDot, the AI assistants (Dots) that live on your Mac. We'll email you the moment early access opens, and only about OpenDot.\n\nNothing to do in the meantime. If you'd rather not hear from us, just reply to this email and we'll remove you.\n\nThe OpenDot team\n${siteUrl}\n`;
+	const html = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;color:#111;max-width:520px"><p style="margin:0 0 20px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b6b76">OpenDot</p><h1 style="margin:0 0 16px;font-size:26px;line-height:1.15;letter-spacing:-.02em">You're on the list.</h1><p style="margin:0 0 16px">Thanks for your interest in OpenDot, the AI assistants (Dots) that live on your Mac. We'll email you the moment early access opens, and only about OpenDot.</p><p style="margin:0 0 24px">Nothing to do in the meantime. If you'd rather not hear from us, just reply to this email and we'll remove you.</p><p style="margin:0;color:#6b6b76">The OpenDot team<br><a href="${escapeHtml(siteUrl)}" style="color:#6b6b76">${escapeHtml(siteUrl.replace(/^https?:\/\//, ""))}</a></p></div>`;
 	return { subject: "You're on the OpenDot early-access list", text, html };
 }
 
