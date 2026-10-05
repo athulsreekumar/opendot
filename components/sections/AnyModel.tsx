@@ -1,7 +1,7 @@
 "use client";
 
-import { Cloud, Laptop, Link2 } from "@/components/ui/Icon";
 import { Reveal } from "@/components/motion/Reveal";
+import { Cloud, Laptop, Link2 } from "@/components/ui/Icon";
 import { anyModel } from "@/lib/copy";
 import "./AnyModel.css";
 
