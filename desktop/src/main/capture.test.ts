@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { captureWindowOptions, fakeScriptsCandidates } from "./capture";
 
@@ -5,8 +6,8 @@ describe("capture flags", () => {
 	it("are off by default", () => {
 		expect(captureWindowOptions({}, "linux")).toEqual({});
 		expect(fakeScriptsCandidates({}, "/app", "/cwd")).toEqual([
-			"/app/test/fixtures/fake-scripts",
-			"/cwd/test/fixtures/fake-scripts",
+			join("/app", "test/fixtures/fake-scripts"),
+			join("/cwd", "test/fixtures/fake-scripts"),
 		]);
 	});
 
