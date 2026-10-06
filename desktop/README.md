@@ -25,7 +25,7 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
 
 1. Download `OpenDot-<version>-arm64-mac.dmg` (Apple Silicon) or `-x64-mac.dmg` (Intel) from
    [Releases](https://github.com/athulsreekumar/opendot/releases) or from the latest
-   [Mac app CI](https://github.com/athulsreekumar/opendot/actions/workflows/desktop-ci.yml) run (artifact **OpenDot-mac**).
+   [Desktop app CI](https://github.com/athulsreekumar/opendot/actions/workflows/desktop-ci.yml) run (artifact **OpenDot-mac**).
    Or build it yourself: see [Build from source](#build-from-source).
 2. Open the DMG and drag OpenDot to Applications.
 3. The build is **not notarized yet** (no Apple Developer account), so the first launch needs one of:
@@ -38,7 +38,7 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
 
 1. Download `OpenDot-<version>-x64-win.exe` (installer) or `OpenDot-<version>-x64-win.zip` (portable, unzip and run
    `OpenDot.exe`) from [Releases](https://github.com/athulsreekumar/opendot/releases) or from the latest
-   [Mac app CI](https://github.com/athulsreekumar/opendot/actions/workflows/desktop-ci.yml) run (artifact **OpenDot-windows**).
+   [Desktop app CI](https://github.com/athulsreekumar/opendot/actions/workflows/desktop-ci.yml) run (artifact **OpenDot-windows**).
    Or build it yourself: see [Build from source on Windows](#build-from-source-on-windows).
 2. Run the installer. You can choose the install folder; it adds Desktop and Start menu shortcuts.
 3. The build is **not code-signed yet** (no certificate), so Windows SmartScreen may show "Windows protected your PC" on first

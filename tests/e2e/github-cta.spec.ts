@@ -27,6 +27,6 @@ test("inner pages lead to GitHub too", async ({ page }) => {
 	await page.goto("/features/superdot");
 	await expect(page.getByRole("link", { name: "Get it on GitHub" }).first()).toHaveAttribute("href", REPO);
 	await page.goto("/download");
-	await expect(page.getByRole("heading", { level: 1 })).toHaveText("Download OpenDot for Mac");
+	await expect(page.getByRole("heading", { level: 1 })).toHaveText("Download OpenDot for Mac and Windows");
 	await expect(page.getByText(/early access/i)).toHaveCount(0);
 });

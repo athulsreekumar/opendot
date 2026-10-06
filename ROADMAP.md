@@ -5,7 +5,8 @@ Where OpenDot is heading. These are directions, not promises or dates. If someth
 
 ## Now
 
-- **Signed and notarized builds**, so macOS doesn't warn on first launch.
+- **Signed and notarized builds**, so macOS and Windows SmartScreen don't warn on first launch.
+- **Linux packages** (AppImage, deb). The app already runs from source on Linux; it isn't packaged or tested there yet.
 - **A first tagged release (v0.1.0)** with DMGs on GitHub Releases.
 - **More Dot templates** contributed by the community.
 - **Better first-run experience**: clearer model setup and a guided first Dot.
@@ -27,8 +28,6 @@ Where OpenDot is heading. These are directions, not promises or dates. If someth
 
 ## Not planned
 
-- **Windows and Linux apps.** OpenDot is built around the Mac: the Keychain, Calendar, Reminders, Notes and
-  AppleScript. Contributions that keep the core portable are still welcome.
 - **A hosted cloud version.** OpenDot is local-first by design.
 
 ## Known limits today

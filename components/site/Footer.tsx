@@ -53,7 +53,7 @@ export function Footer() {
 
 				{/* Bottom line */}
 				<div className="od-footer-bottom">
-					<p className="t-caption text-fg-3">© 2026 OpenDot · Only available for Mac</p>
+					<p className="t-caption text-fg-3">© 2026 OpenDot · For Mac and Windows</p>
 				</div>
 			</div>
 		</footer>

@@ -5,6 +5,12 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Windows 10 and 11 (x64) support: an installer and a portable zip, a **This PC** connection (files, shell through
+  Git for Windows, screenshots, clipboard, notifications, opening apps and links), keys encrypted with Windows DPAPI,
+  and Windows builds and tests in CI.
+
 ### Fixed
 
 - Dots granted This Mac now really get the file and shell tools (`read`, `ls`, `grep`, `find`, `write`, `edit`, `bash`).

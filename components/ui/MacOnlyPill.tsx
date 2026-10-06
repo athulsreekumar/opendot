@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { MAC_ONLY } from "@/lib/copy";
 
-/** Inline Mac laptop glyph (drawn here; no Apple logo). */
+/** Inline laptop glyph (drawn here; no Apple or Windows logo). */
 function LaptopGlyph() {
 	return (
 		<svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true" className="shrink-0">
@@ -12,7 +12,7 @@ function LaptopGlyph() {
 }
 
 /**
- * "Only available for Mac" platform tag. `detail` adds the macOS version line after a hairline divider on ≥sm.
+ * "For Mac and Windows" platform tag. `detail` adds the OS version line after a hairline divider on ≥sm.
  * Uses neutral tokens, so it adapts to light, dark and .chapter-dark automatically.
  */
 export function MacOnlyPill({ detail = false, className }: { detail?: boolean; className?: string }) {

@@ -33,7 +33,7 @@ describe("JSON-LD", () => {
 
 	it("describes the app", () => {
 		const app = graph().find((n) => n["@type"] === "SoftwareApplication") as Node;
-		expect(app.operatingSystem).toBe("macOS 14 or later");
+		expect(app.operatingSystem).toBe("macOS 14 or later, Windows 10 or 11");
 		expect(app.applicationCategory).toBe("ProductivityApplication");
 		expect(app.isAccessibleForFree).toBe(true);
 		expect(app.offers).toMatchObject({ price: "0", priceCurrency: "USD" });
