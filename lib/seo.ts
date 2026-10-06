@@ -7,7 +7,7 @@ export const SITE_NAME = "OpenDot";
 
 /** Keyword-rich but natural description, kept under 160 characters. */
 export const SEO_DESCRIPTION =
-	"OpenDot is a free Mac app that gives you a team of private AI assistants. They run 24/7, use any model, and keep your data on your Mac.";
+	"OpenDot is a free, open source Mac app that gives you a team of private AI assistants. They run 24/7, use any model, and keep your data on your Mac.";
 
 export const SEO_KEYWORDS = [
 	"AI assistants for Mac",
@@ -23,6 +23,8 @@ export const SEO_KEYWORDS = [
 	"macOS AI agents",
 	"run AI locally on Mac",
 	"Claude GPT Gemini Mac app",
+	"open source AI assistant",
+	"open source AI agents Mac",
 ];
 
 export const OG_ALT = "OpenDot: your AI team, living on your Mac. Only available for Mac.";
@@ -54,6 +56,7 @@ export const FEATURE_LIST = [
 	"Connects to Google Workspace, Microsoft 365, Mac Calendar, Reminders, Contacts, Notes and files",
 	"Unlimited MCP servers and webhooks",
 	"Replies stream from the first token",
+	"Open source under the MIT license",
 ];
 
 /** The schema.org @graph for the home page. FAQ text is taken verbatim from lib/copy.ts. */
@@ -97,9 +100,11 @@ export function homeJsonLd() {
 					url: abs(`/shots/${s.name}-light@2x.webp`),
 					caption: s.alt,
 				})),
-				offers: { "@type": "Offer", price: "0", priceCurrency: "USD", availability: "https://schema.org/PreOrder" },
+				offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 				isAccessibleForFree: true,
-				releaseNotes: "Early access. Not yet available to download.",
+				license: "https://opensource.org/license/mit",
+				downloadUrl: GITHUB_URL,
+				installUrl: abs("/download"),
 				author: { "@id": orgId },
 				publisher: { "@id": orgId },
 			},

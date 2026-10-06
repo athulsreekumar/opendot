@@ -14,13 +14,14 @@ export const nav = {
 		{ label: "Privacy", href: "/features/privacy" },
 		{ label: "Guides", href: "/guides" },
 	],
-	cta: "Get early access",
+	cta: "GitHub",
 };
 
 export const hero = {
 	h1: ["Your AI team.", "Living on your Mac."],
 	lead: "OpenDot gives you Dots: AI assistants that each do one job brilliantly, work around the clock, and keep your data on your Mac.",
-	cta: "Get early access",
+	cta: "Get it on GitHub",
+	build: "How to build it",
 	film: "Watch the film",
 	underVideo: "Real app. Real-time. No edits to the answers.",
 };
@@ -120,8 +121,10 @@ export const openSource = {
 };
 
 export const finalCta = {
-	h2: ["Be first in line."],
-	lead: "OpenDot is coming to the Mac. Join the early-access list and we’ll send you the download as soon as it’s ready.",
+	h2: ["Yours to build."],
+	lead: "OpenDot is free and open source. Grab the code on GitHub, build it for your Mac in a few minutes, and meet your first Dot.",
+	cta: "Get it on GitHub",
+	build: "Build steps",
 };
 
 export const form = {
@@ -183,7 +186,7 @@ export const faq = {
 		},
 		{
 			q: "Is OpenDot free?",
-			a: "Yes. OpenDot is free. If you connect a cloud model such as Claude or GPT with your own API key, that provider bills you directly. Run a local model through Ollama or LM Studio and it costs nothing.",
+			a: "Yes. OpenDot is free and open source under the MIT license. If you connect a cloud model such as Claude or GPT with your own API key, that provider bills you directly. Run a local model through Ollama or LM Studio and it costs nothing.",
 		},
 		{
 			q: "Which Macs does it run on?",
@@ -210,8 +213,12 @@ export const faq = {
 			a: "Yes, with Dot Links. You decide which Dots can message which, with role-based access, schedules, rate limits and approvals. For example, your Travel Dot can ask your Calendar Dot only on weekdays, five times an hour, and only if you approve. Every message is logged.",
 		},
 		{
-			q: "When can I download OpenDot, and how does early access work?",
-			a: "OpenDot is in early access and is not yet available to download. Join the early-access list with your email and we will send you the download as soon as it is ready. We will only email you about OpenDot.",
+			q: "How do I get OpenDot?",
+			a: "OpenDot is free on GitHub. Clone the repository, then in the desktop folder run npm ci and npm run dev to try it, or npm run dist:mac:arm64 (Apple silicon) or npm run dist:mac:x64 (Intel) to build the Mac app. You need macOS 14 or later and Node.js 22.19 or later.",
+		},
+		{
+			q: "Is OpenDot open source?",
+			a: "Yes. OpenDot is MIT-licensed and built on the pi agent harness, so you can read every line, change it and run your own build.",
 		},
 	],
 };
