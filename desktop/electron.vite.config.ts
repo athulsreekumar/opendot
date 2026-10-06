@@ -29,6 +29,8 @@ export default defineConfig({
 	},
 	renderer: {
 		root: "src/renderer",
+		// Ignore the website's postcss.config.mjs in the repo root; Tailwind runs through its Vite plugin.
+		css: { postcss: { plugins: [] } },
 		plugins: [react(), tailwindcss()],
 		resolve: {
 			alias: { "@shared": resolve("src/shared"), "@": resolve("src/renderer/src") },
