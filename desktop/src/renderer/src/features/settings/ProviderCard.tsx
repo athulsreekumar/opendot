@@ -160,7 +160,7 @@ export function ProviderCard({ provider }: { provider: ProviderSettings }) {
 					</DialogFooter>
 				}
 			>
-				<p className="text-sm text-fg-2">Your saved key for this provider will be deleted from this Mac.</p>
+				<p className="text-sm text-fg-2">Your saved key for this provider will be deleted from this computer.</p>
 			</Dialog>
 		</div>
 	);

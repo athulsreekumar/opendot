@@ -80,7 +80,7 @@ export function AdvancedSettings() {
 					<div className="flex items-center justify-between gap-4">
 						<div>
 							<div className="text-md font-medium text-fg">Reset OpenDot</div>
-							<p className="text-sm text-fg-2">Deletes all Dots, chats, keys and settings on this Mac.</p>
+							<p className="text-sm text-fg-2">Deletes all Dots, chats, keys and settings on this computer.</p>
 						</div>
 						<Button
 							variant="danger"

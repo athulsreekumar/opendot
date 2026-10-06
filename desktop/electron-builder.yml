@@ -14,6 +14,8 @@ extraResources:
     to: trayTemplate.png
   - from: build/trayTemplate@2x.png
     to: trayTemplate@2x.png
+  - from: build/tray.png
+    to: tray.png
 asar: true
 asarUnpack:
   # pi loads workers, wasm and assets relative to its own files; keep them on disk.
@@ -45,6 +47,22 @@ mac:
 dmg:
   title: OpenDot ${version}
   artifactName: OpenDot-${version}-${arch}.dmg
+win:
+  # Unsigned for now: Windows SmartScreen asks users to choose "More info" then "Run anyway".
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+  icon: build/icon.png
+  artifactName: OpenDot-${version}-${arch}-win.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  artifactName: OpenDot-${version}-${arch}-win.${ext}
 linux:
   target: [dir]
   icon: build/icon.png

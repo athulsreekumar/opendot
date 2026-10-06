@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Switch, toast } from "@/design-system/components";
 import { api, errorText } from "@/lib/api";
+import { isMac } from "@/lib/platform";
 import { useSettings } from "@/stores/settings";
 import { Card, NumberField, Section } from "./parts";
 
@@ -17,7 +18,10 @@ export function BackgroundSettings() {
 
 	return (
 		<div className="flex flex-col gap-8">
-			<Section title="Keep running" description="Dots that are always on need OpenDot to stay open in the menu bar.">
+			<Section
+				title="Keep running"
+				description={`Dots that are always on need OpenDot to stay open in the ${isMac ? "menu bar" : "system tray"}.`}
+			>
 				<Card>
 					<Switch
 						label="Run in the background"
@@ -35,15 +39,17 @@ export function BackgroundSettings() {
 								.catch(fail);
 						}}
 					/>
+					{isMac && (
+						<Switch
+							label="Hide the Dock icon when the window is closed"
+							checked={bg.hideDockWhenClosed}
+							disabled={!bg.runInBackground}
+							onCheckedChange={(v) => setBg({ hideDockWhenClosed: v })}
+						/>
+					)}
 					<Switch
-						label="Hide the Dock icon when the window is closed"
-						checked={bg.hideDockWhenClosed}
-						disabled={!bg.runInBackground}
-						onCheckedChange={(v) => setBg({ hideDockWhenClosed: v })}
-					/>
-					<Switch
-						label="Keep my Mac awake"
-						description="Stops macOS from pausing OpenDot while it sleeps idle. This uses more battery, so leave it off unless Dots miss events when you're away."
+						label="Keep my computer awake"
+						description="Stops your computer from sleeping while Dots are always on. This uses more battery, so leave it off unless Dots miss events when you're away."
 						checked={bg.keepAwake}
 						onCheckedChange={(v) => setBg({ keepAwake: v })}
 					/>
@@ -61,7 +67,7 @@ export function BackgroundSettings() {
 					/>
 				</Card>
 			</Section>
-			<Section title="Local webhook" description="Let other apps on this Mac send events to a Dot.">
+			<Section title="Local webhook" description="Let other apps on this computer send events to a Dot.">
 				<Card>
 					<Switch label="Enable local webhook" checked={wh.enabled} onCheckedChange={(v) => setWh({ enabled: v })} />
 					<NumberField label="Port" min={1024} max={65535} value={wh.port} onCommit={(n) => setWh({ port: n })} />

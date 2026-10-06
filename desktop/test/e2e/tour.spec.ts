@@ -45,7 +45,7 @@ test("screen tour renders without errors", async () => {
 	}
 });
 
-test("This Mac lists its built-in tools", async () => {
+test("This Mac (This PC on Windows) lists its built-in tools", async () => {
 	const { app, page } = await launchApp();
 	try {
 		await quickSetup(page);
@@ -53,8 +53,13 @@ test("This Mac lists its built-in tools", async () => {
 		await page.evaluate((id) => {
 			window.location.hash = `#/connections/${id}`;
 		}, mac.id);
-		await expect(page.getByText("mac_calendar_events")).toBeVisible({ timeout: 15000 });
-		await expect(page.getByText("bash", { exact: true })).toBeVisible();
+		const win = process.platform === "win32";
+		await expect(page.getByText(win ? "mac_screenshot" : "mac_calendar_events")).toBeVisible({ timeout: 15000 });
+		if (win) await expect(page.getByText("mac_calendar_events")).toHaveCount(0);
+		// On Windows without Git for Windows the shell tool is hidden and a note explains why.
+		const shell = await page.evaluate(async () => (await window.opendot.app.info()).shellAvailable);
+		if (shell) await expect(page.getByText("bash", { exact: true })).toBeVisible();
+		else await expect(page.getByTestId("shell-note")).toBeVisible();
 		await expect(page.getByText(/^\d+ tools$/)).not.toHaveText("0 tools");
 		await screenshot(page, "connection-this-mac");
 	} finally {

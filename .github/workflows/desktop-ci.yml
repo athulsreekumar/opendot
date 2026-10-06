@@ -4,7 +4,8 @@ on:
   pull_request:
     paths: ["desktop/**", ".github/workflows/desktop-*.yml"]
   push:
-    branches: [main]
+    # windows-support is temporary: remove it when the Windows port merges.
+    branches: [main, windows-support]
     paths: ["desktop/**", ".github/workflows/desktop-*.yml"]
   workflow_dispatch:
 
@@ -65,5 +66,43 @@ jobs:
           name: OpenDot-mac
           path: |
             desktop/release/*.dmg
+            desktop/release/*.zip
+          if-no-files-found: error
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - name: End-to-end tests (real Electron app, fake model)
+        run: npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-screens-windows
+          path: |
+            desktop/e2e-screens
+            desktop/test-results
+          if-no-files-found: ignore
+      - name: Build the unsigned Windows installer and zip
+        run: npm run dist:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenDot-windows
+          path: |
+            desktop/release/*.exe
             desktop/release/*.zip
           if-no-files-found: error

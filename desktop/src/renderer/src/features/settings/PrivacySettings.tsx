@@ -184,10 +184,10 @@ export function PrivacySettings() {
 			</Section>
 			<Section title="What is and isn't protected">
 				<p className="text-sm text-fg-2">
-					Masking applies to messages and tool results sent to cloud models. Models on this Mac never leave your
+					Masking applies to messages and tool results sent to cloud models. Models on this computer never leave your
 					computer, so nothing is masked for them. Detection is pattern-based, so unusual formats can slip through, and
 					files you ask a Dot to read are only masked once their text enters the chat. Your chats, keys and settings
-					always stay on this Mac.
+					always stay on this computer.
 				</p>
 			</Section>
 		</div>

@@ -1,4 +1,4 @@
-name: Mac app release
+name: Desktop app release
 
 on:
   push:
@@ -36,3 +36,27 @@ jobs:
           # APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           # CSC_LINK / CSC_KEY_PASSWORD for the Developer ID certificate
+
+  windows:
+    # After the macOS job so both upload to the same release without racing to create it.
+    needs: release
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      # Unsigned for now. Code signing: set CSC_LINK / CSC_KEY_PASSWORD (a .pfx certificate) as secrets and drop the
+      # CSC_IDENTITY_AUTO_DISCOVERY line below.
+      - run: npx electron-builder --win --x64 --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"

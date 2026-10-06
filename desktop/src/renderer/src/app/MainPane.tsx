@@ -14,7 +14,7 @@ function EmptyMain() {
 	const setNewDotOpen = useUi((s) => s.setNewDotOpen);
 	return (
 		<div className="od-chat-wallpaper flex h-full flex-col">
-			<div className="od-drag h-10 shrink-0" />
+			<div className="od-drag h-[var(--od-titlebar-h)] shrink-0" />
 			<div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 pb-16 text-center">
 				<BrandMark size={72} />
 				<div>

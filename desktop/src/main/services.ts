@@ -3,10 +3,12 @@
 import { join } from "node:path";
 import { OpenDotError } from "../shared/errors";
 import type { EventMap } from "../shared/ipc";
+import { builtinComputerLabel, MAC_ONLY_WATCHERS, platformFeatures } from "../shared/platform";
 import type { AppSettings, Connection, Dot, DotId, LinkExchange, MacPermissionStatus } from "../shared/types";
 import { ConnectionService } from "./connections/connection-service";
 import { MAC_DEFAULT_DECISIONS } from "./connections/mac";
 import { runJxaReal } from "./connections/mac/jxa";
+import { shellAvailable } from "./connections/shell-support";
 import { DotService } from "./dots/dot-service";
 import { LinkBus } from "./links/link-bus";
 import { log } from "./log";
@@ -254,10 +256,11 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		const mac = conns.find((c) => c.type === "mac");
 		const g = mac?.enabled ? dot.grants.find((x) => x.connectionId === mac.id) : undefined;
 		if (!g) return [];
-		const feats = g.features?.length ? g.features : mac!.features;
+		const feats = platformFeatures(g.features?.length ? g.features : mac!.features, process.platform);
 		const out: string[] = [];
 		if (feats.includes("files")) out.push("read", "write", "edit", "ls", "grep", "find");
-		if (feats.includes("shell")) out.push("bash");
+		// Never offer the model a shell that cannot start (Windows without Git Bash).
+		if (feats.includes("shell") && shellAvailable()) out.push("bash");
 		return out;
 	};
 	let connCache: Connection[] = await connections.list();
@@ -569,7 +572,11 @@ export async function watcherAvailability(
 	const req = needs[type];
 	if (!req) return { available: true };
 	const c = conns.find((x) => x.type === req[0]);
-	const label = { google: "Google", microsoft: "Microsoft 365", mac: "Mac" }[req[0] as "google"] ?? req[0];
+	if ((MAC_ONLY_WATCHERS as readonly string[]).includes(type) && process.platform === "win32")
+		return { available: false, reason: "Only available on a Mac" };
+	const label =
+		{ google: "Google", microsoft: "Microsoft 365", mac: builtinComputerLabel(process.platform) }[req[0] as "google"] ??
+		req[0];
 	if (!c || ((req[0] === "google" || req[0] === "microsoft") && !c.configured))
 		return { available: false, reason: `Connect ${label} first` };
 	if (req[0] !== "mac" && !c.features.includes(req[1]))

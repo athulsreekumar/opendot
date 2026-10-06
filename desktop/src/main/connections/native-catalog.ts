@@ -1,15 +1,17 @@
 // Lists the tools a built-in connection (This Mac, Google, Microsoft) provides, for the Connections screen.
 // The factories only build definitions; nothing here runs a tool, so the deps are inert stubs.
+import { platformFeatures } from "../../shared/platform";
 import type { Connection, ConnectionToolInfo } from "../../shared/types";
 import type { ToolDefinition } from "../runtime/pi-adapter";
 import { googleTools } from "./google";
 import { macTools } from "./mac";
 import { microsoftTools } from "./microsoft";
+import { shellAvailable } from "./shell-support";
 
 const GOOGLE_ALL = ["gmail", "calendar", "drive"];
 const MICROSOFT_ALL = ["mail", "calendar", "onedrive", "teams"];
 
-/** pi's file and shell tools, granted through the Mac connection's "files" and "shell" features. */
+/** pi's file and shell tools, granted through the This Mac / This PC connection's "files" and "shell" features. */
 const MAC_BUILTINS: Array<{ feature: string; name: string; description: string; readOnly: boolean }> = [
 	{
 		feature: "files",
@@ -47,17 +49,23 @@ function describe(defs: ToolDefinition[], c: Connection): ConnectionToolInfo[] {
 }
 
 /** The tools a built-in connection offers with its current features. Empty for MCP connections. */
-export function nativeToolCatalog(c: Connection): ConnectionToolInfo[] {
+export function nativeToolCatalog(
+	c: Connection,
+	platform: string = process.platform,
+	shellOk: boolean = shellAvailable(platform),
+): ConnectionToolInfo[] {
 	if (c.type === "mac") {
-		const feats = c.features ?? [];
-		const builtins: ConnectionToolInfo[] = MAC_BUILTINS.filter((b) => feats.includes(b.feature)).map((b) => ({
+		const feats = platformFeatures(c.features ?? [], platform);
+		const builtins: ConnectionToolInfo[] = MAC_BUILTINS.filter(
+			(b) => feats.includes(b.feature) && (b.name !== "bash" || shellOk),
+		).map((b) => ({
 			name: b.name,
 			description: b.description,
 			exposure: c.toolExposure[b.name] ?? c.exposure,
 			readOnly: b.readOnly,
 			destructive: b.name === "bash" || b.name === "write",
 		}));
-		return [...builtins, ...describe(macTools(feats, inert), c)];
+		return [...builtins, ...describe(macTools(feats, inert, platform), c)];
 	}
 	if (c.type === "google") return describe(googleTools(c.features?.length ? c.features : GOOGLE_ALL, inert), c);
 	if (c.type === "microsoft")

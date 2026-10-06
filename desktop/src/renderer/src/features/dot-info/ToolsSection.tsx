@@ -5,6 +5,7 @@ import { Button, SegmentedControl, Switch, toast } from "@/design-system/compone
 import { IconChevronDown, IconChevronRight, IconFolder, IconPlus } from "@/design-system/icons";
 import { api, errorText } from "@/lib/api";
 import { useRuntime } from "@/stores/runtime";
+import { ShellNote, useShellAvailable } from "../connections/ShellNote";
 import { SectionCard } from "./ui";
 import { useDotSaver } from "./useDotSaver";
 
@@ -25,6 +26,7 @@ export function ToolsSection({ dot }: { dot: Dot }) {
 	const { save, saved } = useDotSaver(dot.id);
 	const connections = useRuntime((s) => s.connections);
 	const status = useRuntime((s) => s.connectionStatus);
+	const shellOk = useShellAvailable();
 	const [open, setOpen] = useState<Record<string, boolean>>({});
 	const list = connections.filter((c) => c.enabled);
 	const [always, setAlways] = useState<string[]>([]);
@@ -109,6 +111,9 @@ export function ToolsSection({ dot }: { dot: Dot }) {
 
 							{g && c.type === "mac" && (
 								<div className="mt-2 flex flex-col gap-2 border-t border-border-subtle pt-2">
+									{!shellOk && effectiveFeatures(g, c).includes("shell") && (
+										<ShellNote className="text-xs text-warning" />
+									)}
 									{c.features
 										.filter((f) => !f.startsWith("folder:"))
 										.map((f) => {

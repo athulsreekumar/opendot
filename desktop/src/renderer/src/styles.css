@@ -99,6 +99,13 @@ body {
 .od-selectable {
 	user-select: text;
 }
+/* Height of the strip that macOS traffic lights sit in. Windows has a native title bar, so it needs none. */
+:root {
+	--od-titlebar-h: 40px;
+}
+:root[data-platform="win32"] {
+	--od-titlebar-h: 0px;
+}
 .od-drag {
 	-webkit-app-region: drag;
 }

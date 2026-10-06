@@ -4,6 +4,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { OpenDotError } from "../../shared/errors";
 import { newId } from "../../shared/ids";
+import { builtinComputerDescription, builtinComputerLabel, platformFeatures } from "../../shared/platform";
 import type {
 	CatalogEntry,
 	Connection,
@@ -102,13 +103,13 @@ export class ConnectionService {
 				id: newId("con"),
 				type: "mac",
 				name: "mac",
-				label: "This Mac",
-				description: "Files, shell, Calendar, Reminders, Contacts, Notes, screen, clipboard and more.",
+				label: builtinComputerLabel(process.platform),
+				description: builtinComputerDescription(process.platform),
 				icon: "laptop",
 				enabled: true,
 				exposure: "direct",
 				toolExposure: {},
-				features: [...MAC_FEATURES],
+				features: platformFeatures(MAC_FEATURES, process.platform),
 				createdAt: now,
 			});
 		}
@@ -342,7 +343,8 @@ export class ConnectionService {
 		const list = await this.list();
 		const c = list.find((x) => x.id === id);
 		if (!c) return;
-		if (c.type === "mac") throw new OpenDotError("BUILTIN", "The Mac connection can't be removed. Disable it instead.");
+		if (c.type === "mac")
+			throw new OpenDotError("BUILTIN", "This computer connection can't be removed. Disable it instead.");
 		await this.secrets.deletePrefix(`conn:${id}:`);
 		await this.secrets.delete(`oauth:${id}`);
 		await this.secrets.delete(`oauthclient:${id}`);
@@ -605,7 +607,7 @@ export class ConnectionService {
 	async nodeAvailable(): Promise<{ node?: string; npx: boolean; uvx: boolean }> {
 		const has = async (cmd: string) => {
 			try {
-				await pexec("which", [cmd]);
+				await pexec(process.platform === "win32" ? "where" : "which", [cmd], { windowsHide: true });
 				return true;
 			} catch {
 				return false;
@@ -636,7 +638,7 @@ export class ConnectionService {
 		};
 		const macLabels: Record<string, string> = {
 			files: "Files",
-			shell: "Shell (Terminal)",
+			shell: process.platform === "win32" ? "Shell (Git Bash)" : "Shell (Terminal)",
 			calendar: "Mac Calendar",
 			reminders: "Reminders",
 			contacts: "Contacts",
@@ -676,13 +678,13 @@ export class ConnectionService {
 				features: [f],
 			});
 		}
-		for (const f of MAC_FEATURES) {
+		for (const f of platformFeatures(MAC_FEATURES, process.platform)) {
 			out.push({
 				id: `mac:${f}`,
 				label: macLabels[f]!,
 				kind: mac?.enabled ? "installed" : "available",
 				icon: "laptop",
-				group: "Mac",
+				group: process.platform === "win32" ? "PC" : "Mac",
 				features: [f],
 			});
 		}

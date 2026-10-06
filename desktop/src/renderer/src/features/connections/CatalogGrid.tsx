@@ -88,7 +88,7 @@ export function CatalogGrid() {
 			{unverified && (
 				<div className="flex items-start gap-2 rounded-md bg-warning-subtle p-3 text-sm text-warning">
 					<IconWarning size={16} className="mt-0.5 shrink-0" />
-					Unverified servers are community-made. They run code on your Mac, so only install ones you trust.
+					Unverified servers are community-made. They run code on your computer, so only install ones you trust.
 				</div>
 			)}
 			{shown.length === 0 ? (
@@ -204,8 +204,8 @@ function InstallDialog({ entry, onClose }: { entry: CatalogEntry; onClose: () =>
 					<div className="flex items-start gap-2 rounded-md bg-warning-subtle p-3 text-sm text-warning">
 						<IconWarning size={16} className="mt-0.5 shrink-0" />
 						{entry.requiresUv && !tools?.uvx
-							? "This server needs uv, which isn't installed on this Mac."
-							: "This server needs Node.js, which isn't installed on this Mac."}{" "}
+							? "This server needs uv, which isn't installed on this computer."
+							: "This server needs Node.js, which isn't installed on this computer."}{" "}
 						You can still install it, but it won't connect until that is available.
 					</div>
 				)}

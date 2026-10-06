@@ -6,6 +6,7 @@ import { api, errorText } from "@/lib/api";
 import { useDots } from "@/stores/dots";
 import { useRuntime } from "@/stores/runtime";
 import { ConnectionStatePill, dotsUsing, IconTile } from "./ConnectionCard";
+import { ShellNote, useShellAvailable } from "./ShellNote";
 
 const EXPOSURE_ITEMS = [
 	{ value: "direct", label: "Always available" },
@@ -20,6 +21,7 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 	const dots = useDots((s) => s.dots);
 	const [busy, setBusy] = useState<string | undefined>();
 	const [confirmRemove, setConfirmRemove] = useState(false);
+	const shellOk = useShellAvailable();
 	const type = connection?.type;
 	const featureKey = connection?.features?.join(",") ?? "";
 
@@ -118,6 +120,9 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 					</div>
 				</div>
 				{status?.error && <p className="text-sm text-danger">{status.error}</p>}
+				{type === "mac" && !shellOk && connection?.features.includes("shell") && (
+					<ShellNote className="text-sm text-warning" />
+				)}
 				{status?.stderrTail && (
 					<pre className="od-selectable max-h-40 overflow-auto whitespace-pre-wrap rounded-sm bg-sunken p-3 font-mono text-xs text-fg-2">
 						{status.stderrTail}

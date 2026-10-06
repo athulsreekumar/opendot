@@ -49,7 +49,15 @@ export type MemoryScope = DotId | "user";
 
 export interface OpenDotApi {
 	app: {
-		info(): Promise<{ version: string; dataDir: string; platform: string; piVersion: string; e2e: boolean }>;
+		info(): Promise<{
+			version: string;
+			dataDir: string;
+			platform: string;
+			piVersion: string;
+			e2e: boolean;
+			/** False on Windows when no bash (Git for Windows) is installed, so the shell tool is not offered. */
+			shellAvailable: boolean;
+		}>;
 		openExternal(url: string): Promise<void>;
 		revealDataDir(): Promise<void>;
 		pickFolder(opts?: { title?: string }): Promise<string | undefined>;

@@ -23,12 +23,52 @@ describe("nativeToolCatalog", () => {
 				"notifications",
 				"open",
 			]),
+			"darwin",
 		).map((t) => t.name);
 		expect(names.sort()).toEqual([...all].sort());
 	});
 
+	it("on Windows lists files, shell, screen, clipboard, notifications and open, but no Calendar, Reminders, Contacts or Notes", () => {
+		const every = [
+			"files",
+			"shell",
+			"calendar",
+			"reminders",
+			"contacts",
+			"notes",
+			"screen",
+			"clipboard",
+			"notifications",
+			"open",
+		];
+		const names = nativeToolCatalog(conn("mac", every), "win32", true).map((t) => t.name);
+		expect(names.sort()).toEqual(
+			[
+				"read",
+				"ls",
+				"find",
+				"grep",
+				"write",
+				"edit",
+				"bash",
+				"mac_screenshot",
+				"mac_clipboard_read",
+				"mac_clipboard_write",
+				"mac_notify",
+				"mac_open_url",
+				"mac_open_app",
+			].sort(),
+		);
+	});
+
+	it("on Windows without Git Bash leaves out the shell tool", () => {
+		const names = nativeToolCatalog(conn("mac", ["files", "shell"]), "win32", false).map((t) => t.name);
+		expect(names).not.toContain("bash");
+		expect(names).toContain("read");
+	});
+
 	it("only lists tools for enabled features", () => {
-		const tools = nativeToolCatalog(conn("mac", ["calendar"]));
+		const tools = nativeToolCatalog(conn("mac", ["calendar"]), "darwin");
 		expect(tools.map((t) => t.name).sort()).toEqual(["mac_calendar_create", "mac_calendar_events"]);
 		expect(tools.find((t) => t.name === "mac_calendar_events")?.readOnly).toBe(true);
 	});

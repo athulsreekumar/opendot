@@ -2,7 +2,7 @@
 	"name": "opendot",
 	"productName": "OpenDot",
 	"version": "0.1.0",
-	"description": "Open-source team of AI agents (Dots) for your Mac, built on pi.",
+	"description": "Open-source team of AI agents (Dots) for your desktop (macOS and Windows), built on pi.",
 	"license": "MIT",
 	"type": "module",
 	"main": "./out/main/index.js",
@@ -22,6 +22,7 @@
 		"dist:mac": "npm run build && electron-builder --mac --arm64 --x64 --publish never",
 		"dist:mac:arm64": "npm run build && electron-builder --mac --arm64 --publish never",
 		"dist:mac:x64": "npm run build && electron-builder --mac --x64 --publish never",
+		"dist:win": "npm run build && electron-builder --win --x64 --publish never",
 		"postinstall": "node scripts/check-node-version.mjs"
 	},
 	"dependencies": {

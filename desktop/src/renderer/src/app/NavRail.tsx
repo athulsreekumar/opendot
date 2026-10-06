@@ -66,7 +66,7 @@ export function NavRail({ route }: { route: Route }) {
 	return (
 		<nav
 			aria-label="Main"
-			className="od-drag flex h-full w-16 shrink-0 flex-col items-center border-r border-border-subtle bg-rail pb-3 pt-[52px]"
+			className="od-drag flex h-full w-16 shrink-0 flex-col items-center border-r border-border-subtle bg-rail pb-3 pt-[calc(var(--od-titlebar-h)+12px)]"
 		>
 			<BrandMark size={24} />
 			<div className="mt-6 flex w-full flex-col gap-1">

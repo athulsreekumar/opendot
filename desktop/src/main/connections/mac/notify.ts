@@ -6,7 +6,7 @@ export function notifyTools(deps: MacDeps): ToolDefinition[] {
 	const notify = defineTool({
 		name: "mac_notify",
 		label: "Notify",
-		description: "Show a macOS notification.",
+		description: "Show a desktop notification.",
 		parameters: Type.Object({ title: Type.String(), body: Type.String() }),
 		annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
 		async execute(_id, p) {

@@ -1,6 +1,7 @@
 import type { Dot } from "@shared/types";
 import { Button, toast } from "@/design-system/components";
 import { api, errorText } from "@/lib/api";
+import { isMac, isWindows } from "@/lib/platform";
 import { SectionCard } from "./ui";
 import { useDotSaver } from "./useDotSaver";
 
@@ -34,7 +35,7 @@ export function WorkspaceSection({ dot }: { dot: Dot }) {
 					Change…
 				</Button>
 				<Button variant="ghost" onClick={() => void act(() => api.app.revealPath(dot.workspaceDir))}>
-					Reveal in Finder
+					{isMac ? "Reveal in Finder" : isWindows ? "Show in File Explorer" : "Show in folder"}
 				</Button>
 			</div>
 		</SectionCard>

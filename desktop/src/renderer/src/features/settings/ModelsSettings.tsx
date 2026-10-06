@@ -12,7 +12,7 @@ export function ModelsSettings() {
 	const [open, setOpen] = useState(false);
 	const groups = [
 		{ title: "Cloud", items: providers.filter((p) => p.kind === "cloud") },
-		{ title: "On this Mac", items: providers.filter((p) => p.kind === "self-hosted") },
+		{ title: "On this computer", items: providers.filter((p) => p.kind === "self-hosted") },
 		{ title: "Custom", items: providers.filter((p) => p.kind === "custom-url") },
 	];
 	return (
@@ -27,7 +27,9 @@ export function ModelsSettings() {
 				</Button>
 			</div>
 			{providers.length === 0 && (
-				<p className="text-sm text-fg-2">No providers yet. Add a cloud key or connect a model running on this Mac.</p>
+				<p className="text-sm text-fg-2">
+					No providers yet. Add a cloud key or connect a model running on this computer.
+				</p>
 			)}
 			{groups.map(
 				(g) =>
