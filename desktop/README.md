@@ -1,22 +1,22 @@
 # OpenDot
 
-**A team of AI assistants ("Dots") that live on your Mac.** OpenDot looks and feels like WhatsApp Desktop: every chat is a
+**A team of AI assistants ("Dots") that live on your Mac or Windows PC.** OpenDot looks and feels like WhatsApp Desktop: every chat is a
 Dot with its own personality, model, tools and permissions. Dots can run 24/7 in the background, react to new email, calendar
 changes, files or webhooks as they arrive, talk to each other when you allow it, and a built-in **SuperDot** asks the right
 Dots for you. Built on the open-source [pi agent harness](https://github.com/earendil-works/pi/tree/main/packages/coding-agent).
 
-- **Any model**: cloud (Anthropic, OpenAI, Gemini, xAI/Grok, OpenRouter, Groq, Mistral, DeepSeek, …), on your Mac (Ollama,
+- **Any model**: cloud (Anthropic, OpenAI, Gemini, xAI/Grok, OpenRouter, Groq, Mistral, DeepSeek, …), on your computer (Ollama,
   LM Studio, llama.cpp, vLLM, auto-detected) or any OpenAI/Anthropic-compatible URL.
 - **Create a Dot from a prompt**: describe what it should do, tick the connectors it may use, and OpenDot generates its name,
   emoji, colour, tagline and personality (streamed live). Templates are just example prompts.
 - **Tools**: unlimited MCP servers (local or remote, import your Claude Desktop / Cursor config), Google Workspace, Microsoft 365,
-  and Mac capabilities (files, shell, Calendar, Reminders, Contacts, Notes, screenshots, clipboard, notifications).
+  and computer capabilities (files, shell, screenshots, clipboard, notifications, plus Calendar, Reminders, Contacts and Notes on a Mac).
 - **Always on**: watchers for Gmail, Outlook, calendars, Drive, OneDrive, Teams, folders, web pages, RSS, MCP resources, schedules
   and a local webhook. Dots reply with `[URGENT]`, `[UPDATE]` or stay quiet, within budgets you set.
 - **SuperDot**: ask anything; it fans out to the right Dots in parallel, streams their answers live, then streams one answer
   with `[Inbox]`-style citations. `@Inbox …` asks one Dot directly.
 - **Dot Links (RBAC)**: decide which Dots (or roles) can message which, when (schedules), how often, and whether you approve each message.
-- **Private by default**: everything is stored in `~/.opendot` on your Mac. Personal details (emails, phones, cards, keys…) are
+- **Private by default**: everything is stored in `~/.opendot` (`%USERPROFILE%\.opendot` on Windows) on your computer. Personal details (emails, phones, cards, keys…) are
   masked before they reach cloud models and restored locally. Tools that change things ask first.
 - **Memory**: each Dot remembers durable facts (`remember` / `forget`), plus a shared "About me" every Dot sees.
 - **Streaming everywhere**: replies appear from the first token, including background replies and SuperDot fan-outs.
@@ -34,9 +34,27 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
 4. Follow the onboarding: pick a model (paste a key, use Ollama, or a custom URL), pick your first Dots, choose whether Dots keep
    running in the background.
 
+## Install (Windows 10/11, x64)
+
+1. Download `OpenDot-<version>-x64-win.exe` (installer) or `OpenDot-<version>-x64-win.zip` (portable, unzip and run
+   `OpenDot.exe`) from [Releases](https://github.com/athulsreekumar/opendot/releases) or from the latest
+   [Mac app CI](https://github.com/athulsreekumar/opendot/actions/workflows/desktop-ci.yml) run (artifact **OpenDot-windows**).
+   Or build it yourself: see [Build from source on Windows](#build-from-source-on-windows).
+2. Run the installer. You can choose the install folder; it adds Desktop and Start menu shortcuts.
+3. The build is **not code-signed yet** (no certificate), so Windows SmartScreen may show "Windows protected your PC" on first
+   launch. Click **More info**, then **Run anyway**.
+4. Optional but recommended: install [Git for Windows](https://git-scm.com/download/win). Dots use it for the **shell** tool
+   (it provides `bash`). Without it, OpenDot says "Shell needs Git for Windows" in the This PC connection and in Dot info,
+   and Dots are not offered a shell. Install it and restart OpenDot.
+5. Follow the onboarding like on a Mac.
+
+On Windows the built-in connection is called **This PC** and offers files, shell, screenshots, clipboard, notifications and
+opening apps and links. Calendar, Reminders, Contacts and Notes are macOS only; use Google Workspace or Microsoft 365 for those.
+Your data lives in `%USERPROFILE%\.opendot` (see below).
+
 ## Where your data lives
 
-Everything is on your Mac in `~/.opendot/`: plain JSON you can read:
+Everything is on your computer in `~/.opendot/` (`%USERPROFILE%\.opendot\` on Windows): plain JSON you can read:
 
 ```
 ~/.opendot/
@@ -50,7 +68,7 @@ Everything is on your Mac in `~/.opendot/`: plain JSON you can read:
 ├─ dots/<dotId>/events.jsonl       # events from its watchers
 ├─ dots/<dotId>/workspace/         # the only folder its file tools can touch (plus folders you add)
 ├─ audit/audit.jsonl               # what Dots did (no message contents)
-├─ secrets.bin                     # API keys & OAuth tokens, encrypted with the macOS Keychain
+├─ secrets.bin                     # API keys & OAuth tokens, encrypted with the macOS Keychain (Windows: DPAPI, tied to your Windows account)
 └─ logs/main.log
 ```
 Sessions resume where you left off after a restart. Deleting a Dot moves its folder to `~/.opendot/trash/`.
@@ -89,14 +107,29 @@ npm run dist:mac       # both
 Set `OPENDOT_DATA_DIR=/tmp/somewhere` to use a separate data folder, and `OPENDOT_FAKE_PROVIDER=1` to get a scripted
 "Fake (tests)" model that needs no API key.
 
+### Build from source on Windows
+
+Needs Node 22.19+ and Git (Git for Windows also gives the shell tool its `bash`). In PowerShell:
+
+```powershell
+git clone https://github.com/athulsreekumar/opendot.git
+cd opendot\desktop
+npm ci
+npm run dev        # run with hot reload
+npm run e2e        # drives the real app with a scripted fake model
+npm run dist:win   # NSIS installer + zip for x64, in release\
+```
+Set `$env:OPENDOT_DATA_DIR = "C:\temp\opendot"` to use a separate data folder.
+
 ## Known limits (v0.1)
 
-- Dots can't run while the Mac is asleep or OpenDot is quit; watchers catch up on wake.
+- Dots can't run while the computer is asleep or OpenDot is quit; watchers catch up on wake.
 - Gmail/Outlook/Drive are checked every 30 s (no push without a public webhook).
-- Not notarized yet; macOS shows a warning on first launch.
+- Not notarized (macOS) or code-signed (Windows) yet; macOS Gatekeeper and Windows SmartScreen show a warning on first launch.
 - Remote MCP servers that need OAuth sign in the first time a Dot uses them; their tokens are stored by pi in
-  `~/.opendot/pi/mcp-auth.json` (mode 600) rather than the Keychain.
-- Mac Calendar/Reminders/Contacts/Notes use AppleScript (JXA); macOS asks for permission the first time.
+  `~/.opendot/pi/mcp-auth.json` (mode 600 on macOS) rather than the system secure storage.
+- Mac Calendar/Reminders/Contacts/Notes use AppleScript (JXA); macOS asks for permission the first time. They do not exist on Windows.
+- Windows: the shell tool needs Git for Windows; the Dock/menu bar options are macOS only (Windows uses the system tray).
 
 The full design is in [`PLAN.md`](PLAN.md) and [`docs/spec/`](docs/spec/). MIT licensed.
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger } from "@/design-system/components";
 import { IconPlus } from "@/design-system/icons";
+import { isMac } from "@/lib/platform";
 import { useRuntime } from "@/stores/runtime";
 import { AddMcpDialog } from "./AddMcpDialog";
 import { CatalogGrid } from "./CatalogGrid";
@@ -45,7 +46,7 @@ export function ConnectionsScreen({ connectionId }: { connectionId?: string }) {
 							<TabsList>
 								<TabsTrigger value="installed">Installed</TabsTrigger>
 								<TabsTrigger value="catalog">Catalog</TabsTrigger>
-								<TabsTrigger value="mac">Mac</TabsTrigger>
+								{isMac && <TabsTrigger value="mac">Mac</TabsTrigger>}
 								<TabsTrigger value="accounts">Google &amp; Microsoft</TabsTrigger>
 							</TabsList>
 							<TabsContent value="installed">
@@ -66,9 +67,11 @@ export function ConnectionsScreen({ connectionId }: { connectionId?: string }) {
 							<TabsContent value="catalog">
 								<CatalogGrid />
 							</TabsContent>
-							<TabsContent value="mac">
-								<MacPermissions />
-							</TabsContent>
+							{isMac && (
+								<TabsContent value="mac">
+									<MacPermissions />
+								</TabsContent>
+							)}
 							<TabsContent value="accounts">
 								<GoogleMicrosoftTab />
 							</TabsContent>

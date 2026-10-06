@@ -3,10 +3,13 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MacDeps } from "./deps";
-import { MAC_DEFAULT_DECISIONS, macTools } from "./index";
+import { MAC_DEFAULT_DECISIONS, macTools as macToolsFor } from "./index";
 import { isNotAuthorized, jsString } from "./jxa";
 import { checkPath, fileToolPath } from "./path-guard";
 import { getMacPermissions, requestMacPermission } from "./permissions";
+
+/** These tests describe the macOS tool set, so pin the platform instead of using whatever runs the tests. */
+const macTools = (features: string[], deps: MacDeps, platform = "darwin") => macToolsFor(features, deps, platform);
 
 function makeDeps(
 	runJxa: (s: string) => Promise<string> = async () => "[]",
@@ -52,6 +55,21 @@ describe("macTools", () => {
 		expect(macTools(["clipboard"], d).map((t) => t.name)).toEqual(["mac_clipboard_read", "mac_clipboard_write"]);
 		expect(macTools(["notifications"], d).map((t) => t.name)).toEqual(["mac_notify"]);
 		expect(macTools(["open"], d).map((t) => t.name)).toEqual(["mac_open_url", "mac_open_app"]);
+	});
+
+	it("leaves out the macOS-only tools on Windows", () => {
+		const d = makeDeps();
+		expect(macTools(["calendar", "reminders", "contacts", "notes"], d, "win32")).toEqual([]);
+		expect(
+			macTools(["screen", "clipboard", "notifications", "open", "calendar"], d, "win32").map((t) => t.name),
+		).toEqual([
+			"mac_screenshot",
+			"mac_clipboard_read",
+			"mac_clipboard_write",
+			"mac_notify",
+			"mac_open_url",
+			"mac_open_app",
+		]);
 	});
 
 	it("every tool has annotations and a default decision", () => {
@@ -135,7 +153,8 @@ describe("path guard", () => {
 		await mkdir(outside);
 		await writeFile(path.join(root, "a.txt"), "a");
 		await writeFile(path.join(outside, "secret.txt"), "s");
-		await symlink(outside, path.join(root, "link"));
+		// A junction needs no privilege on Windows; on macOS/Linux the type is ignored and this is a plain symlink.
+		await symlink(outside, path.join(root, "link"), "junction");
 	});
 	afterEach(async () => {
 		await rm(path.dirname(root), { recursive: true, force: true });

@@ -42,8 +42,8 @@ export function ListPane({ selectedId }: { selectedId?: string }) {
 
 	return (
 		<div className="flex h-full min-h-0 flex-col">
-			<div className="od-drag h-10 shrink-0" />
-			<header className="flex h-[60px] shrink-0 items-center justify-between px-4 -mt-2">
+			<div className="od-drag h-[var(--od-titlebar-h)] shrink-0" />
+			<header className="flex h-[60px] shrink-0 items-center justify-between px-4 -mt-2 in-data-[platform=win32]:mt-0">
 				<h1 className="text-2xl font-semibold text-fg">Chats</h1>
 				<div className="od-no-drag flex items-center gap-1">
 					<IconButton

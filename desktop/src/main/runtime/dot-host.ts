@@ -1,5 +1,6 @@
 // One DotHost per Dot: owns its pi AgentSession(s), maps pi events to ChatEvents (spec 03, 14).
 import { mkdirSync } from "node:fs";
+import { join } from "node:path";
 import { OpenDotError } from "../../shared/errors";
 import { newId } from "../../shared/ids";
 import type {
@@ -752,7 +753,7 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 		const archive = this.deps.paths.dotArchive(this.dotId);
 		await mkdir(archive, { recursive: true });
 		for (const f of await readdir(dir).catch(() => [] as string[])) {
-			if (f.endsWith(".jsonl")) await rename(`${dir}/${f}`, `${archive}/${Date.now()}-${f}`).catch(() => undefined);
+			if (f.endsWith(".jsonl")) await rename(join(dir, f), join(archive, `${Date.now()}-${f}`)).catch(() => undefined);
 		}
 		await this.deps.pii.destroyVault(this.dotId).catch(() => undefined);
 	}

@@ -70,7 +70,7 @@ export function PiiBadge({ dot }: { dot: Dot }) {
 						{on
 							? "Emails, phone numbers and other personal details are swapped for placeholders before they reach the model, and restored in your replies."
 							: local
-								? "This Dot uses a model on your computer, so nothing leaves your Mac."
+								? "This Dot uses a model on your computer, so nothing leaves your computer."
 								: "Personal details are sent to the model as written."}
 					</p>
 					{providerLabel && <p className="mt-1 text-xs text-fg-3">Provider: {providerLabel}</p>}

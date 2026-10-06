@@ -6,6 +6,7 @@ import { OpenDotError } from "../../shared/errors";
 import { newId } from "../../shared/ids";
 import type { IpcHandlers } from "../../shared/ipc";
 import type { Dot, DotId, LinkId } from "../../shared/types";
+import { shellAvailable } from "../connections/shell-support";
 import { draftFromDescription } from "../dots/dot-architect";
 import { detectLocalServers } from "../models/discovery";
 import { PI_VERSION } from "../runtime/pi-adapter";
@@ -31,6 +32,7 @@ export function buildHandlers(s: Services, app: AppActions, info: { version: str
 			platform: process.platform,
 			piVersion: PI_VERSION,
 			e2e: info.e2e,
+			shellAvailable: shellAvailable(),
 		}),
 		"app.openExternal": (url) => app.openExternal(url),
 		"app.revealDataDir": () => app.revealPath(s.paths.root),

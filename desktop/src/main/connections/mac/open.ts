@@ -24,7 +24,7 @@ export function openTools(deps: MacDeps): ToolDefinition[] {
 	const app = defineTool({
 		name: "mac_open_app",
 		label: "Open app",
-		description: "Launch a macOS application by name.",
+		description: "Launch an application by name.",
 		parameters: Type.Object({ name: Type.String() }),
 		annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
 		async execute(_id, p) {

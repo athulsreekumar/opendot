@@ -4,6 +4,7 @@ import { navigate } from "../../app/router";
 import { cn } from "../../design-system/cn";
 import { Avatar, IconButton, TextArea } from "../../design-system/components";
 import { IconSend, IconStop } from "../../design-system/icons";
+import { modKey } from "../../lib/platform";
 import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
 import { useSettings } from "../../stores/settings";
@@ -308,7 +309,7 @@ export function Composer({ dotId }: { dotId: DotId }) {
 							</button>
 						</>
 					) : streaming ? (
-						"Enter queues a follow-up · ⌘↵ interrupts and steers"
+						`Enter queues a follow-up · ${modKey}↵ interrupts and steers`
 					) : null}
 				</span>
 				{over && (

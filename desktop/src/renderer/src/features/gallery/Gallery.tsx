@@ -31,6 +31,7 @@ import {
 	toast,
 } from "@/design-system/components";
 import { IconChats, IconPlus, IconSend, IconSettings, IconTrash } from "@/design-system/icons";
+import { shortcut } from "@/lib/platform";
 
 const STATES: StatusState[] = [
 	"connected",
@@ -143,7 +144,7 @@ function Showcase() {
 					<Badge variant="danger">Danger</Badge>
 					<Badge variant="info">Info</Badge>
 					<Badge variant="outline">Outline</Badge>
-					<Kbd>⌘K</Kbd>
+					<Kbd>{shortcut("K")}</Kbd>
 				</Row>
 			</Section>
 			<Section title="Avatar">
@@ -208,7 +209,7 @@ function Showcase() {
 							<Button variant="secondary">Open menu</Button>
 						</MenuTrigger>
 						<MenuContent>
-							<MenuItem shortcut="⌘N">New Dot</MenuItem>
+							<MenuItem shortcut={shortcut("N")}>New Dot</MenuItem>
 							<MenuItem>Duplicate</MenuItem>
 							<MenuSeparator />
 							<MenuItem destructive>Delete</MenuItem>

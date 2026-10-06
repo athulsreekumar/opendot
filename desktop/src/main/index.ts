@@ -26,6 +26,8 @@ const {
 } = await import("electron");
 
 const E2E = process.env.OPENDOT_E2E === "1";
+// Windows groups taskbar entries and shows toast notifications under this id (must match appId in electron-builder.yml).
+if (process.platform === "win32") app.setAppUserModelId("dev.opendot.app");
 if (E2E && process.env.OPENDOT_E2E_USERDATA) app.setPath("userData", process.env.OPENDOT_E2E_USERDATA);
 
 const gotLock = E2E || app.requestSingleInstanceLock();
@@ -53,11 +55,14 @@ async function main(): Promise<void> {
 	process.on("uncaughtException", (e) => log.error("uncaughtException", e));
 	process.on("unhandledRejection", (e) => log.error("unhandledRejection", e));
 
-	try {
-		const fixPath = (await import("fix-path")).default;
-		fixPath();
-	} catch (e) {
-		log.warn("fix-path failed", e);
+	// GUI-launched apps on macOS/Linux miss the shell's PATH. Windows apps inherit the real one.
+	if (process.platform !== "win32") {
+		try {
+			const fixPath = (await import("fix-path")).default;
+			fixPath();
+		} catch (e) {
+			log.warn("fix-path failed", e);
+		}
 	}
 
 	await app.whenReady();
@@ -112,8 +117,8 @@ async function main(): Promise<void> {
 				return { base64Png: img.toPNG().toString("base64"), width: size.width, height: size.height };
 			},
 			openApp: async (name) => {
-				const { execFile } = await import("node:child_process");
-				await new Promise<void>((res, rej) => execFile("open", ["-a", name], (e) => (e ? rej(e) : res())));
+				const { openAppByName } = await import("./open-app");
+				await openAppByName(name);
 			},
 			macProbe: {
 				platform: process.platform,
@@ -147,9 +152,15 @@ async function main(): Promise<void> {
 			title: "OpenDot",
 			show: false,
 			backgroundColor: "#0a0e13",
-			titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "default",
-			trafficLightPosition: { x: 18, y: 18 },
-			vibrancy: process.platform === "darwin" ? "sidebar" : undefined,
+			// macOS: hidden title bar with inset traffic lights. Windows/Linux: the native frame (the renderer reserves
+			// no title bar strip there), with the menu bar tucked away until Alt is pressed.
+			...(process.platform === "darwin"
+				? {
+						titleBarStyle: "hiddenInset" as const,
+						trafficLightPosition: { x: 18, y: 18 },
+						vibrancy: "sidebar" as const,
+					}
+				: { autoHideMenuBar: true }),
 			webPreferences: {
 				preload: join(import.meta.dirname, "../preload/index.cjs"),
 				contextIsolation: true,
@@ -240,7 +251,11 @@ async function main(): Promise<void> {
 					});
 					return r.canceled ? undefined : r.filePaths[0];
 				},
-				setLaunchAtLogin: async (on) => app.setLoginItemSettings({ openAtLogin: on }),
+				setLaunchAtLogin: async (on) =>
+					app.setLoginItemSettings({
+						openAtLogin: on,
+						...(process.platform === "win32" ? { args: ["--hidden"] } : {}),
+					}),
 				reset: async () => {
 					await s.shutdown();
 					const { rm } = await import("node:fs/promises");
@@ -269,11 +284,12 @@ async function main(): Promise<void> {
 			app.quit();
 		},
 		trayIcon: () => {
-			const p = [join(process.resourcesPath ?? "", "trayTemplate.png"), join(appRoot, "build/trayTemplate.png")].find(
-				(x) => existsSync(x),
-			);
+			// macOS wants a black template image; Windows (and Linux) need a normal coloured icon.
+			const mac = process.platform === "darwin";
+			const file = mac ? "trayTemplate.png" : "tray.png";
+			const p = [join(process.resourcesPath ?? "", file), join(appRoot, "build", file)].find((x) => existsSync(x));
 			const img = p ? nativeImage.createFromPath(p) : nativeImage.createEmpty();
-			img.setTemplateImage(true);
+			if (mac) img.setTemplateImage(true);
 			return img;
 		},
 	});
@@ -281,8 +297,9 @@ async function main(): Promise<void> {
 	app.on("second-instance", () => showWindow());
 	app.on("activate", () => showWindow());
 	app.on("window-all-closed", () => {
-		if (process.platform !== "darwin" && !E2E) return;
-		if (E2E) app.quit();
+		// macOS apps stay open without windows. On Windows closing the last window quits (a background-running app only
+		// hides its window, so this is not reached then).
+		if (E2E || process.platform === "win32") app.quit();
 	});
 	let shuttingDown = false;
 	app.on("before-quit", (e) => {

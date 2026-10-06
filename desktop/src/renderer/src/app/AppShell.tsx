@@ -161,7 +161,7 @@ export function AppShell({ route }: { route: Route }) {
 				>
 					{showSettingsNav ? (
 						<>
-							<div className="od-drag h-10 shrink-0" />
+							<div className="od-drag h-[var(--od-titlebar-h)] shrink-0" />
 							<div className="min-h-0 flex-1">
 								<SettingsNav section={route.section} />
 							</div>

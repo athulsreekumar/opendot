@@ -274,7 +274,7 @@ export interface ConnectorChoice {
 	label: string;
 	kind: "installed" | "available";
 	icon: string;
-	group: "Google" | "Microsoft" | "Mac" | "MCP" | "Other";
+	group: "Google" | "Microsoft" | "Mac" | "PC" | "MCP" | "Other";
 	features?: string[];
 }
 

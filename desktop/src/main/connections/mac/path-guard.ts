@@ -3,9 +3,9 @@ import { realpath } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
 
-function expandTilde(p: string): string {
-	if (p === "~") return homedir();
-	if (p.startsWith("~/")) return path.join(homedir(), p.slice(2));
+export function expandTilde(p: string, home: string = homedir()): string {
+	if (p === "~") return home;
+	if (p.startsWith("~/") || p.startsWith("~\\")) return path.join(home, p.slice(2));
 	return p;
 }
 
@@ -28,9 +28,15 @@ async function realpathLoose(abs: string): Promise<string> {
 	}
 }
 
-function inside(root: string, target: string): boolean {
-	const rel = path.relative(root, target);
-	return rel === "" || (!rel.startsWith("..") && !path.isAbsolute(rel));
+/** Whether `target` is `root` or below it. `p` is injectable so Windows rules (drive letters, case, backslashes) can be tested anywhere. */
+export function isInside(
+	root: string,
+	target: string,
+	p: Pick<typeof path, "relative" | "isAbsolute" | "sep"> = path,
+): boolean {
+	const rel = p.relative(root, target);
+	// Different drives (or UNC shares) make path.relative return an absolute path.
+	return rel === "" || (rel !== ".." && !rel.startsWith(`..${p.sep}`) && !p.isAbsolute(rel));
 }
 
 export async function checkPath(
@@ -44,7 +50,7 @@ export async function checkPath(
 		const resolved = await realpathLoose(abs);
 		for (const r of allowedRoots) {
 			const root = await realpathLoose(path.resolve(expandTilde(r)));
-			if (inside(root, resolved)) return { ok: true, resolved };
+			if (isInside(root, resolved)) return { ok: true, resolved };
 		}
 		return { ok: false, reason };
 	} catch {

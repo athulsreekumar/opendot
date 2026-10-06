@@ -1,5 +1,6 @@
 // One-click OAuth sign-in for remote MCP servers, via pi's own `/mcp login` in a throwaway session (spec 05 §3.2).
 // pi stores the tokens in ~/.opendot/pi/mcp-auth.json, where every Dot's MCP extension finds them.
+import { join } from "node:path";
 import type { Connection } from "../../shared/types";
 import type { ModelService } from "../models/model-service";
 import type { Paths } from "../paths";
@@ -41,7 +42,7 @@ export async function signInMcpServer(
 							autoEnableCodemode: false,
 							errors: [],
 						}) as unknown as LoadedMcpConfig,
-					logPath: `${deps.paths.piDir}/mcp.log`,
+					logPath: join(deps.paths.piDir, "mcp.log"),
 					openUrl: deps.openUrl,
 					updateConfig: () => undefined,
 				}),

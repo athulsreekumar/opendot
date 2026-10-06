@@ -42,7 +42,7 @@ export class SecretStore {
 
 	set(key: string, value: string): Promise<void> {
 		if (!this.available()) {
-			return Promise.reject(new OpenDotError("SECRETS_UNAVAILABLE", "Secure storage (Keychain) is not available."));
+			return Promise.reject(new OpenDotError("SECRETS_UNAVAILABLE", "Secure storage is not available on this system."));
 		}
 		registerSecretForRedaction(value);
 		return this.queue.run(async () => {
@@ -84,7 +84,8 @@ export class SecretStore {
 			this.map = {};
 			return this.map;
 		}
-		if (!this.available()) throw new OpenDotError("SECRETS_UNAVAILABLE", "Secure storage (Keychain) is not available.");
+		if (!this.available())
+			throw new OpenDotError("SECRETS_UNAVAILABLE", "Secure storage is not available on this system.");
 		this.map = JSON.parse(this.safe.decryptString(buf)) as Record<string, string>;
 		for (const v of Object.values(this.map)) registerSecretForRedaction(v);
 		return this.map;

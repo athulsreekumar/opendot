@@ -125,7 +125,8 @@ export function Onboarding() {
 							<BrandDots />
 							<h1 className="text-3xl font-semibold text-fg">Meet your Dots</h1>
 							<p className="text-md text-fg-2">
-								A team of AI assistants that live on your Mac. You choose the models, the tools, and who talks to whom.
+								A team of AI assistants that live on your computer. You choose the models, the tools, and who talks to
+								whom.
 							</p>
 							<Button size="lg" onClick={next}>
 								Get started
@@ -247,7 +248,7 @@ export function Onboarding() {
 						<div className="flex flex-col gap-4">
 							<h1 className="text-2xl font-semibold text-fg">Our privacy promise</h1>
 							<ul className="flex flex-col gap-2 text-md text-fg-2 list-disc pl-5">
-								<li>Your chats, keys and settings stay on this Mac.</li>
+								<li>Your chats, keys and settings stay on this computer.</li>
 								<li>Personal details are masked before they reach cloud models.</li>
 								<li>Dots can't use tools or talk to each other unless you allow it.</li>
 							</ul>

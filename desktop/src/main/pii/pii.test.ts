@@ -49,7 +49,8 @@ describe("PiiVault", () => {
 		expect(v.tokenFor({ type: "EMAIL", value: "a@B.com" })).toBe(t1);
 		expect(v.tokenFor({ type: "PHONE", value: "+14155552671" })).toBe(t3);
 		await v.flush();
-		expect(statSync(file).mode & 0o777).toBe(0o600);
+		// Windows has no POSIX permission bits; the vault file is already private to the user profile there.
+		if (process.platform !== "win32") expect(statSync(file).mode & 0o777).toBe(0o600);
 
 		const v2 = await PiiVault.open(file, async () => key);
 		expect(v2.valueOf(t1)).toBe("A@b.com");

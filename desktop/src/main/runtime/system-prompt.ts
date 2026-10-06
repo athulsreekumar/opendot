@@ -38,7 +38,7 @@ export function compileSystemPrompt(dot: Dot): string {
 	const p = dot.persona;
 	const blocks: string[] = [];
 	blocks.push(
-		`You are ${dot.name}, one of the user's personal assistants ("Dots") in the OpenDot app on their Mac.\n${BASE_RULES}`,
+		`You are ${dot.name}, one of the user's personal assistants ("Dots") in the OpenDot app on their computer.\n${BASE_RULES}`,
 	);
 	blocks.push(`## Your role\n${p.role}`);
 	blocks.push(`## Voice\n${voiceLines(p).join("\n")}`);

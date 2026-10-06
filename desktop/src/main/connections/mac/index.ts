@@ -1,3 +1,4 @@
+import { platformFeatures } from "../../../shared/platform";
 import type { ToolDefinition } from "../../runtime/pi-adapter";
 import { calendarTools } from "./calendar";
 import { clipboardTools } from "./clipboard";
@@ -11,8 +12,8 @@ import { screenTools } from "./screen";
 
 export type { MacDeps } from "./deps";
 
-export function macTools(features: string[], deps: MacDeps): ToolDefinition[] {
-	const on = new Set(features);
+export function macTools(features: string[], deps: MacDeps, platform: string = process.platform): ToolDefinition[] {
+	const on = new Set(platformFeatures(features, platform));
 	const out: ToolDefinition[] = [];
 	if (on.has("calendar")) out.push(...calendarTools(deps));
 	if (on.has("reminders")) out.push(...remindersTools(deps));

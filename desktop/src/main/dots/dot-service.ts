@@ -41,7 +41,7 @@ const FEATURE_LABEL: Record<string, string> = {
 	notes: "Apple Notes: search, read and create",
 	screen: "Screenshots (need approval)",
 	clipboard: "Clipboard: read (needs approval) and write",
-	notifications: "Mac notifications",
+	notifications: "Desktop notifications",
 	open: "Open links and apps (needs approval)",
 };
 

@@ -70,7 +70,7 @@ export function AddProviderForm({
 		<Tabs value={tab} onValueChange={(v) => setTab(v as FormTab)}>
 			<TabsList>
 				{tabs.includes("cloud") && <TabsTrigger value="cloud">Cloud</TabsTrigger>}
-				{tabs.includes("local") && <TabsTrigger value="local">On this Mac</TabsTrigger>}
+				{tabs.includes("local") && <TabsTrigger value="local">On this computer</TabsTrigger>}
 				{tabs.includes("custom") && <TabsTrigger value="custom">Custom URL</TabsTrigger>}
 			</TabsList>
 			<TabsContent value="cloud">
@@ -191,7 +191,7 @@ function LocalTab({ add, busy }: TabProps) {
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="flex flex-col gap-2">
-				<span className="text-sm font-medium text-fg">Found on this Mac</span>
+				<span className="text-sm font-medium text-fg">Found on this computer</span>
 				{!found ? (
 					<Spinner />
 				) : found.length === 0 ? (

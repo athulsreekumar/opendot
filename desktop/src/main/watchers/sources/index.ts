@@ -12,7 +12,8 @@ export const SOURCES: AnySource[] = [
 	...(SOURCES_A as unknown as AnySource[]),
 	...(SOURCES_GOOGLE as unknown as AnySource[]),
 	...(SOURCES_MICROSOFT as unknown as AnySource[]),
-	...(SOURCES_MAC as unknown as AnySource[]),
+	// Calendar and Reminders sources use macOS scripting, so they only exist there.
+	...(process.platform === "win32" ? [] : (SOURCES_MAC as unknown as AnySource[])),
 	mcpResourceSource as unknown as AnySource,
 	mcpPollSource as unknown as AnySource,
 ];
