@@ -4,12 +4,13 @@
 
 # OpenDot
 
-### Your AI team. Living on your Mac.
+### Your AI team. Living on your computer.
 
-A Mac app that gives you **Dots**: AI assistants that each do one job brilliantly,
-work around the clock, and keep your data on your Mac.
+A Mac and Windows app that gives you **Dots**: AI assistants that each do one job brilliantly,
+work around the clock, and keep your data on your computer.
 
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-000000?logo=apple&logoColor=white)](#requirements)
+[![Windows 10/11](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?logo=windows&logoColor=white)](#requirements)
 [![Apple silicon and Intel](https://img.shields.io/badge/Apple%20silicon%20%26%20Intel-supported-0e9f8a)](#build-it-yourself)
 [![License: MIT](https://img.shields.io/badge/license-MIT-0e9f8a)](LICENSE)
 [![Open source](https://img.shields.io/badge/open%20source-yes-16b39b)](https://github.com/athulsreekumar/opendot)
@@ -37,7 +38,7 @@ Calendar Dot guards your time. Your Research Dot reads the web. They keep runnin
 moment they happen, and only tap you when it matters. When you have a question that spans everything, **SuperDot** asks the
 right Dots at once and hands you one answer, with sources.
 
-Everything lives on your Mac. Personal details are masked before anything reaches a cloud model, and nothing that
+Everything lives on your computer. Personal details are masked before anything reaches a cloud model, and nothing that
 changes the world happens without your yes.
 
 <br />
@@ -73,7 +74,7 @@ changes the world happens without your yes.
     <td width="50%" valign="top">
       <h3>🔒 Your data stays home.</h3>
       Everything is plain JSON in <code>~/.opendot</code>. Emails, phone numbers and card details are masked before a cloud
-      model sees them. Keys live in the macOS Keychain.
+      model sees them. Keys are encrypted by your operating system (macOS Keychain or Windows DPAPI).
     </td>
     <td width="50%" valign="top">
       <h3>🧠 Any model. Even the one on your Mac.</h3>
@@ -136,8 +137,9 @@ There is no signed installer yet, but OpenDot is free and open source: build and
 | | |
 |---|---|
 | **Mac** | macOS 14 Sonoma or later, Apple silicon or Intel |
+| **Windows** | Windows 10 or 11, x64. [Git for Windows](https://git-scm.com/download/win) gives Dots a shell |
 | **Node.js** | 22.19 or later ([nodejs.org](https://nodejs.org) or `brew install node`) |
-| **Git** | Comes with Xcode Command Line Tools: `xcode-select --install` |
+| **Git** | Mac: `xcode-select --install`. Windows: [Git for Windows](https://git-scm.com/download/win) |
 | **A model** | An API key from any cloud provider, or a local model through [Ollama](https://ollama.com) or LM Studio. Optional: a built-in test model needs nothing. |
 
 ### 1. Get the code
@@ -162,7 +164,7 @@ OpenDot opens with a short setup. Pick a model:
 
 > Tip: `OPENDOT_DATA_DIR=/tmp/opendot-test npm run dev` keeps a test run separate from your real `~/.opendot`.
 
-### 3. Build the Mac app
+### 3. Build the app
 
 ```bash
 npm run dist:mac:arm64   # Apple silicon (M1 and later)
@@ -171,6 +173,15 @@ npm run dist:mac         # both
 ```
 
 You get `desktop/release/OpenDot-<version>-<arch>-mac.dmg`. Open it and drag OpenDot to **Applications**.
+
+On Windows (PowerShell or Git Bash):
+
+```bash
+npm run dist:win         # Windows 10/11, x64
+```
+
+You get `desktop/release/OpenDot-<version>-x64-win.exe` (installer) and a portable `.zip`. The build is not code-signed
+yet, so SmartScreen may say "Windows protected your PC" the first time: click **More info**, then **Run anyway**.
 
 The build is not notarized by Apple yet, so the first launch needs one extra step. Either right-click OpenDot in
 Applications, choose **Open**, then **Open** again, or run:
@@ -181,9 +192,9 @@ xattr -dr com.apple.quarantine /Applications/OpenDot.app
 
 ### Prefer a ready-made build?
 
-Every change to the app on `main` builds DMGs for both chip types in
-[**Mac app CI**](https://github.com/athulsreekumar/opendot/actions/workflows/desktop-ci.yml). Open the latest green run
-and download the **OpenDot-mac** artifact. Tagged versions (`v0.1.0`, …) are published on
+Every change to the app on `main` builds DMGs for both chip types and a Windows installer in
+[**Desktop app CI**](https://github.com/athulsreekumar/opendot/actions/workflows/desktop-ci.yml). Open the latest green run
+and download the **OpenDot-mac** or **OpenDot-windows** artifact. Tagged versions (`v0.1.0`, …) are published on
 [**Releases**](https://github.com/athulsreekumar/opendot/releases).
 
 <br />
@@ -191,7 +202,7 @@ and download the **OpenDot-mac** artifact. Tagged versions (`v0.1.0`, …) are p
 ## How it works
 
 ```
-                 ┌──────────────────────────────── your Mac ────────────────────────────────┐
+                 ┌───────────────────────────── your computer ──────────────────────────────┐
   Gmail, Outlook │  Watchers ──► events ──► Dot (own session, persona, tools, budget)        │
   Calendar, Files│                              │         ▲                                  │
   Webhooks, RSS  │                              ▼         │ Dot Links (allow · ask · block)  │
@@ -201,14 +212,14 @@ and download the **OpenDot-mac** artifact. Tagged versions (`v0.1.0`, …) are p
                  │        │                     ▼                                            │
                  │        └──────────► any model: cloud, local (Ollama) or custom URL         │
                  │                                                                           │
-                 │   ~/.opendot  (JSON settings, sessions, memory, audit log, Keychain keys) │
+                 │   ~/.opendot  (JSON settings, sessions, memory, audit log, encrypted keys)│
                  └───────────────────────────────────────────────────────────────────────────┘
 ```
 
 - **Built on [pi](https://github.com/earendil-works/pi/tree/main/packages/coding-agent)**, an open agent harness. Every Dot is
   its own pi session with its own persona, tools and memory.
 - **Electron + React**, with a WhatsApp-style layout: Dots on the left, the chat on the right.
-- **Your files, your Mac.** Settings, chats and memory are plain files you can read in `~/.opendot`.
+- **Your files, your computer.** Settings, chats and memory are plain files you can read in `~/.opendot`.
 
 The full design lives in [`desktop/PLAN.md`](desktop/PLAN.md) and [`desktop/docs/spec/`](desktop/docs/spec/), and the
 app's own guide (Google and Microsoft setup, MCP, data layout) is in [`desktop/README.md`](desktop/README.md).
@@ -225,30 +236,31 @@ or LM Studio cost nothing.
 </details>
 
 <details>
-<summary><b>Does my data leave my Mac?</b></summary>
+<summary><b>Does my data leave my computer?</b></summary>
 <br />
 Only what a cloud model needs to answer, and personal details are masked before it is sent. With a local model, nothing
-leaves your Mac at all.
+leaves your computer at all.
 </details>
 
 <details>
-<summary><b>Do Dots run when my Mac is asleep?</b></summary>
+<summary><b>Do Dots run when my computer is asleep?</b></summary>
 <br />
-No. Dots run while OpenDot is open, including in the background with the window closed. When your Mac wakes, watchers
+No. Dots run while OpenDot is open, including in the background with the window closed. When it wakes, watchers
 catch up on what they missed.
 </details>
 
 <details>
-<summary><b>Why does macOS warn me the first time I open it?</b></summary>
+<summary><b>Why does macOS or Windows warn me the first time I open it?</b></summary>
 <br />
-OpenDot builds are not notarized by Apple yet. Right-click the app and choose Open once, or run the
-<code>xattr</code> command above.
+OpenDot builds are not notarized by Apple or code-signed for Windows yet. On a Mac, right-click the app and choose Open
+once, or run the <code>xattr</code> command above. On Windows, click <b>More info</b>, then <b>Run anyway</b>.
 </details>
 
 <details>
-<summary><b>Windows or Linux?</b></summary>
+<summary><b>Does it work on Windows? Linux?</b></summary>
 <br />
-OpenDot is made for the Mac. It uses the macOS Keychain and Mac apps like Calendar and Notes.
+Yes on Windows 10 and 11 (x64). Everything works except the Mac-only Calendar, Reminders, Contacts and Notes tools; use
+Google Workspace or Microsoft 365 for those. Linux isn't packaged yet, but the app runs from source with <code>npm run dev</code>.
 </details>
 
 <br />
@@ -257,10 +269,10 @@ OpenDot is made for the Mac. It uses the macOS Keychain and Mac apps like Calend
 
 | Path | What it is |
 |---|---|
-| [`desktop/`](desktop/) | **The OpenDot Mac app** (Electron, React, pi). Start here to build it. |
+| [`desktop/`](desktop/) | **The OpenDot app** for Mac and Windows (Electron, React, pi). Start here to build it. |
 | `app/`, `components/`, `lib/`, `styles/`, `public/` | The [opendot.live](https://opendot.live) website (Next.js). See [`docs/WEBSITE.md`](docs/WEBSITE.md). |
 | `capture/` | Scripts that drive the app with dummy data to take the screenshots you see here. |
-| `.github/workflows/` | `desktop-ci.yml` builds and tests the app on macOS, `desktop-release.yml` publishes tagged releases, `ci.yml` checks the website. |
+| `.github/workflows/` | `desktop-ci.yml` builds and tests the app on macOS and Windows, `desktop-release.yml` publishes tagged releases, `ci.yml` checks the website. |
 
 ## Contributing
 
@@ -286,7 +298,7 @@ npm run e2e   # drives the real app with a scripted model
 
 ## License
 
-[MIT](LICENSE). Made for Mac.
+[MIT](LICENSE). Made for Mac and Windows.
 
 <div align="center">
 <br />

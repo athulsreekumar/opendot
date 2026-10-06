@@ -20,7 +20,7 @@ By taking part you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 | Path | What it is | Stack |
 |---|---|---|
-| [`desktop/`](desktop/) | The OpenDot Mac app | Electron, React 19, Tailwind v4, Zustand, [pi](https://github.com/earendil-works/pi/tree/main/packages/coding-agent) |
+| [`desktop/`](desktop/) | The OpenDot app for Mac and Windows | Electron, React 19, Tailwind v4, Zustand, [pi](https://github.com/earendil-works/pi/tree/main/packages/coding-agent) |
 | `app/`, `components/`, `lib/`, `styles/`, `public/` | The [opendot.live](https://opendot.live) website | Next.js 16, Tailwind v4, GSAP, three.js |
 | `capture/` | Scripts that drive the app with dummy data to take screenshots | Playwright |
 | `docs/` | Website docs, SEO notes | Markdown |
@@ -30,14 +30,14 @@ Read the spec for the area you're changing before you start; it explains why thi
 
 ## Set up
 
-You need **macOS 14 or later** for the app (the website works on any OS), **Node.js 22.19+** and **Git**.
+You need **macOS 14 or later** or **Windows 10/11** for the app (the website works on any OS), **Node.js 22.19+** and **Git**.
 
 ```bash
 git clone https://github.com/athulsreekumar/opendot.git
 cd opendot
 ```
 
-### The Mac app
+### The app
 
 ```bash
 cd desktop
@@ -105,8 +105,8 @@ On Linux, run the app's end-to-end tests under a virtual display: `xvfb-run -a n
 
 ## Releases
 
-Maintainers tag releases as `vX.Y.Z` (matching `desktop/package.json`). The **Mac app release** workflow builds DMGs
-for Apple silicon and Intel and publishes them on [GitHub Releases](https://github.com/athulsreekumar/opendot/releases).
+Maintainers tag releases as `vX.Y.Z` (matching `desktop/package.json`). The **Desktop app release** workflow builds DMGs
+for Apple silicon and Intel plus a Windows installer, and publishes them on [GitHub Releases](https://github.com/athulsreekumar/opendot/releases).
 Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## Questions

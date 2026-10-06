@@ -25,9 +25,11 @@ export const SEO_KEYWORDS = [
 	"Claude GPT Gemini Mac app",
 	"open source AI assistant",
 	"open source AI agents Mac",
+	"AI assistant Windows",
+	"open source AI agents Windows",
 ];
 
-export const OG_ALT = "OpenDot: your AI team, living on your Mac. Only available for Mac.";
+export const OG_ALT = "OpenDot: your AI team, living on your computer. For Mac and Windows.";
 
 const abs = (path: string) => `${SITE_URL}${path}`;
 
@@ -48,7 +50,7 @@ export const FEATURE_LIST = [
 	"Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks",
 	"SuperDot asks the right Dots and combines their answers with sources",
 	"Dot Links control which Dots can message which, with role-based access, schedules, rate limits and approvals",
-	"Private by default: data stays in ~/.opendot on your Mac and keys live in the macOS Keychain",
+	"Private by default: data stays in ~/.opendot on your computer and keys are encrypted by the operating system",
 	"Emails, phone numbers and card details are masked before reaching cloud models",
 	"Actions that change things ask for your approval first",
 	"Works with Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter and Groq",
@@ -89,11 +91,11 @@ export function homeJsonLd() {
 				"@id": appId,
 				name: SITE_NAME,
 				url: abs("/"),
-				operatingSystem: "macOS 14 or later",
+				operatingSystem: "macOS 14 or later, Windows 10 or 11",
 				applicationCategory: "ProductivityApplication",
 				applicationSubCategory: "AI assistant",
 				description: SEO_DESCRIPTION,
-				softwareRequirements: "macOS 14 or later, Apple silicon or Intel",
+				softwareRequirements: "macOS 14 or later (Apple silicon or Intel), or Windows 10 or 11 (x64)",
 				featureList: FEATURE_LIST,
 				screenshot: SHOTS.map((s) => ({
 					"@type": "ImageObject",

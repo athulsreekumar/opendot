@@ -194,7 +194,7 @@ export const FEATURE_PAGES: ContentPage[] = [
 			{
 				h2: "Keys and tokens stay in the Keychain",
 				p: [
-					"API keys and OAuth tokens are encrypted with the macOS Keychain. Google and Microsoft sign-in use your own OAuth client, so your mail and calendar never pass through anyone else's app. The audit log records what Dots did without storing message contents.",
+					"API keys and OAuth tokens are encrypted with the macOS Keychain, or with Windows DPAPI on a PC. Google and Microsoft sign-in use your own OAuth client, so your mail and calendar never pass through anyone else's app. The audit log records what Dots did without storing message contents.",
 				],
 			},
 			{
@@ -211,7 +211,7 @@ export const FEATURE_PAGES: ContentPage[] = [
 			},
 			{
 				q: "Where are my API keys stored?",
-				a: "In the macOS Keychain. OpenDot stores API keys and OAuth tokens encrypted with it.",
+				a: "Encrypted by your operating system: the macOS Keychain on a Mac, DPAPI on Windows.",
 			},
 			{
 				q: "Can a Dot send an email without asking me?",
@@ -327,7 +327,7 @@ export const FEATURE_PAGES: ContentPage[] = [
 			{
 				h2: "Bring the model you already use",
 				p: [
-					"OpenDot supports cloud models from Anthropic (Claude), OpenAI (GPT), Google (Gemini), xAI (Grok), Mistral and DeepSeek, plus aggregators such as OpenRouter and Groq. You paste your own API key, it is stored in the macOS Keychain, and the provider bills you directly. OpenDot itself is free.",
+					"OpenDot supports cloud models from Anthropic (Claude), OpenAI (GPT), Google (Gemini), xAI (Grok), Mistral and DeepSeek, plus aggregators such as OpenRouter and Groq. You paste your own API key, it is encrypted by your operating system, and the provider bills you directly. OpenDot itself is free.",
 				],
 				shot: {
 					name: "settings-models",
@@ -794,11 +794,11 @@ export const GUIDE_PAGES: ContentPage[] = [
 export const DOWNLOAD_PAGE: ContentPage = {
 	kind: "download",
 	path: "/download",
-	title: "Download OpenDot for Mac: Free and Open Source",
+	title: "Download OpenDot for Mac and Windows, Free",
 	description:
-		"OpenDot is free and open source for macOS 14+. Get the code on GitHub and build the Mac app in minutes, or grab a ready-made build.",
-	h1: "Download OpenDot for Mac",
-	lead: "OpenDot is free and MIT licensed, and the full source is on GitHub. Build it for your Mac in a few minutes, or grab a ready-made build.",
+		"OpenDot is free and open source for macOS 14+ and Windows 10 and 11. Get the code on GitHub and build the app in minutes, or grab a ready-made build.",
+	h1: "Download OpenDot for Mac and Windows",
+	lead: "OpenDot is free and MIT licensed, and the full source is on GitHub. Build it for your Mac or PC in a few minutes, or grab a ready-made build.",
 	keyword: "OpenDot download",
 	eyebrow: "Download",
 	image: { name: "sidebar-full", alt: "OpenDot on a Mac: the sidebar with a team of Dots." },
@@ -808,6 +808,7 @@ export const DOWNLOAD_PAGE: ContentPage = {
 			h2: "Requirements",
 			list: [
 				"macOS 14 Sonoma or later, on Apple silicon or Intel.",
+				"Or Windows 10 or 11, x64. Git for Windows gives Dots a shell.",
 				"A model: an API key from any cloud provider, or a local model through Ollama or LM Studio.",
 				"To build from source: Node.js 22.19 or later and Git.",
 			],
@@ -823,21 +824,21 @@ export const DOWNLOAD_PAGE: ContentPage = {
 				{ title: "Try it", body: "Run the app with hot reload.", code: "npm run dev" },
 				{
 					title: "Build the app",
-					body: "Make a DMG for your Mac. Open it and drag OpenDot to Applications.",
-					code: "npm run dist:mac:arm64   # Apple silicon (M1 and later)\nnpm run dist:mac:x64     # Intel Macs\nnpm run dist:mac         # both",
+					body: "On a Mac, make a DMG, open it and drag OpenDot to Applications. On Windows, make an installer and run it.",
+					code: "npm run dist:mac:arm64   # Apple silicon (M1 and later)\nnpm run dist:mac:x64     # Intel Macs\nnpm run dist:win         # Windows 10/11, x64",
 				},
 			],
 		},
 		{
 			h2: "Option 2: a ready-made build",
 			p: [
-				"Every change to the app on main builds DMGs for both chip types in the Mac app CI on GitHub. Open the latest green run and download the OpenDot-mac artifact. Tagged versions are published on the GitHub Releases page.",
+				"Every change to the app on main builds DMGs for both chip types and a Windows installer in the Desktop app CI on GitHub. Open the latest green run and download the OpenDot-mac or OpenDot-windows artifact. Tagged versions are published on the GitHub Releases page.",
 			],
 		},
 		{
 			h2: "The first-launch warning",
 			p: [
-				"OpenDot builds are not notarized by Apple yet, so macOS warns you the first time you open the app. Right-click OpenDot in Applications, choose Open, then Open again. Or run this once:",
+				"OpenDot builds are not notarized by Apple or code-signed for Windows yet. On Windows, SmartScreen may say “Windows protected your PC”: click More info, then Run anyway. On a Mac, right-click OpenDot in Applications, choose Open, then Open again. Or run this once:",
 			],
 			code: "xattr -dr com.apple.quarantine /Applications/OpenDot.app",
 		},
@@ -850,7 +851,7 @@ export const DOWNLOAD_PAGE: ContentPage = {
 		{
 			h2: "Is it safe?",
 			p: [
-				"The full source is on GitHub under the MIT license, so you can read exactly what the app does. Everything it stores lives in ~/.opendot on your Mac, personal details are masked before cloud models see them, and keys stay in the macOS Keychain.",
+				"The full source is on GitHub under the MIT license, so you can read exactly what the app does. Everything it stores lives in ~/.opendot on your computer, personal details are masked before cloud models see them, and keys are encrypted by your operating system.",
 			],
 		},
 		{
@@ -867,15 +868,15 @@ export const DOWNLOAD_PAGE: ContentPage = {
 		},
 		{
 			q: "Is there a Windows or Linux version?",
-			a: "No. OpenDot is made for the Mac. It uses the macOS Keychain and Mac apps like Calendar and Notes.",
+			a: "Yes for Windows 10 and 11 (x64). Everything works except the Mac-only Calendar, Reminders, Contacts and Notes tools; use Google Workspace or Microsoft 365 for those. Linux is not packaged yet.",
 		},
 		{
-			q: "Why does macOS warn me when I open it?",
-			a: "OpenDot builds are not notarized by Apple yet. Right-click the app and choose Open once, or run the xattr command above.",
+			q: "Why does macOS or Windows warn me when I open it?",
+			a: "OpenDot builds are not notarized by Apple or code-signed for Windows yet. On a Mac, right-click the app and choose Open once, or run the xattr command above. On Windows, click More info, then Run anyway.",
 		},
 		{
-			q: "Which Macs does it run on?",
-			a: "macOS 14 or later, on both Apple silicon and Intel Macs.",
+			q: "Which computers does it run on?",
+			a: "macOS 14 or later on Apple silicon and Intel Macs, and Windows 10 or 11 on x64 PCs.",
 		},
 	],
 	related: ["/guides/local-ai-assistant-mac-ollama", "/features/superdot", "/features/privacy", "/features/any-model"],

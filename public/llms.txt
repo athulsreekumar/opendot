@@ -1,15 +1,15 @@
 # OpenDot
 
-> OpenDot is a free, open source Mac app (macOS 14 or later, Apple silicon and Intel) that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks. Your data stays on your Mac. The source is on GitHub under the MIT license: https://github.com/athulsreekumar/opendot
+> OpenDot is a free, open source app for Mac (macOS 14 or later, Apple silicon and Intel) and Windows (10 and 11, x64) that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks. Your data stays on your computer. The source is on GitHub under the MIT license: https://github.com/athulsreekumar/opendot
 
 ## Key facts
 
 - Dots: single-purpose AI assistants. You describe the job in plain English, choose what each Dot can touch, and OpenDot gives it a name, a look and a personality.
 - SuperDot: asks the right Dots at once and combines their answers, with sources.
 - Dot Links: you control which Dots can message which, with role-based access, schedules, rate limits and approvals.
-- Private by default: data lives in ~/.opendot on your Mac, emails, phone numbers and card details are masked before reaching cloud models, actions that change things ask first, and keys are kept in the macOS Keychain.
+- Private by default: data lives in ~/.opendot on your computer, emails, phone numbers and card details are masked before reaching cloud models, actions that change things ask first, and keys are encrypted by the operating system (macOS Keychain or Windows DPAPI).
 - Any model: Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter, Groq, or local models through Ollama, LM Studio, llama.cpp, vLLM, or any compatible URL.
-- Connections: Google Workspace (Gmail, Calendar, Drive), Microsoft 365 (Outlook, Calendar, OneDrive, Teams), Mac Calendar, Reminders, Contacts, Notes and files, unlimited MCP servers, and webhooks.
+- Connections: Google Workspace (Gmail, Calendar, Drive), Microsoft 365 (Outlook, Calendar, OneDrive, Teams), files and the shell on Mac and Windows, Calendar, Reminders, Contacts and Notes on a Mac, unlimited MCP servers, and webhooks.
 - Replies stream from the first token.
 - Price: free. License: MIT. Source: https://github.com/athulsreekumar/opendot
 
@@ -18,7 +18,7 @@
 - [Home](https://opendot.live/): product overview, FAQ and how to get OpenDot
 - [Features](https://opendot.live/features): overview of everything OpenDot does
 - [SuperDot](https://opendot.live/features/superdot): ask one question, every Dot answers, with sources
-- [Private by default](https://opendot.live/features/privacy): local storage, masking, approvals, Keychain
+- [Private by default](https://opendot.live/features/privacy): local storage, masking, approvals, encrypted keys
 - [Always on](https://opendot.live/features/always-on): Dots that run in the background and react to events
 - [Any model](https://opendot.live/features/any-model): cloud models, Ollama, LM Studio, llama.cpp, vLLM, any URL
 - [Connections](https://opendot.live/features/connections): Google Workspace, Microsoft 365, your Mac and MCP servers

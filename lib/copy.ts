@@ -3,8 +3,8 @@
 export const GITHUB_URL = "https://github.com/athulsreekumar/opendot";
 
 export const MAC_ONLY = {
-	label: "Only available for Mac",
-	detail: "macOS 14+ · Apple silicon & Intel",
+	label: "For Mac and Windows",
+	detail: "macOS 14+ · Windows 10 & 11",
 };
 
 export const nav = {
@@ -19,7 +19,7 @@ export const nav = {
 
 export const hero = {
 	h1: ["Your AI team.", "Living on your Mac."],
-	lead: "OpenDot gives you Dots: AI assistants that each do one job brilliantly, work around the clock, and keep your data on your Mac.",
+	lead: "OpenDot gives you Dots: AI assistants that each do one job brilliantly, work around the clock, and keep your data on your computer.",
 	cta: "Get it on GitHub",
 	build: "How to build it",
 	film: "Watch the film",
@@ -81,10 +81,10 @@ export const privacy = {
 	eyebrow: "Privacy",
 	h2: ["Your data stays home."],
 	points: [
-		"Everything lives in ~/.opendot on your Mac, in plain files you can read.",
+		"Everything lives in ~/.opendot on your computer, in plain files you can read.",
 		"Emails, phone numbers and card details are masked before anything reaches a cloud model.",
 		"Anything that changes the world, like sending, deleting or paying, asks you first.",
-		"Your keys are locked in the macOS Keychain.",
+		"Your keys are encrypted by your operating system.",
 	],
 	demo: { before: "maya.chen@example.com", after: "⟦EMAIL_1⟧" },
 };
@@ -130,7 +130,7 @@ export const openSource = {
 
 export const finalCta = {
 	h2: ["Yours to build."],
-	lead: "OpenDot is free and open source. Grab the code on GitHub, build it for your Mac in a few minutes, and meet your first Dot.",
+	lead: "OpenDot is free and open source. Grab the code on GitHub, build it for your Mac or PC in a few minutes, and meet your first Dot.",
 	cta: "Get it on GitHub",
 	build: "Build steps",
 };
@@ -157,7 +157,7 @@ export const form = {
 };
 
 export const footer = {
-	tagline: "Made for Mac.",
+	tagline: "Made for Mac and Windows.",
 	links: [
 		{ label: "Download", href: "/download" },
 		{ label: "Privacy policy", href: "/privacy" },
@@ -190,23 +190,23 @@ export const faq = {
 	items: [
 		{
 			q: "What is OpenDot?",
-			a: "OpenDot is a Mac app that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. They run in the background, watch your email, calendar and files, and tell you when something needs you.",
+			a: "OpenDot is a Mac and Windows app that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. They run in the background, watch your email, calendar and files, and tell you when something needs you.",
 		},
 		{
 			q: "Is OpenDot free?",
 			a: "Yes. OpenDot is free and open source under the MIT license. If you connect a cloud model such as Claude or GPT with your own API key, that provider bills you directly. Run a local model through Ollama or LM Studio and it costs nothing.",
 		},
 		{
-			q: "Which Macs does it run on?",
-			a: "OpenDot needs macOS 14 or later and runs on both Apple silicon and Intel Macs. It is a Mac-only app for now.",
+			q: "Which computers does it run on?",
+			a: "OpenDot runs on macOS 14 or later, on both Apple silicon and Intel Macs, and on Windows 10 and 11 (x64). On Windows everything works except the Mac-only Calendar, Reminders, Contacts and Notes tools; use Google Workspace or Microsoft 365 for those.",
 		},
 		{
-			q: "Does my data leave my Mac?",
-			a: "Not by default. Everything lives in ~/.opendot on your Mac, in plain files you can read. Emails, phone numbers and card details are masked before anything reaches a cloud model, your keys are stored in the macOS Keychain, and any action that changes something, like sending, deleting or paying, asks you first.",
+			q: "Does my data leave my computer?",
+			a: "Not by default. Everything lives in ~/.opendot on your computer, in plain files you can read. Emails, phone numbers and card details are masked before anything reaches a cloud model, your keys are encrypted by macOS or Windows, and any action that changes something, like sending, deleting or paying, asks you first.",
 		},
 		{
 			q: "Which AI models can I use, and does it work offline?",
-			a: "Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter and Groq, or local models through Ollama, LM Studio, llama.cpp and vLLM. Any compatible URL works too, and you can pick a different model for each Dot. With a local model a Dot's thinking never leaves your Mac, though Dots that read Gmail, Outlook or other online services still need a connection to reach them.",
+			a: "Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter and Groq, or local models through Ollama, LM Studio, llama.cpp and vLLM. Any compatible URL works too, and you can pick a different model for each Dot. With a local model a Dot's thinking never leaves your computer, though Dots that read Gmail, Outlook or other online services still need a connection to reach them.",
 		},
 		{
 			q: "What is a Dot?",
@@ -222,7 +222,7 @@ export const faq = {
 		},
 		{
 			q: "How do I get OpenDot?",
-			a: "OpenDot is free on GitHub. Clone the repository, then in the desktop folder run npm ci and npm run dev to try it, or npm run dist:mac:arm64 (Apple silicon) or npm run dist:mac:x64 (Intel) to build the Mac app. You need macOS 14 or later and Node.js 22.19 or later.",
+			a: "OpenDot is free on GitHub. Clone the repository, then in the desktop folder run npm ci and npm run dev to try it, or npm run dist:mac:arm64 (Apple silicon) or npm run dist:mac:x64 (Intel) to build the Mac app, or npm run dist:win to build the Windows installer. You need macOS 14 or later or Windows 10 or 11, plus Node.js 22.19 or later.",
 		},
 		{
 			q: "Is OpenDot open source?",

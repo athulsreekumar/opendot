@@ -1,11 +1,10 @@
-name: Mac app CI
+name: Desktop app CI
 
 on:
   pull_request:
     paths: ["desktop/**", ".github/workflows/desktop-*.yml"]
   push:
-    # windows-support is temporary: remove it when the Windows port merges.
-    branches: [main, windows-support]
+    branches: [main]
     paths: ["desktop/**", ".github/workflows/desktop-*.yml"]
   workflow_dispatch:
 

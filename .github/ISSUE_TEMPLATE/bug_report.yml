@@ -12,7 +12,8 @@ body:
     attributes:
       label: Where is the bug?
       options:
-        - Mac app
+        - Desktop app (Mac)
+        - Desktop app (Windows)
         - Website (opendot.live)
         - Docs or README
         - Build or CI
@@ -45,8 +46,8 @@ body:
   - type: input
     id: macos
     attributes:
-      label: macOS version and Mac
-      placeholder: macOS 15.1, MacBook Air M2
+      label: OS version and computer
+      placeholder: macOS 15.1, MacBook Air M2 / Windows 11 23H2
   - type: input
     id: model
     attributes:
