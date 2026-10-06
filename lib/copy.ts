@@ -61,6 +61,14 @@ export const superBot = {
 	lead: "Ask SuperDot anything. It knows which Dots know what, asks them all at once, and hands you one answer with sources.",
 	question: "What do I need to prepare for tomorrow?",
 	dots: ["Inbox", "Calendar", "Research", "Money", "Travel"],
+	/** What each Dot can do: the second ring of the tree. */
+	capabilities: {
+		Inbox: ["Gmail", "Triage", "Draft replies", "Follow-ups"],
+		Calendar: ["Google Calendar", "Mac Calendar", "Free time", "Reschedule"],
+		Research: ["Web pages", "Summaries", "Sources", "Saved notes"],
+		Money: ["Receipts", "Subscriptions", "Invoices", "Budgets"],
+		Travel: ["Flights", "Itineraries", "Check-in", "Passport"],
+	} as Record<string, string[]>,
 };
 
 export const dotLinks = {

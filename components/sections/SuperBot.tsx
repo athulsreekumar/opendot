@@ -21,15 +21,41 @@ const ANSWERS = [
 ];
 
 type Pt = { x: number; y: number };
-type Layout = { w: number; h: number; core: Pt; coreR: number; nodeR: number; nodes: Pt[]; chips: boolean };
+type Leaf = { pos: Pt; label: string; right: boolean; w: number };
+type Layout = {
+	w: number;
+	h: number;
+	core: Pt;
+	coreR: number;
+	nodeR: number;
+	nodes: Pt[];
+	chips: boolean;
+	leaves: Leaf[][];
+};
 
+const rad = (deg: number) => (deg * Math.PI) / 180;
+const DOT_ANGLES = [-90, -18, 54, 126, 198];
+const LEAF_OFFSETS = [-26, -9, 9, 26];
+const LEAF_R = 4.5;
+const LEAF_FONT = 14;
+const leafWidth = (label: string) => Math.round(label.length * 7.4 + 24);
+
+// Desktop tree: SuperDot in the middle, the Dots on an inner ellipse, each Dot's capabilities fanned out on an outer one.
 const desktop: Layout = (() => {
-	const core = { x: 500, y: 220 };
-	const nodes = [-90, -18, 54, 126, 198].map((a) => ({
-		x: core.x + 290 * Math.cos((a * Math.PI) / 180),
-		y: core.y + 160 * Math.sin((a * Math.PI) / 180),
-	}));
-	return { w: 1000, h: 440, core, coreR: 46, nodeR: 30, nodes, chips: true };
+	const core = { x: 620, y: 286 };
+	const ring = (a: number, rx: number, ry: number) => ({
+		x: core.x + rx * Math.cos(rad(a)),
+		y: core.y + ry * Math.sin(rad(a)),
+	});
+	const nodes = DOT_ANGLES.map((a) => ring(a, 270, 128));
+	const leaves = DOT_ANGLES.map((a, i) =>
+		LEAF_OFFSETS.map((o, k) => {
+			const label = (superBot.capabilities[superBot.dots[i] as string] ?? [])[k] ?? "";
+			const pos = ring(a + o, 520, 250);
+			return { pos, label, right: pos.x >= core.x, w: leafWidth(label) };
+		}),
+	);
+	return { w: 1240, h: 570, core, coreR: 46, nodeR: 30, nodes, chips: true, leaves };
 })();
 
 const mobile: Layout = {
@@ -40,7 +66,10 @@ const mobile: Layout = {
 	nodeR: 26,
 	nodes: [0, 1, 2, 3, 4].map((i) => ({ x: 36 + i * 72, y: 240 })),
 	chips: false,
+	leaves: [],
 };
+
+const r1 = (n: number) => n.toFixed(1);
 
 function pathFor(l: Layout, i: number): string {
 	const a = l.core;
@@ -55,8 +84,49 @@ function pathFor(l: Layout, i: number): string {
 	const bend = (i % 2 ? 1 : -1) * Math.min(26, d * 0.08);
 	const nx = -uy * bend;
 	const ny = ux * bend;
-	const r = (n: number) => n.toFixed(1);
-	return `M${r(s.x)} ${r(s.y)}C${r(s.x + dx * 0.35 + nx)} ${r(s.y + dy * 0.35 + ny)} ${r(e.x - dx * 0.35 + nx)} ${r(e.y - dy * 0.35 + ny)} ${r(e.x)} ${r(e.y)}`;
+	return `M${r1(s.x)} ${r1(s.y)}C${r1(s.x + dx * 0.35 + nx)} ${r1(s.y + dy * 0.35 + ny)} ${r1(e.x - dx * 0.35 + nx)} ${r1(e.y - dy * 0.35 + ny)} ${r1(e.x)} ${r1(e.y)}`;
+}
+
+/** Thin branch from a Dot's outer edge to one of its capability leaves: leaves the Dot radially, arrives radially. */
+function leafPathFor(l: Layout, i: number, k: number): string {
+	const dot = l.nodes[i] as Pt;
+	const leaf = ((l.leaves[i] as Leaf[])[k] as Leaf).pos;
+	const unit = (a: Pt, b: Pt) => {
+		const d = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+		return { x: (b.x - a.x) / d, y: (b.y - a.y) / d };
+	};
+	const out = unit(l.core, dot);
+	const into = unit(l.core, leaf);
+	const s = { x: dot.x + out.x * (l.nodeR + 3), y: dot.y + out.y * (l.nodeR + 3) };
+	const e = { x: leaf.x - into.x * (LEAF_R + 2), y: leaf.y - into.y * (LEAF_R + 2) };
+	const len = Math.hypot(e.x - s.x, e.y - s.y);
+	return `M${r1(s.x)} ${r1(s.y)}C${r1(s.x + out.x * len * 0.4)} ${r1(s.y + out.y * len * 0.4)} ${r1(e.x - into.x * len * 0.3)} ${r1(e.y - into.y * len * 0.3)} ${r1(e.x)} ${r1(e.y)}`;
+}
+
+/** Answer chip + name label placement per Dot (offsets from the Dot centre), chosen so they sit in the gaps between branches. */
+const BLOCKS: {
+	name: { x: number; y: number; anchor: "start" | "middle" | "end" };
+	chip: "r" | "l" | "below" | "belowLeft" | "belowRight";
+}[] = [
+	{ name: { x: -44, y: 0, anchor: "end" }, chip: "r" },
+	{ name: { x: 0, y: 50, anchor: "middle" }, chip: "below" },
+	{ name: { x: -44, y: 0, anchor: "end" }, chip: "belowLeft" },
+	{ name: { x: 44, y: 0, anchor: "start" }, chip: "belowRight" },
+	{ name: { x: 0, y: 50, anchor: "middle" }, chip: "below" },
+];
+
+function chipLines(text: string): string[] {
+	const words = text.split(" ");
+	let best = 1;
+	let bestDiff = Number.POSITIVE_INFINITY;
+	for (let i = 1; i < words.length; i++) {
+		const diff = Math.abs(words.slice(0, i).join(" ").length - words.slice(i).join(" ").length);
+		if (diff < bestDiff) {
+			best = i;
+			bestDiff = diff;
+		}
+	}
+	return [words.slice(0, best).join(" "), words.slice(best).join(" ")];
 }
 
 function Diagram({ l, className, animated }: { l: Layout; className: string; animated: boolean }) {
@@ -67,8 +137,8 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 			className={className}
 			viewBox={`0 0 ${l.w} ${l.h}`}
 			preserveAspectRatio="xMidYMid meet"
-			role="img"
-			aria-label={`SuperDot connected to ${superBot.dots.join(", ")}.`}
+			aria-hidden="true"
+			focusable="false"
 			fontFamily="inherit"
 		>
 			<defs>
@@ -81,6 +151,26 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 					<stop offset="1" stopColor="#0e9f8a" />
 				</linearGradient>
 			</defs>
+
+			{/* Second ring: thin capability branches (drawn first so everything else sits on top). */}
+			{l.leaves.map((group, i) =>
+				group.map((_, k) => (
+					<path
+						key={`lp-${superBot.dots[i]}-${k}`}
+						className="sb-lpath"
+						data-dot={i}
+						d={leafPathFor(l, i, k)}
+						pathLength={1}
+						fill="none"
+						stroke="#2dd4bf"
+						strokeOpacity="0.32"
+						strokeWidth="1"
+						strokeLinecap="round"
+						strokeDasharray="1"
+						strokeDashoffset="0"
+					/>
+				)),
+			)}
 
 			{l.nodes.map((_, i) => (
 				<path
@@ -111,11 +201,68 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 				</text>
 			</g>
 
+			{/* Capability leaves: a small node and a compact label pill each. */}
+			{l.leaves.map((group, i) =>
+				group.map((leaf, k) => {
+					const h = 22;
+					const px = leaf.right ? LEAF_R + 7 : -(LEAF_R + 7) - leaf.w;
+					return (
+						<g
+							key={`leaf-${superBot.dots[i]}-${k}`}
+							className="sb-leaf"
+							data-dot={i}
+							transform={`translate(${r1(leaf.pos.x)} ${r1(leaf.pos.y)})`}
+						>
+							<g className="sb-leaf-hot">
+								<circle r="15" fill={`url(#sb-glow-${uid})`} />
+								<circle r={LEAF_R} fill="#5eead4" />
+								<rect
+									x={px}
+									y={-h / 2}
+									width={leaf.w}
+									height={h}
+									rx={h / 2}
+									fill="#2dd4bf"
+									fillOpacity="0.14"
+									stroke="#5eead4"
+									strokeOpacity="0.85"
+								/>
+							</g>
+							<circle r={LEAF_R} fill="#0b1c1a" stroke="#2dd4bf" strokeOpacity="0.7" strokeWidth="1.2" />
+							<rect
+								x={px}
+								y={-h / 2}
+								width={leaf.w}
+								height={h}
+								rx={h / 2}
+								fill="#0b1917"
+								fillOpacity="0.9"
+								stroke="#2dd4bf"
+								strokeOpacity="0.24"
+							/>
+							<text
+								x={px + leaf.w / 2}
+								y="0.5"
+								textAnchor="middle"
+								dominantBaseline="central"
+								fontSize={LEAF_FONT}
+								fontWeight="500"
+								fill="#cdeee9"
+							>
+								{leaf.label}
+							</text>
+						</g>
+					);
+				}),
+			)}
+
 			{l.nodes.map((p, i) => {
-				const top = l.chips && i === 0;
-				const right = p.x >= l.core.x;
-				const chipW = 172;
-				const chipX = right ? 42 : -42 - chipW;
+				const block = BLOCKS[i] as (typeof BLOCKS)[number];
+				const lines = chipLines(ANSWERS[i] as string);
+				const chipW = Math.round(Math.max(...lines.map((t) => t.length)) * 6.7 + 38);
+				const chipH = 42;
+				const cx = { r: 44, l: -44 - chipW, below: -chipW / 2, belowLeft: -36 - chipW, belowRight: 36 }[block.chip];
+				const cy = { r: -chipH / 2, l: -chipH / 2, below: 63, belowLeft: 10, belowRight: 10 }[block.chip];
 				return (
 					<g key={superBot.dots[i]} className="sb-node" transform={`translate(${p.x} ${p.y})`}>
 						<circle className="sb-lit-glow" r={l.nodeR * 1.7} fill={`url(#sb-glow-${uid})`} />
@@ -132,21 +279,35 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 							{EMOJI[i]}
 						</text>
 						<text
-							y={top ? -l.nodeR - 14 : l.nodeR + (l.chips ? 20 : 18)}
-							textAnchor="middle"
-							fontSize={l.chips ? 13 : 12}
+							x={l.chips ? block.name.x : 0}
+							y={l.chips ? block.name.y : l.nodeR + 18}
+							textAnchor={l.chips ? block.name.anchor : "middle"}
+							dominantBaseline={l.chips ? "central" : undefined}
+							fontSize={l.chips ? 14 : 12}
 							fontWeight="600"
 							fill="#a1a1a6"
 						>
 							{superBot.dots[i]}
 						</text>
 						{l.chips && (
-							<g className="sb-chip" transform={`translate(${chipX} -15)`}>
-								<rect width={chipW} height="30" rx="15" fill="#0d1d1b" stroke="#2dd4bf" strokeOpacity="0.5" />
-								<circle cx="16" cy="15" r="3.5" fill="#2dd4bf" />
-								<text x="28" y="15" dominantBaseline="central" fontSize="12" fontWeight="550" fill="#e8fffb">
-									{ANSWERS[i]}
-								</text>
+							<g transform={`translate(${cx} ${cy})`}>
+								<g className="sb-chip">
+									<rect width={chipW} height={chipH} rx="14" fill="#0d1d1b" stroke="#2dd4bf" strokeOpacity="0.5" />
+									<circle cx="14" cy={chipH / 2} r="3.5" fill="#2dd4bf" />
+									{lines.map((t, n) => (
+										<text
+											key={t}
+											x="26"
+											y={chipH / 2 + (n - 0.5) * 15}
+											dominantBaseline="central"
+											fontSize="13"
+											fontWeight="550"
+											fill="#e8fffb"
+										>
+											{t}
+										</text>
+									))}
+								</g>
 							</g>
 						)}
 					</g>
@@ -158,6 +319,11 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 					{l.nodes.map((_, i) => (
 						<circle key={`ask-${superBot.dots[i]}`} className="sb-ask" r="5" fill="#5eead4" />
 					))}
+					{l.leaves.map((group, i) =>
+						group.map((_, k) => (
+							<circle key={`pulse-${superBot.dots[i]}-${k}`} className="sb-pulse" r="2.6" fill="#99f6e4" />
+						)),
+					)}
 					{l.nodes.map((_, i) => (
 						<circle key={`ans-${superBot.dots[i]}`} className="sb-ans" r="5" fill="#ffffff" />
 					))}
@@ -166,6 +332,10 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 		</svg>
 	);
 }
+
+const srText = `SuperDot connects to ${superBot.dots.length} Dots: ${superBot.dots
+	.map((d) => `${d} (${(superBot.capabilities[d] ?? []).join(", ")})`)
+	.join("; ")}. Each Dot has its own abilities, and SuperDot asks them all at once.`;
 
 export function SuperBot(): ReactNode {
 	const section = useRef<HTMLElement>(null);
@@ -191,13 +361,22 @@ export function SuperBot(): ReactNode {
 				const chips = Array.from(svg.querySelectorAll(".sb-chip"));
 				const nodes = Array.from(svg.querySelectorAll(".sb-node"));
 				const asks = Array.from(svg.querySelectorAll<SVGCircleElement>(".sb-ask"));
+				const lpaths = Array.from(svg.querySelectorAll<SVGPathElement>(".sb-lpath"));
+				const leafEls = Array.from(svg.querySelectorAll(".sb-leaf"));
+				const hots = Array.from(svg.querySelectorAll(".sb-leaf-hot"));
+				const pulses = Array.from(svg.querySelectorAll<SVGCircleElement>(".sb-pulse"));
 				const answers = Array.from(svg.querySelectorAll<SVGCircleElement>(".sb-ans"));
 				const A = <T,>(a: T[], i: number) => a[i] as T;
 				const lens = paths.map((p) => p.getTotalLength());
+				const llens = lpaths.map((p) => p.getTotalLength());
+				const LEAVES = lpaths.length / paths.length;
 
 				gsap.set(q(".sb-diagram"), { opacity: 1, scale: 1 });
 				gsap.set(q(".sb-win"), { opacity: 0, y: 160, scale: 0.94 });
 				gsap.set(paths, { strokeDashoffset: 1 });
+				gsap.set(lpaths, { strokeDashoffset: 1 });
+				gsap.set(leafEls, { opacity: 0 });
+				gsap.set(hots, { opacity: 0 });
 				gsap.set(lits, { opacity: 0 });
 				gsap.set(litGlows, { opacity: 0 });
 				gsap.set(chips, { opacity: 0, y: 8 });
@@ -211,12 +390,18 @@ export function SuperBot(): ReactNode {
 					el.style.opacity = String(Math.max(0, Math.min(1, p * 10, (1 - p) * 10)));
 				};
 
+				const placeLeaf = (el: SVGCircleElement, j: number, p: number) => {
+					const pt = A(lpaths, j).getPointAtLength(p * A(llens, j));
+					el.setAttribute("transform", `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})`);
+					el.style.opacity = String(Math.max(0, Math.min(1, p * 8, (1 - p) * 8)));
+				};
+
 				const tl = gsap.timeline({
 					defaults: { ease: "none" },
 					scrollTrigger: {
 						trigger: section.current,
 						start: "top top",
-						end: () => `+=${window.innerHeight * 3}`,
+						end: () => `+=${window.innerHeight * 4}`,
 						pin: pin.current,
 						anticipatePin: 1,
 						scrub: 0.8,
@@ -239,7 +424,7 @@ export function SuperBot(): ReactNode {
 					},
 					0,
 				);
-				tl.to(q(".sb-glow"), { opacity: 1, scale: 1.1, duration: 7 }, 0);
+				tl.to(q(".sb-glow"), { opacity: 1, scale: 1.1, duration: 9 }, 0);
 
 				// (1) connections draw
 				tl.to(paths, { strokeDashoffset: 0, duration: 1.2, stagger: 0.18, ease: "power1.inOut" }, 1.2);
@@ -250,13 +435,35 @@ export function SuperBot(): ReactNode {
 					const t0 = 2.5 + i * 0.18;
 					// (2) asking dots travel outward
 					tl.to(ask, { p: 1, duration: 1.4, ease: "power1.inOut", onUpdate: () => place(A(asks, i), i, ask.p) }, t0);
-					// (3) node lights up, answer chip appears
+					// (3) the Dot lights up as the question arrives
 					tl.to(A(nodes, i), { opacity: 1, duration: 0.4 }, t0 + 1.2)
 						.to(A(lits, i), { opacity: 1, duration: 0.4 }, t0 + 1.2)
-						.to(A(litGlows, i), { opacity: 1, duration: 0.5 }, t0 + 1.2)
-						.to(A(chips, i), { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, t0 + 1.4);
-					// (4) answers flow back
-					const t1 = 5.2 + i * 0.18;
+						.to(A(litGlows, i), { opacity: 1, duration: 0.5 }, t0 + 1.2);
+
+					// (3b) its capability branches grow, staggered per Dot; a pulse follows each one to its leaf
+					const g = 3.9 + i * 0.3;
+					for (let k = 0; k < LEAVES; k++) {
+						const j = i * LEAVES + k;
+						const pulse = { p: 0 };
+						const t = g + k * 0.1;
+						tl.to(A(lpaths, j), { strokeDashoffset: 0, duration: 0.9, ease: "power1.inOut" }, t)
+							.to(
+								pulse,
+								{ p: 1, duration: 0.9, ease: "power1.inOut", onUpdate: () => placeLeaf(A(pulses, j), j, pulse.p) },
+								t + 0.1,
+							)
+							.to(A(leafEls, j), { opacity: 1, duration: 0.4 }, t + 0.8)
+							.to(A(hots, j), { opacity: 1, duration: 0.4 }, t + 0.9);
+					}
+
+					// (4) answer chip appears, the leaves dim a little, the answer flows back
+					const c = g + 1.7;
+					tl.to(A(chips, i), { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, c).to(
+						hots.slice(i * LEAVES, (i + 1) * LEAVES),
+						{ opacity: 0.22, duration: 0.7 },
+						c,
+					);
+					const t1 = 6.9 + i * 0.18;
 					tl.fromTo(
 						ans,
 						{ p: 1 },
@@ -274,19 +481,19 @@ export function SuperBot(): ReactNode {
 					q(".sb-core-glow"),
 					{ scale: 1 },
 					{ scale: 1.35, duration: 0.5, yoyo: true, repeat: 1, ease: "sine.inOut", transformOrigin: "50% 50%" },
-					6.9,
+					8.6,
 				);
 
 				// (5) diagram steps back, the answer window rises
-				tl.to(q(".sb-diagram"), { opacity: 0, scale: 0.84, duration: 1, ease: "power2.in" }, 8)
-					.to(q(".sb-win"), { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power3.out" }, 8.5)
-					.to(q(".sb-glow"), { opacity: 0.7, duration: 1.2 }, 8.5)
+				tl.to(q(".sb-diagram"), { opacity: 0, scale: 0.84, duration: 1, ease: "power2.in" }, 9.7)
+					.to(q(".sb-win"), { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power3.out" }, 10.2)
+					.to(q(".sb-glow"), { opacity: 0.7, duration: 1.2 }, 10.2)
 					.to({}, { duration: 1 });
 
 				return () => {
 					typed.textContent = full;
 					rest.textContent = "";
-					for (const el of [...asks, ...answers]) {
+					for (const el of [...asks, ...answers, ...pulses]) {
 						el.removeAttribute("transform");
 						el.style.opacity = "";
 					}
@@ -323,23 +530,33 @@ export function SuperBot(): ReactNode {
 					</div>
 
 					<div className="sb-stage mt-8 min-[900px]:mt-0">
+						<p className="sr-only">{srText}</p>
 						<div className="sb-diagram">
 							<div className="sb-mascot">
-								<Mascot pose="conductor" size={150} />
+								<Mascot pose="conductor" size={120} />
 							</div>
 							<Diagram l={mobile} className="sb-svg-m" animated={false} />
 							<Diagram l={desktop} className="sb-svg-d" animated />
 						</div>
 
-						<ul className="sb-list mx-auto mt-6 grid max-w-sm gap-2">
+						<ul className="sb-list mx-auto mt-6 grid max-w-md gap-3">
 							{superBot.dots.map((d, i) => (
-								<li
-									key={d}
-									className="t-caption flex items-center gap-3 rounded-full border border-accent/30 bg-white/[0.04] px-4 py-2 text-fg"
-								>
-									<span aria-hidden="true">{EMOJI[i]}</span>
-									<span className="font-semibold">{d}</span>
-									<span className="ml-auto text-fg-2">{ANSWERS[i]}</span>
+								<li key={d} className="rounded-3xl border border-accent/30 bg-white/[0.04] px-4 py-3 text-fg">
+									<p className="t-caption flex items-center gap-3">
+										<span aria-hidden="true">{EMOJI[i]}</span>
+										<span className="font-semibold">{d}</span>
+										<span className="ml-auto text-right text-fg-2">{ANSWERS[i]}</span>
+									</p>
+									<ul className="mt-2.5 flex flex-wrap gap-1.5">
+										{(superBot.capabilities[d] ?? []).map((c) => (
+											<li
+												key={c}
+												className="sb-cap rounded-full border border-accent/35 bg-accent/10 px-2.5 py-1 text-[0.75rem] leading-none text-fg"
+											>
+												{c}
+											</li>
+										))}
+									</ul>
 								</li>
 							))}
 						</ul>
