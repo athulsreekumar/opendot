@@ -31,7 +31,7 @@ jobs:
       - run: npm test
       - name: End-to-end tests (real Electron app, fake model)
         run: npm run e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: e2e-screens
@@ -60,7 +60,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
       - name: Verify ad-hoc signature
         run: codesign -dv --verbose=2 release/mac-arm64/OpenDot.app 2>&1 | head -5 || true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: OpenDot-mac
           path: |
@@ -86,7 +86,7 @@ jobs:
       - run: npm test
       - name: End-to-end tests (real Electron app, fake model)
         run: npm run e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: e2e-screens-windows
@@ -98,7 +98,7 @@ jobs:
         run: npm run dist:win
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: OpenDot-windows
           path: |
