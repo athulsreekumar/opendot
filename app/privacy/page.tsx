@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { GITHUB_URL } from "@/lib/copy";
 import { OG_ALT } from "@/lib/seo";
+
+const DESCRIPTION =
+	"OpenDot collects nothing about you. The website has no trackers, and the app keeps your data on your computer.";
 
 export const metadata: Metadata = {
 	title: "Privacy",
-	description: "What the OpenDot early-access list collects, why, where it lives and how to be removed.",
+	description: DESCRIPTION,
 	alternates: { canonical: "/privacy" },
 	openGraph: {
 		type: "website",
@@ -11,54 +15,52 @@ export const metadata: Metadata = {
 		siteName: "OpenDot",
 		locale: "en_US",
 		title: "Privacy | OpenDot",
-		description: "What the OpenDot early-access list collects, why, where it lives and how to be removed.",
+		description: DESCRIPTION,
 		images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: OG_ALT }],
 	},
 };
 
 const sections: { title: string; body: React.ReactNode }[] = [
 	{
-		title: "What we collect",
+		title: "This website",
 		body: (
 			<>
 				<p>
-					When you join the early-access list we collect your email address. If you choose to tell us, we also store
-					what your first Dot would do and which kind of Mac you have. We note which button you used, the time, your
-					country (approximate, from your network) and your browser family so we can understand where interest comes
-					from.
+					We don't collect anything about you here. There are no accounts, no forms, no analytics, no advertising
+					trackers and no cookies.
 				</p>
-				<p>The website does not use advertising trackers or third-party cookies.</p>
+				<p>
+					The site is hosted by Vercel, which, like any web host, briefly keeps standard server logs (such as IP address
+					and browser) to run and protect the service.
+				</p>
 			</>
 		),
 	},
 	{
-		title: "Why",
+		title: "The OpenDot app",
 		body: (
-			<p>Only to tell you about OpenDot: launch updates and your early-access download. We never sell your data.</p>
+			<>
+				<p>
+					Everything the app stores, from your Dots and chats to memory and settings, lives in a folder on your own
+					computer. API keys and sign-in tokens are encrypted by your operating system. We never receive any of it.
+				</p>
+				<p>
+					When a Dot uses a cloud model, the text it needs goes straight from your computer to the provider you chose,
+					under that provider's terms. Personal details are masked first, and with a local model nothing leaves your
+					computer at all.
+				</p>
+			</>
 		),
 	},
 	{
-		title: "Where it lives",
+		title: "Check it yourself",
 		body: (
 			<p>
-				Your details are processed by Resend, which stores the list and sends our emails, and by Vercel, which hosts
-				this website and receives your request. Both act as processors on our behalf.
-			</p>
-		),
-	},
-	{
-		title: "How long we keep it",
-		body: <p>Until twelve months after OpenDot launches, or until you ask to be removed, whichever comes first.</p>,
-	},
-	{
-		title: "Removing yourself",
-		body: (
-			<p>
-				Reply to any email from us, or use the unsubscribe link, and we will delete your details. You can also write to{" "}
-				<a href="mailto:hello@opendot.live" className="underline underline-offset-4">
-					hello@opendot.live
-				</a>{" "}
-				to ask what we hold about you or to have it corrected.
+				OpenDot is open source, so you can read exactly what it does in the{" "}
+				<a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+					source code on GitHub
+				</a>
+				.
 			</p>
 		),
 	},
@@ -68,9 +70,7 @@ export default function PrivacyPage() {
 	return (
 		<div className="container-text section-pad">
 			<h1 className="t-display-m">Privacy</h1>
-			<p className="t-body mt-6 opacity-70">
-				The short version: we keep your email to tell you about OpenDot, and nothing else.
-			</p>
+			<p className="t-body mt-6 opacity-70">The short version: we don't collect anything about you.</p>
 			<div className="mt-16 flex flex-col gap-12">
 				{sections.map((s) => (
 					<section key={s.title} className="flex flex-col gap-3">
@@ -79,7 +79,18 @@ export default function PrivacyPage() {
 					</section>
 				))}
 			</div>
-			<p className="t-caption mt-16 opacity-60">Questions: hello@opendot.live</p>
+			<p className="t-caption mt-16 opacity-60">
+				Questions? Open an issue on{" "}
+				<a
+					href={`${GITHUB_URL}/issues`}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="underline underline-offset-4"
+				>
+					GitHub
+				</a>
+				.
+			</p>
 		</div>
 	);
 }
