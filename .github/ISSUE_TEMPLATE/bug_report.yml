@@ -1,0 +1,70 @@
+name: Bug report
+description: Something in OpenDot or opendot.live isn't working
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. Please search [existing issues](https://github.com/athulsreekumar/opendot/issues) first.
+        **Security problem?** Don't file it here: use [private reporting](https://github.com/athulsreekumar/opendot/security/advisories/new) instead.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where is the bug?
+      options:
+        - Mac app
+        - Website (opendot.live)
+        - Docs or README
+        - Build or CI
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you see, and what did you expect instead?
+      placeholder: When I ask my Inbox Dot to summarise today's email, it replies "no tools available".
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Create a Dot from the Inbox template
+        2. Give it Google Workspace in Dot info → Tools
+        3. Ask "what's new in my inbox?"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: OpenDot version or commit
+      description: Settings → About in the app, or `git rev-parse --short HEAD` if you built from source.
+      placeholder: 0.1.0 / f4a2666
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version and Mac
+      placeholder: macOS 15.1, MacBook Air M2
+  - type: input
+    id: model
+    attributes:
+      label: Model and provider
+      description: Which model was the Dot using? Leave out keys.
+      placeholder: Claude via Anthropic / llama3.1 via Ollama
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and screenshots
+      description: Relevant lines from `~/.opendot/logs/main.log`, screenshots or a screen recording. Remove anything personal first.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and this isn't a duplicate.
+          required: true
+        - label: I removed API keys, emails and other personal data from what I pasted.
+          required: true
