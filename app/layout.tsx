@@ -5,6 +5,7 @@ import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { EarlyAccessDialog } from "@/components/site/EarlyAccessDialog";
 import { Footer } from "@/components/site/Footer";
 import { Nav } from "@/components/site/Nav";
+import { FEATURES } from "@/lib/features";
 import { OG_ALT, SEO_DESCRIPTION, SEO_KEYWORDS } from "@/lib/seo";
 import { IS_PRODUCTION, SITE_URL } from "@/lib/site";
 
@@ -82,7 +83,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 				<Nav />
 				<main id="main">{children}</main>
 				<Footer />
-				<EarlyAccessDialog />
+				{FEATURES.earlyAccess && <EarlyAccessDialog />}
 			</body>
 		</html>
 	);

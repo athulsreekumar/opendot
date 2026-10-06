@@ -5,6 +5,7 @@ import { gsap, useGSAP } from "@/components/motion/gsap";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { FilmDialog } from "@/components/site/FilmDialog";
 import { Button } from "@/components/ui/Button";
+import { GitHubButton } from "@/components/ui/GitHubButton";
 import { MacOnlyPill } from "@/components/ui/MacOnlyPill";
 import { MacWindow } from "@/components/ui/MacWindow";
 import { hero } from "@/lib/copy";
@@ -71,8 +72,15 @@ export function Hero() {
 					className="hero-in mt-8 flex flex-col items-center gap-2 sm:flex-row sm:gap-6 md:mt-10"
 					style={{ "--i": 4 } as React.CSSProperties}
 				>
-					<Button size="lg" onClick={() => openEarlyAccess("hero")}>
-						{hero.cta}
+					{FEATURES.earlyAccess ? (
+						<Button size="lg" onClick={() => openEarlyAccess("hero")}>
+							{hero.cta}
+						</Button>
+					) : (
+						<GitHubButton>{hero.cta}</GitHubButton>
+					)}
+					<Button variant="secondary" size="lg" href="/download">
+						{hero.build}
 					</Button>
 					{FEATURES.film && (
 						<Button variant="secondary" size="lg" onClick={openFilm}>

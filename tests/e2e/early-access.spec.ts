@@ -1,4 +1,8 @@
 import { expect, type Page, test } from "@playwright/test";
+import { FEATURES } from "../../lib/features";
+
+// The signup form is switched off while the site points people to GitHub (lib/features.ts).
+test.skip(!FEATURES.earlyAccess, "early-access signup is switched off");
 
 const OPEN = `window.dispatchEvent(new CustomEvent("opendot:early-access",{detail:{source:"nav"}}))`;
 

@@ -5,5 +5,7 @@ export const FEATURES = {
 	/** Autoplaying hero loop over the hero screenshot. Turn on once public/film/hero-loop-1080.mp4 exists. */
 	heroLoop: false,
 	/** The "Open source. Built in the open." section. */
-	openSource: false,
+	openSource: true,
+	/** Early-access email signup (form, dialog, /api/early-access). Off: the site sends people to GitHub instead. */
+	earlyAccess: false,
 } as const;

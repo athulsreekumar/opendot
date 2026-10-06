@@ -1,6 +1,6 @@
 # OpenDot
 
-> OpenDot is a free Mac app (macOS 14 or later, Apple silicon and Intel) that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks. Your data stays on your Mac. OpenDot is in early access and is not yet available to download.
+> OpenDot is a free, open source Mac app (macOS 14 or later, Apple silicon and Intel) that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks. Your data stays on your Mac. The source is on GitHub under the MIT license: https://github.com/athulsreekumar/opendot
 
 ## Key facts
 
@@ -11,11 +11,11 @@
 - Any model: Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter, Groq, or local models through Ollama, LM Studio, llama.cpp, vLLM, or any compatible URL.
 - Connections: Google Workspace (Gmail, Calendar, Drive), Microsoft 365 (Outlook, Calendar, OneDrive, Teams), Mac Calendar, Reminders, Contacts, Notes and files, unlimited MCP servers, and webhooks.
 - Replies stream from the first token.
-- Price: free. Status: early access.
+- Price: free. License: MIT. Source: https://github.com/athulsreekumar/opendot
 
 ## Links
 
-- [Home](https://opendot.live/): product overview, FAQ and early-access signup
+- [Home](https://opendot.live/): product overview, FAQ and how to get OpenDot
 - [Features](https://opendot.live/features): overview of everything OpenDot does
 - [SuperDot](https://opendot.live/features/superdot): ask one question, every Dot answers, with sources
 - [Private by default](https://opendot.live/features/privacy): local storage, masking, approvals, Keychain
@@ -25,8 +25,8 @@
 - [Guide: local AI assistant on Mac with Ollama](https://opendot.live/guides/local-ai-assistant-mac-ollama)
 - [Guide: AI email assistant for Gmail](https://opendot.live/guides/ai-email-assistant-gmail)
 - [Guide: MCP servers on Mac](https://opendot.live/guides/mcp-servers-mac)
-- [Download](https://opendot.live/download): early access, GitHub builds and building from source
-- [Privacy policy](https://opendot.live/privacy): what the early-access list collects and how to be removed
+- [Download](https://opendot.live/download): building from source on GitHub and ready-made builds
+- [Privacy policy](https://opendot.live/privacy): what the site collects
 - [Source code](https://github.com/athulsreekumar/opendot): MIT licensed
 - [Sitemap](https://opendot.live/sitemap.xml)
 - Contact: hello@opendot.live

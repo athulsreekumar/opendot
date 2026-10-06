@@ -4,8 +4,12 @@ import { useRef } from "react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion/gsap";
 import { Reveal } from "@/components/motion/Reveal";
 import { EarlyAccessForm } from "@/components/site/EarlyAccessForm";
+import { Button } from "@/components/ui/Button";
+import { GitHubButton } from "@/components/ui/GitHubButton";
+import { MacOnlyPill } from "@/components/ui/MacOnlyPill";
 import { Mascot } from "@/components/ui/Mascot";
 import { finalCta } from "@/lib/copy";
+import { FEATURES } from "@/lib/features";
 
 export function FinalCta() {
 	const floatRef = useRef<HTMLDivElement>(null);
@@ -19,7 +23,7 @@ export function FinalCta() {
 	);
 
 	return (
-		<section id="early-access" className="chapter-light section-pad relative overflow-hidden">
+		<section id="get-opendot" className="chapter-light section-pad relative overflow-hidden">
 			<div className="container-site relative flex flex-col items-center text-center">
 				<Reveal className="relative flex flex-col items-center">
 					<div
@@ -28,7 +32,7 @@ export function FinalCta() {
 						style={{ background: "radial-gradient(circle, var(--brand-glow) 0%, transparent 68%)" }}
 					/>
 					<div ref={floatRef} className="relative">
-						<Mascot pose="envelope" size={200} />
+						<Mascot pose="cheer" size={200} />
 					</div>
 				</Reveal>
 				<Reveal delay={0.08} className="relative mt-6">
@@ -36,15 +40,27 @@ export function FinalCta() {
 					<p className="t-lead mx-auto mt-5 max-w-[600px] text-fg-2">{finalCta.lead}</p>
 				</Reveal>
 				<Reveal delay={0.16} className="relative mt-10 w-full max-w-[560px]">
-					<EarlyAccessForm source="final" variant="inline" />
+					{FEATURES.earlyAccess ? (
+						<EarlyAccessForm source="final" variant="inline" />
+					) : (
+						<div className="flex flex-col items-center gap-4">
+							<div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+								<GitHubButton>{finalCta.cta}</GitHubButton>
+								<Button variant="secondary" size="lg" href="/download">
+									{finalCta.build}
+								</Button>
+							</div>
+							<MacOnlyPill detail />
+						</div>
+					)}
 					<p className="t-caption mt-6 text-fg-3">
-						Want it now?{" "}
-						<a href="/download" className="text-accent underline-offset-4 hover:underline">
-							See how to download or build OpenDot
-						</a>
-						, or{" "}
+						New here?{" "}
 						<a href="/features" className="text-accent underline-offset-4 hover:underline">
-							explore the features
+							Explore the features
+						</a>{" "}
+						or{" "}
+						<a href="/guides" className="text-accent underline-offset-4 hover:underline">
+							read a guide
 						</a>
 						.
 					</p>

@@ -511,7 +511,7 @@ export const GUIDE_PAGES: ContentPage[] = [
 				h2: "What you will end up with",
 				p: [
 					"By the end of this guide you will have OpenDot running on your Mac with a local model served by Ollama. Your Dots will think on your own machine, with no API key, no per-token cost and nothing sent to a cloud model.",
-					"OpenDot is in early access, so there is no signed download yet. This guide builds it from source, which takes a few minutes and is the same route the developers use.",
+					"OpenDot is free and open source, and there is no signed installer yet. This guide builds it from source, which takes a few minutes and is the same route the developers use.",
 				],
 			},
 			{
@@ -570,7 +570,7 @@ export const GUIDE_PAGES: ContentPage[] = [
 			{
 				h2: "The first-launch warning",
 				p: [
-					"Early-access builds are not notarized by Apple yet, so macOS warns you the first time. Right-click OpenDot in Applications, choose Open, then Open again. Or run xattr -dr com.apple.quarantine /Applications/OpenDot.app once.",
+					"OpenDot builds are not notarized by Apple yet, so macOS warns you the first time. Right-click OpenDot in Applications, choose Open, then Open again. Or run xattr -dr com.apple.quarantine /Applications/OpenDot.app once.",
 				],
 			},
 			{
@@ -794,11 +794,11 @@ export const GUIDE_PAGES: ContentPage[] = [
 export const DOWNLOAD_PAGE: ContentPage = {
 	kind: "download",
 	path: "/download",
-	title: "Download OpenDot for Mac (Early Access)",
+	title: "Download OpenDot for Mac: Free and Open Source",
 	description:
-		"OpenDot is free, open source and in early access for macOS 14+. Join the list, grab a build from GitHub, or build it from source in minutes.",
+		"OpenDot is free and open source for macOS 14+. Get the code on GitHub and build the Mac app in minutes, or grab a ready-made build.",
 	h1: "Download OpenDot for Mac",
-	lead: "OpenDot is free, MIT licensed and in early access. There is no signed installer yet, but you can join the list, grab a build from GitHub or build it yourself in a few minutes.",
+	lead: "OpenDot is free and MIT licensed, and the full source is on GitHub. Build it for your Mac in a few minutes, or grab a ready-made build.",
 	keyword: "OpenDot download",
 	eyebrow: "Download",
 	image: { name: "sidebar-full", alt: "OpenDot on a Mac: the sidebar with a team of Dots." },
@@ -813,19 +813,7 @@ export const DOWNLOAD_PAGE: ContentPage = {
 			],
 		},
 		{
-			h2: "Option 1: join early access",
-			p: [
-				"Add your email and we will send you the download as soon as it is ready. We only email you about OpenDot. It takes ten seconds, and it is the easiest way to get a ready-made app.",
-			],
-		},
-		{
-			h2: "Option 2: a ready-made build from GitHub",
-			p: [
-				"Every change to the app on main builds DMGs for both chip types in the Mac app CI on GitHub. Open the latest green run and download the OpenDot-mac artifact. Tagged versions are published on the GitHub Releases page.",
-			],
-		},
-		{
-			h2: "Option 3: build it from source",
+			h2: "Option 1: build it from source",
 			steps: [
 				{
 					title: "Get the code",
@@ -841,9 +829,15 @@ export const DOWNLOAD_PAGE: ContentPage = {
 			],
 		},
 		{
+			h2: "Option 2: a ready-made build",
+			p: [
+				"Every change to the app on main builds DMGs for both chip types in the Mac app CI on GitHub. Open the latest green run and download the OpenDot-mac artifact. Tagged versions are published on the GitHub Releases page.",
+			],
+		},
+		{
 			h2: "The first-launch warning",
 			p: [
-				"Early-access builds are not notarized by Apple yet, so macOS warns you the first time you open the app. Right-click OpenDot in Applications, choose Open, then Open again. Or run this once:",
+				"OpenDot builds are not notarized by Apple yet, so macOS warns you the first time you open the app. Right-click OpenDot in Applications, choose Open, then Open again. Or run this once:",
 			],
 			code: "xattr -dr com.apple.quarantine /Applications/OpenDot.app",
 		},
@@ -877,7 +871,7 @@ export const DOWNLOAD_PAGE: ContentPage = {
 		},
 		{
 			q: "Why does macOS warn me when I open it?",
-			a: "Early-access builds are not notarized by Apple yet. Right-click the app and choose Open once, or run the xattr command above.",
+			a: "OpenDot builds are not notarized by Apple yet. Right-click the app and choose Open once, or run the xattr command above.",
 		},
 		{
 			q: "Which Macs does it run on?",

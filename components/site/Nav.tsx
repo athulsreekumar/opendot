@@ -5,9 +5,11 @@ import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./nav.css";
 import { Button } from "@/components/ui/Button";
+import { GitHubButton } from "@/components/ui/GitHubButton";
 import { LogoMark } from "@/components/ui/LogoMark";
 import { nav } from "@/lib/copy";
 import { openEarlyAccess } from "@/lib/early-access-client";
+import { FEATURES } from "@/lib/features";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -144,16 +146,22 @@ export function Nav() {
 				</ul>
 
 				<div className="flex items-center gap-1.5">
-					<Button
-						size="md"
-						className="!min-h-9 !px-4 !text-[13px]"
-						onClick={() => {
-							setOpen(false);
-							openEarlyAccess("nav");
-						}}
-					>
-						{nav.cta}
-					</Button>
+					{FEATURES.earlyAccess ? (
+						<Button
+							size="md"
+							className="!min-h-9 !px-4 !text-[13px]"
+							onClick={() => {
+								setOpen(false);
+								openEarlyAccess("nav");
+							}}
+						>
+							{nav.cta}
+						</Button>
+					) : (
+						<GitHubButton size="md" className="!min-h-9 !px-4 !text-[13px]" onClick={() => setOpen(false)}>
+							{nav.cta}
+						</GitHubButton>
+					)}
 					<button
 						ref={toggle}
 						type="button"

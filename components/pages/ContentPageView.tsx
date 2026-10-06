@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { MacWindow } from "@/components/ui/MacWindow";
 import { Mascot } from "@/components/ui/Mascot";
 import { Screenshot } from "@/components/ui/Screenshot";
-import { GITHUB_URL } from "@/lib/copy";
+import { finalCta, GITHUB_URL } from "@/lib/copy";
 import { type Block, type ContentPage, pageByPath } from "@/lib/pages";
 import { breadcrumbs, pageJsonLd } from "@/lib/seo";
 import "@/components/sections/faq.css";
@@ -144,8 +144,14 @@ export function ContentPageView({ page }: { page: ContentPage }) {
 							<div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2">
 								<EarlyAccessButton size="lg" />
 								{page.kind === "download" ? (
-									<Button variant="secondary" size="lg" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-										View on GitHub
+									<Button
+										variant="secondary"
+										size="lg"
+										href={`${GITHUB_URL}#build-it-yourself`}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										Build guide on GitHub
 									</Button>
 								) : (
 									<Button variant="secondary" size="lg" href="/download">
@@ -220,16 +226,13 @@ export function ContentPageView({ page }: { page: ContentPage }) {
 
 			<section className="chapter-dark section-pad bg-bg text-fg">
 				<div className="container-text flex flex-col items-center text-center">
-					<Mascot pose="envelope" size={140} still />
-					<h2 className="t-display-m mt-6">Be first in line.</h2>
-					<p className="t-lead mt-4 max-w-[34ch] text-fg-2">
-						OpenDot is coming to the Mac. Join the early-access list and we will send you the download as soon as it is
-						ready.
-					</p>
+					<Mascot pose="cheer" size={140} still />
+					<h2 className="t-display-m mt-6">{finalCta.h2[0]}</h2>
+					<p className="t-lead mt-4 max-w-[34ch] text-fg-2">{finalCta.lead}</p>
 					<div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
 						<EarlyAccessButton size="lg" />
-						<Button variant="secondary" size="lg" href="/">
-							Back to OpenDot
+						<Button variant="secondary" size="lg" href="/download">
+							{finalCta.build}
 						</Button>
 					</div>
 				</div>

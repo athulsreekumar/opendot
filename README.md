@@ -12,9 +12,9 @@ work around the clock, and keep your data on your Mac.
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-000000?logo=apple&logoColor=white)](#requirements)
 [![Apple silicon and Intel](https://img.shields.io/badge/Apple%20silicon%20%26%20Intel-supported-0e9f8a)](#build-it-yourself)
 [![License: MIT](https://img.shields.io/badge/license-MIT-0e9f8a)](LICENSE)
-[![Status: early access](https://img.shields.io/badge/status-early%20access-16b39b)](https://opendot.live)
+[![Open source](https://img.shields.io/badge/open%20source-yes-16b39b)](https://github.com/athulsreekumar/opendot)
 
-[**Website**](https://opendot.live) · [**Get early access**](https://opendot.live/#early-access) · [**Build it yourself**](#build-it-yourself) · [**How it works**](#how-it-works) · [**FAQ**](#faq)
+[**Website**](https://opendot.live) · [**Build it yourself**](#build-it-yourself) · [**How it works**](#how-it-works) · [**FAQ**](#faq)
 
 <br />
 
@@ -128,7 +128,7 @@ changes the world happens without your yes.
 
 ## Build it yourself
 
-OpenDot is in early access, so there is no signed download yet. You can build and run it from source in a few minutes.
+There is no signed installer yet, but OpenDot is free and open source: build and run it from source in a few minutes.
 
 ### Requirements
 
@@ -240,7 +240,7 @@ catch up on what they missed.
 <details>
 <summary><b>Why does macOS warn me the first time I open it?</b></summary>
 <br />
-Early-access builds are not notarized by Apple yet. Right-click the app and choose Open once, or run the
+OpenDot builds are not notarized by Apple yet. Right-click the app and choose Open once, or run the
 <code>xattr</code> command above.
 </details>
 
@@ -277,7 +277,7 @@ npm run e2e   # drives the real app with a scripted model
 
 <div align="center">
 <br />
-<img src="public/mascot/odi-envelope.webp" alt="Odi holding an envelope" width="110" />
+<img src="public/mascot/odi-cheer.webp" alt="Odi cheering" width="110" />
 <br />
-<sub><b><a href="https://opendot.live/#early-access">Get early access</a></b> and we'll send you the download as soon as it's ready.</sub>
+<sub><b><a href="#build-it-yourself">Build it yourself</a></b> in a few minutes, and give the repo a ⭐ if you like it.</sub>
 </div>
