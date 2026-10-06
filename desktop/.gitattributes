@@ -1,0 +1,4 @@
+# Biome and the tests expect LF; stop Windows checkouts from converting to CRLF.
+* text=auto eol=lf
+*.png binary
+*.ico binary
