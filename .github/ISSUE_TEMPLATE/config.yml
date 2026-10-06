@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/athulsreekumar/opendot/discussions
+    about: Ask a question, share a Dot you built, or discuss an idea.
+  - name: Report a security vulnerability
+    url: https://github.com/athulsreekumar/opendot/security/advisories/new
+    about: Please report security problems privately, not as a public issue.
+  - name: Build and setup help
+    url: https://opendot.live/download
+    about: How to build OpenDot and get it running on your Mac.

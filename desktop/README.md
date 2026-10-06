@@ -99,3 +99,7 @@ Set `OPENDOT_DATA_DIR=/tmp/somewhere` to use a separate data folder, and `OPENDO
 - Mac Calendar/Reminders/Contacts/Notes use AppleScript (JXA); macOS asks for permission the first time.
 
 The full design is in [`PLAN.md`](PLAN.md) and [`docs/spec/`](docs/spec/). MIT licensed.
+
+## Contributing
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) in the repository root. Security problems: [SECURITY.md](../SECURITY.md).

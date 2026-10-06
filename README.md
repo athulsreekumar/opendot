@@ -13,8 +13,9 @@ work around the clock, and keep your data on your Mac.
 [![Apple silicon and Intel](https://img.shields.io/badge/Apple%20silicon%20%26%20Intel-supported-0e9f8a)](#build-it-yourself)
 [![License: MIT](https://img.shields.io/badge/license-MIT-0e9f8a)](LICENSE)
 [![Open source](https://img.shields.io/badge/open%20source-yes-16b39b)](https://github.com/athulsreekumar/opendot)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-0e9f8a)](CONTRIBUTING.md)
 
-[**Website**](https://opendot.live) · [**Build it yourself**](#build-it-yourself) · [**How it works**](#how-it-works) · [**FAQ**](#faq)
+[**Website**](https://opendot.live) · [**Build it yourself**](#build-it-yourself) · [**How it works**](#how-it-works) · [**FAQ**](#faq) · [**Contribute**](CONTRIBUTING.md)
 
 <br />
 
@@ -263,7 +264,19 @@ OpenDot is made for the Mac. It uses the macOS Keychain and Mac apps like Calend
 
 ## Contributing
 
-Issues and pull requests are welcome. Before opening a pull request for the app:
+OpenDot is open source and built in the open. Bug reports, ideas, docs, Dot templates, connectors and code are all
+welcome.
+
+- **Start here:** [CONTRIBUTING.md](CONTRIBUTING.md) covers setup, tests, code style and how pull requests work.
+- **Good first issues:** [`good first issue`](https://github.com/athulsreekumar/opendot/labels/good%20first%20issue) and
+  [`help wanted`](https://github.com/athulsreekumar/opendot/labels/help%20wanted).
+- **Where it's heading:** [ROADMAP.md](ROADMAP.md). What changed: [CHANGELOG.md](CHANGELOG.md).
+- **Questions:** [GitHub Discussions](https://github.com/athulsreekumar/opendot/discussions). More in [SUPPORT.md](SUPPORT.md).
+- **Security:** please report privately, see [SECURITY.md](SECURITY.md).
+
+Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+Quick check before opening a pull request for the app:
 
 ```bash
 cd desktop
