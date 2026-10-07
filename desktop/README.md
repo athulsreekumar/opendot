@@ -11,6 +11,9 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
   emoji, colour, tagline and personality (streamed live). Templates are just example prompts.
 - **Tools**: unlimited MCP servers (local or remote, import your Claude Desktop / Cursor config), Google Workspace, Microsoft 365,
   and computer capabilities (files, shell, screenshots, clipboard, notifications, plus Calendar, Reminders, Contacts and Notes on a Mac).
+- **Knowledge**: point OpenDot at folders of notes and documents. It indexes them on your computer (BM25 search, no
+  extra services), keeps the index current as files change, and any Dot you allow can search it and answer with
+  source chips you can click to open the file.
 - **Always on**: watchers for Gmail, Outlook, calendars, Drive, OneDrive, Teams, folders, web pages, RSS, MCP resources, schedules
   and a local webhook. Dots reply with `[URGENT]`, `[UPDATE]` or stay quiet, within budgets you set.
 - **SuperDot**: ask anything; it fans out to the right Dots in parallel, streams their answers live, then streams one answer
@@ -103,6 +106,7 @@ Everything is on your computer in `~/.opendot/` (`%USERPROFILE%\.opendot\` on Wi
 ├─ dots/<dotId>/links/<peer>/      # conversations other Dots had with this Dot
 ├─ dots/<dotId>/events.jsonl       # events from its watchers
 ├─ dots/<dotId>/workspace/         # the only folder its file tools can touch (plus folders you add)
+├─ knowledge/                      # Knowledge: folders.json and one index-<id>.json per indexed folder
 ├─ audit/audit.jsonl               # what Dots did (no message contents)
 ├─ secrets.bin                     # API keys & OAuth tokens, encrypted with the macOS Keychain (Windows: DPAPI, tied to your Windows account)
 └─ logs/main.log
@@ -144,6 +148,19 @@ message; the command; the file path and a preview).
 - When the window is not in front, a new request raises a notification ("Inbox wants to send an email"); several within 10
   seconds become one ("3 approvals waiting"). Clicking it opens the inbox. Requests that nobody answers still expire (5 minutes,
   30 for background work) and appear in History as Expired.
+
+## Knowledge (search your own notes)
+
+Connections → **Knowledge** → **Add folder**. OpenDot indexes Markdown, text, reStructuredText, Org, CSV, JSON, HTML
+(tags stripped) and common source code. It skips hidden folders, `node_modules`, symlinks, files over 2 MB and binaries.
+PDFs aren't indexed yet. The status, file count, size and last index time are shown for each folder, with **Re-index**
+and **Remove** (your files are never touched). Changes are picked up automatically; only changed files are re-read.
+
+Allow Knowledge for a Dot in **Dot info → Tools** (or tick it when you create the Dot) and it gets two read-only tools:
+`knowledge_search` (best passages with file, heading and line range) and `knowledge_read` (a file or line range, only
+inside your indexed folders). Answers show the files they used as chips: click to open the file, right-click to show it in
+its folder. Passages reach a cloud model like any other tool output, so PII masking applies. The index lives in
+`~/.opendot/knowledge/`.
 
 ## Build from source
 

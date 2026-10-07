@@ -4,6 +4,7 @@ import { googleTools } from "../../connections/google";
 import { type MacDeps, macTools } from "../../connections/mac";
 import { microsoftTools } from "../../connections/microsoft";
 import type { NativeToolDeps } from "../../connections/native-types";
+import { type KnowledgeToolsDeps, knowledgeTools } from "../../knowledge/tools";
 import type { InlineExtension, ToolDefinition } from "../pi-adapter";
 
 export interface NativeToolsDeps {
@@ -11,10 +12,12 @@ export interface NativeToolsDeps {
 	base: Omit<NativeToolDeps, "getAccessToken">;
 	accessToken: (type: "google" | "microsoft") => Promise<string>;
 	mac: Omit<MacDeps, keyof NativeToolDeps>;
+	knowledge?: KnowledgeToolsDeps;
 }
 
 /** Tool name → owning connection type (used by the policy engine). */
-export function nativeOwner(toolName: string): "google" | "microsoft" | "mac" | undefined {
+export function nativeOwner(toolName: string): "google" | "microsoft" | "mac" | "knowledge" | undefined {
+	if (/^knowledge_/.test(toolName)) return "knowledge";
 	if (/^(gmail|calendar|drive)_/.test(toolName)) return "google";
 	if (/^(outlook|onedrive|teams)_/.test(toolName)) return "microsoft";
 	if (/^mac_/.test(toolName) || ["read", "write", "edit", "ls", "grep", "find", "bash"].includes(toolName))
@@ -36,7 +39,9 @@ export function nativeToolsExtension(deps: NativeToolsDeps): InlineExtension {
 					tools.push(
 						...microsoftTools(g.features, { ...deps.base, getAccessToken: () => deps.accessToken("microsoft") }),
 					);
-				else if (t === "mac") {
+				else if (t === "knowledge") {
+					if (deps.knowledge) tools.push(...knowledgeTools(deps.knowledge));
+				} else if (t === "mac") {
 					tools.push(
 						...macTools(g.features, {
 							...deps.base,

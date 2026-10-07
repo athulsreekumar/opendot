@@ -16,6 +16,7 @@ import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
 import { EventCard } from "./EventCard";
 import { FanOutCard } from "./FanOutCard";
+import { KnowledgeSources } from "./KnowledgeSources";
 import { LinkCard, LinkExchangeCard } from "./LinkCard";
 import { StreamingMarkdown } from "./StreamingMarkdown";
 import { ToolCallChips } from "./ToolCallChip";
@@ -162,6 +163,9 @@ function Bubble({ m, meta, dotName }: { m: ChatMessageView; meta: BubbleMeta; do
 				<StreamingMarkdown text={m.text} streaming={m.streaming} messageId={m.id} />
 			) : null}
 			<ToolCallChips tools={chipTools} />
+			{!out && m.role === "assistant" && !m.streaming && m.text && (
+				<KnowledgeSources dotId={m.dotId} messageId={m.id} answer={m.text} />
+			)}
 			{m.error && (
 				<div
 					className="mt-1.5 flex items-center gap-1.5 rounded-md bg-danger-subtle px-2 py-1 text-xs text-danger"

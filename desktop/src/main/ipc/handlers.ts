@@ -18,6 +18,8 @@ export interface AppActions {
 	openExternal(url: string): Promise<void>;
 	revealPath(path: string): Promise<void>;
 	pickFolder(title?: string): Promise<string | undefined>;
+	/** Open a file with the OS default app. Resolves to an error message, or "" on success (Electron's shell.openPath). */
+	openPath(path: string): Promise<string>;
 	setLaunchAtLogin(on: boolean): Promise<void>;
 	reset(): Promise<void>;
 	broadcast: ElectronBridge["broadcast"];
@@ -279,6 +281,22 @@ export function buildHandlers(s: Services, app: AppActions, info: { version: str
 		// ── briefing ──
 		"briefing.run": () => s.briefing.run({ manual: true }),
 		"briefing.status": () => s.briefing.status(),
+		// ── knowledge ──
+		"knowledge.state": async () => s.knowledge.state(),
+		"knowledge.addFolder": async (path) => {
+			const f = await s.knowledge.addFolder(path);
+			await s.store.audit({ kind: "connection-change", summary: `Added knowledge folder ${f.name}`, data: {} });
+			return f;
+		},
+		"knowledge.removeFolder": (id) => s.knowledge.removeFolder(id),
+		"knowledge.reindex": (id, full) => s.knowledge.reindex(id, full),
+		"knowledge.open": async (path) => {
+			const t = await s.knowledge.openTarget(path);
+			if (t.mode === "reveal") return app.revealPath(t.path);
+			const err = await app.openPath(t.path);
+			if (err) await app.revealPath(t.path);
+		},
+		"knowledge.reveal": async (path) => app.revealPath((await s.knowledge.openTarget(path)).path),
 		// ── memory ──
 		"memory.get": (scope) => s.memory.list(scope),
 		"memory.upsert": (scope, item) => s.memory.upsert(scope, item, "user"),

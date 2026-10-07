@@ -161,7 +161,7 @@ export interface Dot {
 }
 
 // ───────────────────────── Connections ─────────────────────────
-export type ConnectionType = "mcp-stdio" | "mcp-http" | "google" | "microsoft" | "mac";
+export type ConnectionType = "mcp-stdio" | "mcp-http" | "google" | "microsoft" | "mac" | "knowledge";
 export type McpExposure = "direct" | "deferred" | "codemode" | "hidden";
 
 export interface McpStdioConfig {
@@ -440,6 +440,8 @@ export interface ToolCallView {
 	startedAt: ISODate;
 	endedAt?: ISODate;
 	parentId?: string;
+	/** Knowledge tools: the files the result came from (shown as citation chips). */
+	sources?: KnowledgeSourceView[];
 }
 
 export type PiiType =
@@ -836,4 +838,35 @@ export interface OAuthClientInput {
 export interface OpenDotErrorShape {
 	code: string;
 	message: string;
+}
+
+// ───────────────────────── Knowledge (local notes index) ─────────────────────────
+export type KnowledgeFolderStatus = "queued" | "indexing" | "ready" | "error";
+
+export interface KnowledgeFolderView {
+	id: string;
+	path: string;
+	name: string;
+	status: KnowledgeFolderStatus;
+	fileCount: number;
+	chunkCount: number;
+	totalBytes: number;
+	lastIndexedAt?: ISODate;
+	/** While indexing: files handled so far out of the files that need work. */
+	progress?: { done: number; total: number };
+	error?: string;
+	skipped: { pdf: number; tooLarge: number; other: number };
+}
+
+export interface KnowledgeState {
+	folders: KnowledgeFolderView[];
+}
+
+/** A file a knowledge answer came from. */
+export interface KnowledgeSourceView {
+	path: string;
+	name: string;
+	heading?: string;
+	startLine: number;
+	endLine: number;
 }
