@@ -45,7 +45,7 @@ describe("JSON-LD", () => {
 		const entities = page.mainEntity as { name: string; acceptedAnswer: { text: string } }[];
 		expect(entities.map((e) => [e.name, e.acceptedAnswer.text])).toEqual(copy.faq.items.map((i) => [i.q, i.a]));
 		expect(entities.length).toBeGreaterThanOrEqual(8);
-		expect(entities.length).toBeLessThanOrEqual(10);
+		expect(entities.length).toBeLessThanOrEqual(13);
 	});
 });
 

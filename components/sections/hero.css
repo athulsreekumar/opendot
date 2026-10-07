@@ -32,3 +32,31 @@
 	filter: blur(30px);
 	opacity: 0.3;
 }
+
+/* "New: OpenDot Organisation" announcement pill under the lead. */
+.hero-announce {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	min-height: 2.25rem;
+	padding: 0.3rem 0.75rem 0.3rem 0.9rem;
+	border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--accent) 9%, transparent);
+	font-size: 0.9375rem;
+	font-weight: 550;
+	color: var(--fg);
+	transition:
+		background-color 0.2s,
+		border-color 0.2s,
+		transform 0.2s;
+}
+.hero-announce:hover {
+	border-color: var(--accent);
+	background: color-mix(in srgb, var(--accent) 16%, transparent);
+	transform: translateY(-1px);
+}
+.hero-announce-new {
+	font-weight: 700;
+	color: var(--accent-hover);
+}

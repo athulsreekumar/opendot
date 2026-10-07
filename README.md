@@ -7,7 +7,8 @@
 ### Your AI team. Living on your computer.
 
 A Mac and Windows app that gives you **Dots**: AI assistants that each do one job brilliantly,
-work around the clock, and keep your data on your computer.
+work around the clock, and keep your data on your computer. Put them together as an **organisation**, one Dot per
+department, and let SuperDot run a project across them.
 
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-000000?logo=apple&logoColor=white)](#requirements)
 [![Windows 10/11](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?logo=windows&logoColor=white)](#requirements)
@@ -16,13 +17,13 @@ work around the clock, and keep your data on your computer.
 [![Open source](https://img.shields.io/badge/open%20source-yes-16b39b)](https://github.com/athulsreekumar/opendot)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-0e9f8a)](CONTRIBUTING.md)
 
-[**Website**](https://opendot.live) · [**Build it yourself**](#build-it-yourself) · [**How it works**](#how-it-works) · [**FAQ**](#faq) · [**Contribute**](CONTRIBUTING.md)
+[**Website**](https://opendot.live) · [**OpenDot Organisation**](#opendot-organisation) · [**Build it yourself**](#build-it-yourself) · [**How it works**](#how-it-works) · [**FAQ**](#faq) · [**Contribute**](CONTRIBUTING.md)
 
 <br />
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="public/shots/superbot-answer-dark@2x.webp" />
-  <img src="public/shots/superbot-answer-light@2x.webp" alt="OpenDot on a Mac: SuperDot asks Inbox, Calendar, Travel and Research at once and answers with sources" width="900" />
+  <source media="(prefers-color-scheme: dark)" srcset="public/shots/org-board-dark@2x.webp" />
+  <img src="public/shots/org-board-light@2x.webp" alt="OpenDot Organisation: a project board where department Dots work on the tasks of a plan SuperDot wrote" width="900" />
 </picture>
 
 </div>
@@ -40,6 +41,44 @@ right Dots at once and hands you one answer, with sources.
 
 Everything lives on your computer. Personal details are masked before anything reaches a cloud model, and nothing that
 changes the world happens without your yes.
+
+<br />
+
+## OpenDot Organisation
+
+**Run a project with a team of Dots, one per department.** An organisation is a team of Dots with a Dot for each domain
+you need: Engineering, Product, Design, Security, IT, Data, HR, Admin, Finance, Legal, Marketing, Sales and Support
+(13 in all). Start from a one-click template (Startup, Software team, Small business or Full) or tick the departments
+one by one. Each department Dot has its own skills: 28 built-in playbooks you can edit, plus your own.
+
+You tell SuperDot what you need, for example *"add single sign-on for our customers"*. SuperDot, acting as the project
+manager, writes a plan of tasks, each with an owner, the tasks it waits for and a reviewer.
+
+1. **You edit and approve the plan.** Nothing runs before you do.
+2. **Independent tasks run in parallel**, up to three at a time by default, as messages through Dot Links.
+3. **Dots can ask you a question** mid-task, and a reviewer Dot (or you) can request changes before a task counts as done.
+4. **You follow a board** (To do, In progress, In review, Done). Files the Dots make are listed as deliverables.
+5. **SuperDot finishes with a report** of what was delivered, where it is and what needs you.
+
+You can pause or cancel a project and give it a budget. Risky actions still wait for your approval, Dot Links rules and
+PII masking apply as always, and everything is local, open source and works with any model. How good the work is depends
+on the model you pick, so read what comes back.
+
+<table>
+  <tr>
+    <td width="50%"><img src="public/shots/org-plan-light@2x.webp" alt="The plan SuperDot wrote: tasks with owners, dependencies and reviewers, ready to edit and approve" /></td>
+    <td width="50%"><img src="public/shots/org-board-light@2x.webp" alt="The project board with columns To do, In progress, In review and Done" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Plan</b>: you edit it, then approve it</sub></td>
+    <td align="center"><sub><b>Board</b>: parallel work, reviews and deliverables</sub></td>
+  </tr>
+</table>
+
+Try it: build the app (below), open **Organisation** in the sidebar, pick a template, then ask SuperDot for a project.
+Walkthrough: [Run a project with an AI team](https://opendot.live/guides/run-a-project-with-ai-team). Details:
+[opendot.live/features/organisation](https://opendot.live/features/organisation) and the
+[spec](desktop/docs/spec/15-organisation.md).
 
 <br />
 
@@ -62,7 +101,7 @@ changes the world happens without your yes.
     <td width="50%" valign="top">
       <h3>🪄 One question. Every Dot.</h3>
       SuperDot knows which Dot knows what. It asks them in parallel, streams their answers live and combines them into one
-      reply with <code>[Inbox]</code>-style citations.
+      reply with <code>[Inbox]</code>-style citations. With an organisation, it also manages projects.
     </td>
     <td width="50%" valign="top">
       <h3>🔗 You decide who talks to whom.</h3>
@@ -123,6 +162,14 @@ changes the world happens without your yes.
   <tr>
     <td align="center"><sub><b>Dot Links</b>: who may talk to whom, and when</sub></td>
     <td align="center"><sub><b>Connections</b>: Google, Microsoft, your Mac and any MCP server</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="public/shots/org-team-light@2x.webp" alt="The Organisation team: one Dot per department, each with its skills" /></td>
+    <td width="50%"><img src="public/shots/org-drawer-light@2x.webp" alt="A task drawer with the result, deliverables and the reviewer's decision" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Organisation</b>: one Dot per department</sub></td>
+    <td align="center"><sub><b>Reviews</b>: a reviewer Dot checks each task</sub></td>
   </tr>
 </table>
 
@@ -218,6 +265,8 @@ and download the **OpenDot-mac** or **OpenDot-windows** artifact. Tagged version
 
 - **Built on [pi](https://github.com/earendil-works/pi/tree/main/packages/coding-agent)**, an open agent harness. Every Dot is
   its own pi session with its own persona, tools and memory.
+- **Organisation projects** reuse the same parts: SuperDot plans, and each task is a Dot Links message to a department Dot,
+  so approvals, budgets and masking apply.
 - **Electron + React**, with a WhatsApp-style layout: Dots on the left, the chat on the right.
 - **Your files, your computer.** Settings, chats and memory are plain files you can read in `~/.opendot`.
 
@@ -240,6 +289,14 @@ or LM Studio cost nothing.
 <br />
 Only what a cloud model needs to answer, and personal details are masked before it is sent. With a local model, nothing
 leaves your computer at all.
+</details>
+
+<details>
+<summary><b>What is OpenDot Organisation, and can SuperDot really manage a project?</b></summary>
+<br />
+It is a team of Dots, one per department, with SuperDot as project manager. SuperDot writes a plan, you edit and approve
+it, and the Dots do the tasks through Dot Links with your approvals, budgets and masking. It does not replace people, and
+the quality of the work depends on the model you choose. It is free and runs on your computer.
 </details>
 
 <details>

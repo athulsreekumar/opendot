@@ -35,8 +35,226 @@ export type ContentPage = {
 };
 
 const DATE = "2026-10-05";
+const ORG_DATE = "2026-10-07";
 
 export const FEATURE_PAGES: ContentPage[] = [
+	{
+		kind: "feature",
+		path: "/features/organisation",
+		title: "OpenDot Organisation: An AI Team of Departments",
+		description:
+			"Run a team of AI Dots like a company. SuperDot plans your project, you approve it, and department Dots work in parallel and review each other.",
+		h1: "An organisation of Dots, run by SuperDot",
+		lead: "OpenDot Organisation gives you one Dot per department and puts SuperDot in charge of the project. It writes the plan, you approve it, and the work runs in parallel with reviews along the way.",
+		keyword: "AI agent team",
+		eyebrow: "Organisation",
+		image: {
+			name: "org-board",
+			alt: "The project board in OpenDot with columns To do, In progress, In review and Done, and a card for each task.",
+		},
+		published: ORG_DATE,
+		blocks: [
+			{
+				h2: "What OpenDot Organisation is",
+				p: [
+					"A single AI chat is good at one question at a time. A real project needs several kinds of work, from requirements to design to code to a security check, and someone to keep it all in order. OpenDot Organisation sets that up with the parts OpenDot already has.",
+					"An organisation is a team of Dots, one per department. There are 13 departments: Engineering, Product, Design, Security, IT, Data, HR, Admin, Finance, Legal, Marketing, Sales and Support. You choose which ones you need, and OpenDot creates each as an ordinary Dot with its own chat, model, connections and approvals.",
+					'SuperDot, the assistant that sits above your Dots, becomes the project manager. You tell it what you need, for example "add single sign-on for our customers". It writes a plan, you approve the plan, and the department Dots do the work.',
+				],
+				shot: {
+					name: "org-setup",
+					alt: "OpenDot's Organisation set-up screen with four team templates: Startup, Software team, Small business and Full.",
+					caption: "Set up your team from a template, or pick the departments one by one.",
+				},
+			},
+			{
+				h2: "How a project flows, step by step",
+				steps: [
+					{
+						title: "Set up your team",
+						body: "Open Organisation in OpenDot and choose a template or tick the departments you want. OpenDot creates one Dot for each.",
+					},
+					{
+						title: "Ask SuperDot for the outcome",
+						body: "Type the request in SuperDot's chat, or create a project from the Organisation screen with a title, a short brief and an optional budget.",
+					},
+					{
+						title: "SuperDot writes the plan",
+						body: "SuperDot breaks the request into tasks. Each task has one owner, the tasks it waits for, a reviewer and a note about what done means. You get a short note explaining the plan.",
+					},
+					{
+						title: "You edit and approve",
+						body: "Change a title, swap an owner, add a task, reorder things, or ask SuperDot to replan with your feedback. Nothing runs until you press Approve and start.",
+					},
+					{
+						title: "Independent tasks run in parallel",
+						body: "Tasks that do not depend on each other start together, three at a time by default. Each task is sent to its Dot as a message through Dot Links, so your rules, budgets and approvals apply.",
+					},
+					{
+						title: "Reviews and questions",
+						body: "When a task has a reviewer, a reviewer Dot (or you) checks the result. A Dot that gets stuck can stop and ask you a question instead of guessing.",
+					},
+					{
+						title: "Deliverables and a report",
+						body: "Files the Dots create are listed as deliverables on the task. When every task is done, SuperDot writes a report of what was delivered, where it is and what still needs you.",
+					},
+				],
+				shot: {
+					name: "org-plan",
+					alt: "The plan SuperDot wrote in OpenDot: a list of tasks with owners, dependencies and reviewers, ready to edit and approve.",
+					caption: "The plan is a list you can edit. Nothing runs until you approve it.",
+				},
+			},
+			{
+				h2: "Thirteen departments and four templates",
+				p: [
+					"Each department Dot has a persona that fits its job. Engineering makes small, safe changes and never pushes without your approval. Legal says it gives general information and not legal advice. Marketing does not invent statistics, quotes or customers. Every one of them asks you when something important is unclear.",
+					"Templates are starting points. You can add or remove a department later, or bring in a Dot you already have.",
+				],
+				list: [
+					"Startup: engineering, product, design, security, marketing, finance, admin.",
+					"Software team: engineering, product, design, security, IT, data.",
+					"Small business: admin, finance, HR, sales, marketing, support, legal.",
+					"Full organisation: all thirteen departments.",
+				],
+				shot: {
+					name: "org-team",
+					alt: "The Team tab in OpenDot: one Dot per department, each with its skills.",
+					caption: "The Team tab: one Dot per department, each with its skills.",
+				},
+			},
+			{
+				h2: "The departments, in one line each",
+				list: [
+					"Engineering: builds and fixes software.",
+					"Product: decides what to build and why.",
+					"Design: shapes how it looks and feels.",
+					"Security: finds risks and keeps data safe.",
+					"IT: keeps systems, accounts and devices running.",
+					"Data: turns numbers into answers.",
+					"HR: hires, onboards and looks after people.",
+					"Admin: keeps the office running smoothly.",
+					"Finance: watches budgets, invoices and costs.",
+					"Legal: reads contracts and spots legal risks.",
+					"Marketing: tells people what you make.",
+					"Sales: finds and looks after customers.",
+					"Support: helps customers and answers questions.",
+				],
+			},
+			{
+				h2: "Skills: playbooks for every department",
+				p: [
+					"A skill is a short playbook written in plain text, such as how to ship a change, how to review a contract or how to triage a support ticket. OpenDot ships 28 built-in skills: two for each department, plus two shared ones for status updates and for breaking down a request.",
+					"A Dot sees the names and descriptions of its skills and loads a full playbook only when it needs it. Built-in skills are read-only, but you can edit one and OpenDot saves your own copy. You can also write skills for how your team works. They are plain files in your own folder, and a skill cannot run anything by itself.",
+				],
+				shot: {
+					name: "org-skills",
+					alt: "The Skills library in OpenDot: built-in playbooks grouped by department, with an editor for your own.",
+					caption: "Playbooks grouped by department. Edit a built-in one to save your own copy.",
+				},
+			},
+			{
+				h2: "Review before anything counts as done",
+				p: [
+					"A task with a reviewer is not done when its owner says so. The reviewer Dot gets the task, the result and the file names, and replies with approval or a numbered list of changes. If it asks for changes, the owner revises the work and sends it back. After two rounds of changes by default, the task is handed to you with the whole history.",
+					"Engineering work is usually reviewed by Security, and anything risky or hard to undo can be reviewed by you. If a reviewer's answer is unclear, the task also comes to you.",
+				],
+				list: [
+					"Click any card on the board to open its drawer: the brief, the result, the deliverables and every review.",
+					"A task that needs your yes shows as waiting for you, with a notification.",
+					"Tasks for you, such as a decision or a signature, wait until you mark them done.",
+				],
+				shot: {
+					name: "org-drawer",
+					alt: "A task drawer in OpenDot showing the task's result, its deliverables and the reviewer's decision.",
+					caption: "The task drawer: result, deliverables and the review history.",
+				},
+			},
+			{
+				h2: "The board, the deliverables and the report",
+				p: [
+					"While a project runs you follow it on a board with four columns: To do, In progress, In review and Done. Each card shows the owner, how many tasks it waits for and how many attempts it has had. A switch turns the board into a plain list, and an activity log keeps titles and counts, never the contents of messages or files.",
+					"When the last task is done, SuperDot writes a final report. It lists what was delivered, where the files are, what needs you and any task that was skipped. You can open the files straight from the task.",
+				],
+				shot: {
+					name: "org-summary",
+					alt: "SuperDot's final report on a finished project in OpenDot, listing what was delivered and what needs you.",
+					caption: "SuperDot's report at the end of a project.",
+				},
+			},
+			{
+				h2: "Control: budgets, pause and approvals",
+				p: [
+					"You stay in charge the whole way. You can set a budget for a project, and OpenDot pauses it when the spend reaches that number. You can pause, resume or cancel a project at any time. If you quit OpenDot, running projects are paused, and nothing starts again until you resume it.",
+					"Risky actions still wait for you. A Dot that wants to send an email, delete a file or run a command waits in your Approvals inbox, exactly as it would outside a project. Dot Links rules apply to every message between Dots, and the team starts with one rule that lets organisation Dots work together, at most 30 times an hour, without sharing personal data.",
+				],
+			},
+			{
+				h2: "Privacy: still local, still masked",
+				p: [
+					"Everything lives in ~/.opendot on your computer, in plain files: the team, your skills and every project. There is no OpenDot server in the middle. PII masking applies as always, so emails, phone numbers and card details are masked before a cloud model sees them, and with a local model through Ollama or LM Studio nothing is sent to a cloud model at all.",
+					"Each department Dot starts with the access it needs and nothing more. Engineering, IT and Data can use files and the shell on your computer, and every other department gets files only. All other connections are off until you switch them on.",
+				],
+			},
+			{
+				h2: "Who it is for",
+				list: [
+					"Solo founders who want a team structure to hand work to, with a human sign-off at each step.",
+					"Small teams and small businesses that want drafts, checks and paperwork moving in parallel.",
+					"Developers and tinkerers who want to try multi-agent work with approvals, budgets and an audit trail they can read.",
+				],
+				p: [
+					"Be realistic about what it is. OpenDot Organisation is early, free and open source software that you build from source today. It does not replace the people on your team, and the quality of the work depends on the model you choose for each Dot, so read what comes back before you rely on it.",
+				],
+			},
+			{
+				h2: "How to try it from GitHub",
+				steps: [
+					{
+						title: "Get the code",
+						body: "Clone the repository and install the app's dependencies.",
+						code: "git clone https://github.com/athulsreekumar/opendot.git\ncd opendot/desktop\nnpm ci",
+					},
+					{
+						title: "Run OpenDot",
+						body: "Start the app and pick a model during the short setup. A cloud API key or a local Ollama model both work.",
+						code: "npm run dev",
+					},
+					{
+						title: "Open Organisation",
+						body: "Choose Organisation in the sidebar, pick a template and press Create my team. Then ask SuperDot for your first project.",
+					},
+				],
+			},
+		],
+		faq: [
+			{
+				q: "What is OpenDot Organisation?",
+				a: "A team of Dots, one per department, led by SuperDot as project manager. You ask for an outcome, SuperDot writes a plan, you approve it, and the department Dots do the work, review each other and report back.",
+			},
+			{
+				q: "Does anything run before I approve the plan?",
+				a: "No. SuperDot only writes the plan. You can edit it, ask for a new one, or cancel. Tasks start after you press Approve and start.",
+			},
+			{
+				q: "Can it spend a lot of money on model calls?",
+				a: "You can set a budget for each project, and OpenDot pauses the project when spending reaches it. The number of tasks that run at once, the rounds of review and the per-Dot budgets also limit cost, and local models cost nothing.",
+			},
+			{
+				q: "Will it replace my team?",
+				a: "No. It is a tool for getting drafts, checks and paperwork done in parallel. People stay in charge: you approve the plan, risky actions wait for you, and tasks can be assigned to you.",
+			},
+			{
+				q: "Which models does it use?",
+				a: "Any model OpenDot supports, and you can pick a different one for each Dot. Results depend on the model, so a stronger model for Engineering and a cheaper one for routine drafts is a sensible start.",
+			},
+			{
+				q: "Is it free and does it send my data anywhere?",
+				a: "It is free, open source and runs on your computer. If you use a cloud model with your own key, that provider only sees what PII masking allows. With a local model, nothing leaves your computer.",
+			},
+		],
+		related: ["/guides/run-a-project-with-ai-team", "/features/superdot", "/features/privacy", "/features/any-model"],
+	},
 	{
 		kind: "feature",
 		path: "/features/superdot",
@@ -105,6 +323,12 @@ export const FEATURE_PAGES: ContentPage[] = [
 				],
 			},
 			{
+				h2: "SuperDot can also run a project",
+				p: [
+					"If you set up an OpenDot Organisation, a team of Dots with one per department, SuperDot also acts as the project manager. For a request that needs several kinds of work, it writes a plan of tasks with owners and reviewers, you approve it, and the department Dots do the work. For quick questions, it keeps asking the right Dots and combining their answers as described above.",
+				],
+			},
+			{
 				h2: "What a good SuperDot question looks like",
 				list: [
 					"What do I need to prepare for tomorrow?",
@@ -135,7 +359,7 @@ export const FEATURE_PAGES: ContentPage[] = [
 				a: "No. OpenDot works with Claude, GPT, Gemini and other cloud models, and with local models through Ollama, LM Studio, llama.cpp and vLLM. You choose which model each Dot uses.",
 			},
 		],
-		related: ["/features/always-on", "/features/privacy", "/features/connections", "/download"],
+		related: ["/features/organisation", "/features/always-on", "/features/privacy", "/features/connections"],
 	},
 	{
 		kind: "feature",
@@ -491,6 +715,165 @@ export const FEATURE_PAGES: ContentPage[] = [
 ];
 
 export const GUIDE_PAGES: ContentPage[] = [
+	{
+		kind: "guide",
+		path: "/guides/run-a-project-with-ai-team",
+		title: "Run a Project with an AI Team in OpenDot",
+		description:
+			"Step by step: set up a team of Dots, ask SuperDot for a project, approve the plan and review the work. Free and open source, runs on your computer.",
+		h1: "How to run a project with a team of AI Dots",
+		lead: "A step-by-step guide to OpenDot Organisation. You set up your team, ask SuperDot for a project, approve the plan and review the work. You need OpenDot running and a model to use.",
+		keyword: "run a project with AI agents",
+		eyebrow: "Guide",
+		image: {
+			name: "org-plan",
+			alt: "The plan SuperDot wrote in OpenDot: a list of tasks with owners, dependencies and reviewers, ready to edit and approve.",
+		},
+		published: ORG_DATE,
+		blocks: [
+			{
+				h2: "What you will end up with",
+				p: [
+					"By the end of this guide you will have a team of Dots, one for each department you chose, and you will have run a small project through it. SuperDot will have written a plan, you will have approved it, the department Dots will have done the tasks, and you will have a board, some files and a report.",
+					"Pick a small, real request for your first project, such as a requirements draft, a help article or a launch checklist. A small project is easy to check, and it shows you how the pieces fit before you try something big.",
+				],
+			},
+			{
+				h2: "What you need",
+				list: [
+					"OpenDot running on your Mac or PC. If you have not built it yet, the download page walks through it, and it takes a few minutes.",
+					"A model for your Dots: a cloud API key, or a local model through Ollama or LM Studio.",
+					"An idea for a first project, and a few minutes to read what comes back.",
+				],
+			},
+			{
+				h2: "Steps",
+				steps: [
+					{
+						title: "Open Organisation",
+						body: "Choose Organisation in the sidebar. If you have no team yet, you see a set-up screen with four templates: Startup, Software team, Small business and Full.",
+					},
+					{
+						title: "Choose a template or your own departments",
+						body: "Pick the template closest to what you do, or choose Choose domains and tick the departments one by one. Press Create my team. OpenDot creates one Dot per department, and each one starts with the playbooks for its domain.",
+					},
+					{
+						title: "Check what each Dot may touch",
+						body: "Engineering, IT and Data can use files and the shell on your computer, and every other department gets files only. All other connections are off. Open a Dot's info panel to change that, and set any tool to Allow, Ask or Block.",
+					},
+					{
+						title: "Optional: choose a model per Dot",
+						body: "The default model applies to everyone. Give Engineering a stronger model, or run routine departments on a local one.",
+					},
+					{
+						title: "Ask SuperDot for a project",
+						body: "Open SuperDot's chat and describe the outcome, for example: add single sign-on for our customers. You can also open Projects in Organisation, press New project and fill in a title, a brief and an optional budget.",
+					},
+					{
+						title: "Wait for the plan",
+						body: "The project shows SuperDot is planning, then the plan arrives. SuperDot posts a card in its chat and sends a notification when it is ready.",
+					},
+					{
+						title: "Edit the plan and approve it",
+						body: "Read the tasks. Each has a title, a brief, an owner, a reviewer and the tasks it waits for. Edit anything, add or remove tasks, or press Ask SuperDot to replan and say what to change. When you are happy, press Approve and start.",
+					},
+					{
+						title: "Follow the board",
+						body: "The project opens as a board with To do, In progress, In review and Done. Tasks with no dependencies start together, up to three at a time by default. Click a card to open its drawer.",
+					},
+					{
+						title: "Answer questions and review",
+						body: "If a Dot needs something from you it stops and asks, and the card shows it. If a task needs your review, read the result and press Approve or Request changes with a note. A task assigned to you waits until you mark it done.",
+					},
+					{
+						title: "Read the report and open the files",
+						body: "When every task is done, SuperDot writes a report. Open the deliverables from each task to read or reveal the files the Dots made.",
+					},
+				],
+			},
+			{
+				h2: "Reading the board",
+				p: [
+					"Each card shows its owner, how many tasks it waits for and its attempt number. A card in In review is waiting for a reviewer Dot or for you. A card that failed shows a red mark, and you can retry it or skip it. If something cannot continue, the project says why in a short note at the top.",
+					"You can switch the board to a plain list, and the activity log keeps a line for each start, finish, review, question and error. It holds titles and counts only, never the contents of messages or files.",
+				],
+				shot: {
+					name: "org-board",
+					alt: "The project board in OpenDot with columns To do, In progress, In review and Done, and a card for each task.",
+					caption: "The board while a project runs.",
+				},
+			},
+			{
+				h2: "Reviewing a task",
+				p: [
+					"Open a card to see its drawer: the brief, the result, the files and every review so far. A reviewer Dot answers with approval or a numbered list of changes, and the owner revises and tries again. After two rounds by default, the task comes to you.",
+					"When you review, read the result against the brief. Request changes with a short, specific note, because the owner sees your note as its next instruction.",
+				],
+				shot: {
+					name: "org-drawer",
+					alt: "A task drawer in OpenDot showing the task's result, its deliverables and the reviewer's decision.",
+					caption: "A task drawer with the result, the files and the review.",
+				},
+			},
+			{
+				h2: "The report",
+				p: [
+					"SuperDot closes the project with a report. It says what was delivered and where, what needs you, and which tasks were skipped. Use it as your checklist: open each deliverable, check it against what you asked for and decide what to do next.",
+				],
+				shot: {
+					name: "org-summary",
+					alt: "SuperDot's final report on a finished project in OpenDot, listing what was delivered and what needs you.",
+					caption: "SuperDot's final report.",
+				},
+			},
+			{
+				h2: "Tips for better results",
+				list: [
+					"Write the request as an outcome, not a list of steps. SuperDot works out the steps.",
+					"Say what done means. A request with a clear finish gives a plan with clear tasks.",
+					"Set a budget on your first few projects while you learn how much a project costs with your model.",
+					"Edit the plan. Removing a task you do not need is cheaper than cancelling later.",
+					"Edit a skill if a department keeps missing your house rules. OpenDot saves your own copy, and you add it to the Dot's skills in the Team tab.",
+				],
+				shot: {
+					name: "org-skills",
+					alt: "The Skills library in OpenDot: built-in playbooks grouped by department, with an editor for your own.",
+					caption: "Skills are playbooks you can edit. Add your own for how your team works.",
+				},
+			},
+			{
+				h2: "If something goes wrong",
+				list: [
+					"The plan looks wrong: press Ask SuperDot to replan and describe what to change.",
+					"A task failed: open its card, read the error in plain words, then retry it or skip it.",
+					"A project paused: it may have reached its budget, or OpenDot was closed. Open it and resume when you are ready.",
+					"A Dot is blocked from messaging another: check your Dot Links rules. The team starts with one rule that lets organisation Dots work together.",
+				],
+				p: [
+					"Everything runs on your computer and every action goes through the same approvals and masking as the rest of OpenDot, so you can stop a project at any time.",
+				],
+			},
+		],
+		faq: [
+			{
+				q: "Do I need an API key?",
+				a: "You need a model. That can be a cloud model with your own API key, or a local model through Ollama or LM Studio, which costs nothing.",
+			},
+			{
+				q: "How long does a project take?",
+				a: "It depends on the request, the model you pick and how many tasks can run at once. If you quit OpenDot, running projects pause until you resume them.",
+			},
+			{
+				q: "Can I change the plan after it starts?",
+				a: "You can edit the plan before you approve it. After that, you can skip or retry tasks, answer questions and request changes in reviews, and you can pause or cancel the project.",
+			},
+			{
+				q: "Does a project send my files to the cloud?",
+				a: "Only to the model you pick for each Dot, and only what PII masking allows for cloud models. With a local model, nothing is sent to a cloud model.",
+			},
+		],
+		related: ["/features/organisation", "/features/superdot", "/guides/local-ai-assistant-mac-ollama", "/download"],
+	},
 	{
 		kind: "guide",
 		path: "/guides/local-ai-assistant-mac-ollama",
@@ -887,7 +1270,7 @@ export const FEATURES_HUB: ContentPage = {
 	path: "/features",
 	title: "OpenDot Features: Your AI Team for Mac",
 	description:
-		"Explore OpenDot: SuperDot, always-on Dots, private by default, any model including Ollama, and connections to Gmail, Microsoft 365 and MCP.",
+		"Explore OpenDot: Organisation, SuperDot, always-on Dots, private by default, any model including Ollama, and connections to Gmail and MCP.",
 	h1: "Everything your AI team can do",
 	lead: "OpenDot gives you Dots, single-purpose AI assistants that work around the clock and keep your data on your Mac. Here is how each part works.",
 	keyword: "AI assistants for Mac",
@@ -900,11 +1283,11 @@ export const FEATURES_HUB: ContentPage = {
 export const GUIDES_HUB: ContentPage = {
 	kind: "hub",
 	path: "/guides",
-	title: "OpenDot Guides: Local AI, Gmail and MCP",
+	title: "OpenDot Guides: AI Team, Local AI and MCP",
 	description:
-		"Step-by-step guides for running a local AI assistant with Ollama, setting up an AI email assistant for Gmail and using MCP servers on your Mac.",
+		"Step-by-step guides for running a project with a team of AI Dots, a local AI assistant with Ollama, an email assistant for Gmail and MCP servers.",
 	h1: "Guides for running AI on your Mac",
-	lead: "Practical, step-by-step walkthroughs for getting the most out of OpenDot, from local models to Gmail and MCP.",
+	lead: "Practical, step-by-step walkthroughs for getting the most out of OpenDot, from running a project with your team of Dots to local models, Gmail and MCP.",
 	keyword: "local AI assistant Mac",
 	eyebrow: "Guides",
 	image: { name: "settings-models", alt: "OpenDot's model settings." },

@@ -1,9 +1,10 @@
 # OpenDot
 
-> OpenDot is a free, open source app for Mac (macOS 14 or later, Apple silicon and Intel) and Windows (10 and 11, x64) that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks. Your data stays on your computer. The source is on GitHub under the MIT license: https://github.com/athulsreekumar/opendot
+> OpenDot is a free, open source app for Mac (macOS 14 or later, Apple silicon and Intel) and Windows (10 and 11, x64) that gives you a team of AI assistants called Dots. Each Dot has one job, a personality, and only the access you give it. Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks. SuperDot can also act as a project manager for a team of Dots, one per department (OpenDot Organisation). Your data stays on your computer. The source is on GitHub under the MIT license: https://github.com/athulsreekumar/opendot
 
 ## Key facts
 
+- OpenDot Organisation: a team of Dots, one per department (13 departments: Engineering, Product, Design, Security, IT, Data, HR, Admin, Finance, Legal, Marketing, Sales, Support), set up from one of 4 templates (Startup, Software team, Small business, Full). You ask SuperDot for a project, it writes a plan of tasks with an owner, dependencies and a reviewer, you edit and approve the plan, and nothing runs before you do. Independent tasks run in parallel, Dots can ask you a question, reviewer Dots can request changes, deliverables are listed and SuperDot writes a final report. 28 built-in department skills (playbooks) you can edit, plus your own. Budgets, pause, approvals, Dot Links rules and PII masking still apply. Results depend on the model you choose.
 - Dots: single-purpose AI assistants. You describe the job in plain English, choose what each Dot can touch, and OpenDot gives it a name, a look and a personality.
 - SuperDot: asks the right Dots at once and combines their answers, with sources.
 - Dot Links: you control which Dots can message which, with role-based access, schedules, rate limits and approvals.
@@ -17,11 +18,13 @@
 
 - [Home](https://opendot.live/): product overview, FAQ and how to get OpenDot
 - [Features](https://opendot.live/features): overview of everything OpenDot does
+- [OpenDot Organisation](https://opendot.live/features/organisation): a team of Dots, one per department, with SuperDot as project manager
 - [SuperDot](https://opendot.live/features/superdot): ask one question, every Dot answers, with sources
 - [Private by default](https://opendot.live/features/privacy): local storage, masking, approvals, encrypted keys
 - [Always on](https://opendot.live/features/always-on): Dots that run in the background and react to events
 - [Any model](https://opendot.live/features/any-model): cloud models, Ollama, LM Studio, llama.cpp, vLLM, any URL
 - [Connections](https://opendot.live/features/connections): Google Workspace, Microsoft 365, your Mac and MCP servers
+- [Guide: run a project with a team of AI Dots](https://opendot.live/guides/run-a-project-with-ai-team): set up your team, ask SuperDot, approve the plan, review the work
 - [Guide: local AI assistant on Mac with Ollama](https://opendot.live/guides/local-ai-assistant-mac-ollama)
 - [Guide: AI email assistant for Gmail](https://opendot.live/guides/ai-email-assistant-gmail)
 - [Guide: MCP servers on Mac](https://opendot.live/guides/mcp-servers-mac)

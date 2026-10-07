@@ -7,9 +7,15 @@ export const SITE_NAME = "OpenDot";
 
 /** Keyword-rich but natural description, kept under 160 characters. */
 export const SEO_DESCRIPTION =
-	"OpenDot is a free, open source Mac app that gives you a team of private AI assistants. They run 24/7, use any model, and keep your data on your Mac.";
+	"OpenDot is a free, open source app that gives you a team of private AI assistants, and lets SuperDot run projects across them. Any model, data stays local.";
 
 export const SEO_KEYWORDS = [
+	"AI agent team",
+	"multi-agent AI app",
+	"AI project manager",
+	"AI departments",
+	"open source AI agents",
+	"AI team for small business",
 	"AI assistants for Mac",
 	"AI agents Mac app",
 	"personal AI team",
@@ -29,11 +35,16 @@ export const SEO_KEYWORDS = [
 	"open source AI agents Windows",
 ];
 
-export const OG_ALT = "OpenDot: your AI team, living on your computer. For Mac and Windows.";
+export const OG_ALT =
+	"OpenDot: your AI team, living on your computer, now with an organisation of Dots run by SuperDot. For Mac and Windows.";
 
 const abs = (path: string) => `${SITE_URL}${path}`;
 
 const SHOTS = [
+	{
+		name: "org-board",
+		alt: "OpenDot Organisation: a project board with a card for each task a department Dot is working on",
+	},
 	{ name: "sidebar-full", alt: "OpenDot on a Mac: the sidebar with a team of Dots" },
 	{ name: "superbot-answer", alt: "SuperDot's combined answer, assembled from every Dot, with sources." },
 	{ name: "links-screen", alt: "OpenDot's Dot Links settings showing which Dots may message each other" },
@@ -46,6 +57,11 @@ const SHOTS = [
 ];
 
 export const FEATURE_LIST = [
+	"OpenDot Organisation: a team of Dots, one per department (13 departments, 4 one-click templates), with SuperDot as project manager",
+	"SuperDot plans a project into tasks with an owner, dependencies and a reviewer, and you edit and approve the plan before anything runs",
+	"Independent tasks run in parallel, Dots can ask you a question, reviewer Dots can request changes, and deliverables and a final report are tracked on a board",
+	"28 built-in department playbooks (skills) you can edit, plus your own",
+	"Project budgets, pause and cancel, approvals, Dot Links rules and PII masking apply to every task",
 	"A team of AI assistants called Dots, each with one job, a personality and scoped access",
 	"Dots run 24/7 in the background and react to new email, calendar changes, files and webhooks",
 	"SuperDot asks the right Dots and combines their answers with sources",

@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronRight } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { gsap, useGSAP } from "@/components/motion/gsap";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
@@ -68,8 +69,16 @@ export function Hero() {
 				<p className="t-lead hero-in mt-6 max-w-[38ch] text-fg-2 md:mt-8" style={{ "--i": 3 } as React.CSSProperties}>
 					{hero.lead}
 				</p>
+				<a
+					href={hero.announce.href}
+					className="hero-in hero-announce mt-6 md:mt-7"
+					style={{ "--i": 3.5 } as React.CSSProperties}
+				>
+					<span className="hero-announce-new">{hero.announce.label}</span> {hero.announce.text}
+					<ChevronRight aria-hidden="true" size={15} strokeWidth={2.25} />
+				</a>
 				<div
-					className="hero-in mt-8 flex flex-col items-center gap-2 sm:flex-row sm:gap-6 md:mt-10"
+					className="hero-in mt-6 flex flex-col items-center gap-2 sm:flex-row sm:gap-6 md:mt-8"
 					style={{ "--i": 4 } as React.CSSProperties}
 				>
 					{FEATURES.earlyAccess ? (

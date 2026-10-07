@@ -10,10 +10,10 @@ Everything technical is already in the code: metadata, canonical URLs, sitemap (
 3. Open **Sitemaps** and submit `https://opendot.live/sitemap.xml`.
 4. Open **URL inspection**, paste `https://opendot.live/`, wait for the check, then click **Request indexing**.
 5. Do the same URL inspection and **Request indexing** for each new page (Google limits manual requests, so spread them over a few days, home and `/download` first):
-   - `https://opendot.live/features`, `/features/superdot`, `/features/privacy`, `/features/always-on`, `/features/any-model`, `/features/connections`
-   - `https://opendot.live/guides`, `/guides/local-ai-assistant-mac-ollama`, `/guides/ai-email-assistant-gmail`, `/guides/mcp-servers-mac`
+   - `https://opendot.live/features`, `/features/organisation`, `/features/superdot`, `/features/privacy`, `/features/always-on`, `/features/any-model`, `/features/connections`
+   - `https://opendot.live/guides`, `/guides/run-a-project-with-ai-team`, `/guides/local-ai-assistant-mac-ollama`, `/guides/ai-email-assistant-gmail`, `/guides/mcp-servers-mac`
    - `https://opendot.live/download`
-6. Check back in a few days: **Pages** should show 13 indexed pages. Under **Performance**, watch queries such as "local AI assistant Mac", "Ollama Mac app" and "MCP client Mac".
+6. Check back in a few days: **Pages** should show 15 indexed pages. Under **Performance**, watch queries such as "AI agent team", "AI project manager", "local AI assistant Mac", "Ollama Mac app" and "MCP client Mac".
 7. In Vercel, make sure `opendot.live` is the primary domain and `www.opendot.live` redirects to it (the app also redirects).
 
 ## 2. Bing Webmaster Tools

@@ -178,7 +178,7 @@ opendot/
 
 ### Screenshots
 
-Site screenshots (for sections like "Create a Dot", "Always on", etc.) are captured from the OpenDot app. When available:
+Site screenshots (for sections like "Create a Dot", "Always on", "Organisation", etc.) are captured from the OpenDot app. When available:
 
 1. See `capture/README.md` for the full capture pipeline
 2. Run `capture/shots.ts` to generate all stills (light & dark, optimized to AVIF/WebP)
@@ -209,6 +209,42 @@ This renders each of Odi's poses (`hero`, `thinking`, `cheer`, `night`, `conduct
 ### Film
 
 (Coming soon: Remotion edit project in `film/` that produces the hero loop and full film video.)
+
+---
+
+## OpenDot Organisation on the site
+
+OpenDot Organisation (a team of Dots, one per department, run by SuperDot) is the lead feature of the site.
+
+**Homepage section** `components/sections/Organisation.tsx` (+ `Organisation.css`, art in `OrganisationArt.tsx`), id
+`organisation`, placed right after "Create a Dot". All text lives in `lib/copy.ts` (`organisation`, `orgDepartments`).
+
+- **Storyboard**: a pinned, scroll-driven walk through five beats (Ask, Plan, Split, Review, Delivered) built with GSAP
+  ScrollTrigger like SuperDot. The illustrations are HTML/CSS/SVG and say "Illustrated example" next to them; the real app
+  screenshots sit beside them.
+- **Phones (under 900px) and reduced motion**: no pin. Each beat is a stacked card showing its finished scene, with real
+  text for every beat. Decorative art is `aria-hidden`, and each beat carries an `sr-only` description.
+- **No layout shift**: `overflow: clip` is on the section, never on the pinned element. The pinned stage is a fixed
+  1120 by 600 box scaled to fit (`--org-s`), and its pre-JS state is the last beat.
+- **Below the storyboard** (normal flow, follows the system theme): the department wall (13 domains), the four templates,
+  the "In control" row, the skills card and a call to action.
+- **Hero pill** "New: OpenDot Organisation" links to `#organisation`. Nav and footer link to `/features/organisation`.
+
+**Pages** (in `lib/pages.ts`): `/features/organisation` and `/guides/run-a-project-with-ai-team`. They feed the hubs, footer,
+sitemap, IndexNow, `public/llms.txt` and the tests automatically. Keep titles at 50 characters or fewer and descriptions
+at 100 to 160 characters.
+
+**Screenshots**: the section and pages use eight shots, each as light and dark, AVIF and WebP at `@2x`:
+`org-setup`, `org-team`, `org-plan`, `org-board`, `org-drawer`, `org-summary`, `org-skills` and `org-chat`. They are
+captured from the app like the others (see `capture/`). Until the real ones are merged, small placeholder files with the
+same names stand in for them. A unit test checks that every file exists.
+
+**Facts**: copy follows `desktop/docs/spec/15-organisation.md`. A unit test compares the departments, templates and
+built-in skill count with the app's catalog, so the site cannot drift from the app. Do not claim anything the spec does not
+describe, and never say it replaces people.
+
+**Build note**: if `next build` fails with "Symlink node_modules is invalid" (a symlinked `node_modules` outside the
+project), build with `npx next build --webpack`.
 
 ---
 

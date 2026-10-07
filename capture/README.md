@@ -10,20 +10,20 @@ streamed at a realistic speed.
 ## One-time setup
 
 ```bash
-# 1. Build the app (branch claude/grok-bot-openai-dots-eyctdr, needs the capture flags from the T20 commit)
-cd /home/user/claude-code-remote/opendot && npm ci && npm run build
+# 1. Build the app (it lives in desktop/ of this repo)
+cd desktop && npm ci && npm run build
 
 # 2. Install this package (playwright-core 1.63.0 to match the app's @playwright/test, sharp, tsx)
 cd /path/to/opendot/capture && npm install
 ```
 
-Needs `Xvfb` and `ffmpeg` on the PATH. Set `OPENDOT_APP_DIR` if the app is not at
-`/home/user/claude-code-remote/opendot`.
+Needs `Xvfb` on the PATH (and `ffmpeg` for the film footage; stills do not need it). The app is taken from `desktop/`;
+set `OPENDOT_APP_DIR` to use a build somewhere else.
 
 ## Re-run everything
 
 ```bash
-capture/run-shots.sh            # 15 stills x light/dark -> public/shots/*.avif + .webp, PNG masters in capture/out/shots/
+capture/run-shots.sh            # 23 stills x light/dark -> public/shots/*.avif + .webp, PNG masters in capture/out/shots/
 capture/record.sh               # 8 scenes -> capture/out/<scene>.mp4 + .cursor.json, copied to public/film/raw/
 ```
 
@@ -62,6 +62,18 @@ Window 1440x900 CSS px at device scale 2 = 2880x1800. Output per name and theme:
 | `settings-models` | Cloud providers, Ollama (3 models) and a custom URL |
 | `privacy` | Privacy settings with the live masking demo |
 | `dot-info` | Code Buddy's info drawer: tools with Allow / Ask / Block |
+| `org-setup` | Organisation first run: four template cards, "Software team" selected, name "Northwind Labs" |
+| `org-team` | Team tab: six department Dots (Engineering, Product, Design, Security, IT, Data) with skill chips |
+| `org-plan` | "Add single sign-on for customers" waiting for approval: SuperDot's plan and the editable task list (shot at a 0.75 zoom so more rows fit) |
+| `org-board` | Running project: board with To do / In progress / In review / Done filled, one "Waiting for you" card, activity list |
+| `org-drawer` | Task drawer on "Update the onboarding docs": Support's question and the typed answer |
+| `org-summary` | Finished project: SuperDot's final report and the task list |
+| `org-skills` | Skills tab: built-in skills grouped by domain |
+| `org-chat` | SuperDot chat with plan, question and review update cards, each with an Open project button |
+
+The `org-*` stills run the app with `OPENDOT_FAKE_TPS=400` and the script `seed/scripts/org-sso.json` (built by
+`seed/build-scripts.mjs`), set up the Organisation through the app's own API and drive the real approve, answer and
+review steps. They scroll the Organisation screen to the top, so no frame starts mid-page.
 
 ## Film footage (`record.sh`, `scenes/`)
 

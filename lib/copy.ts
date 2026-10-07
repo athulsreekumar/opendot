@@ -9,6 +9,7 @@ export const MAC_ONLY = {
 
 export const nav = {
 	links: [
+		{ label: "Organisation", href: "/features/organisation" },
 		{ label: "Features", href: "/features" },
 		{ label: "SuperDot", href: "/features/superdot" },
 		{ label: "Privacy", href: "/features/privacy" },
@@ -23,11 +24,13 @@ export const hero = {
 	cta: "Get it on GitHub",
 	build: "How to build it",
 	film: "Watch the film",
+	/** Announcement pill under the lead. Links to the Organisation section. */
+	announce: { label: "New:", text: "OpenDot Organisation", href: "#organisation" },
 	underVideo: "Real app. Real-time. No edits to the answers.",
 };
 
 export const statement =
-	"Every Dot has a job, a personality, and only the access you give it. Together, they never sleep.";
+	"Every Dot has a job, a personality, and only the access you give it. Together, they never sleep. Give each one a department and they work as a team.";
 
 export const createDot = {
 	eyebrow: "Create a Dot",
@@ -58,7 +61,7 @@ export const alwaysOn = {
 export const superBot = {
 	eyebrow: "SuperDot",
 	h2: ["One question.", "Every Dot."],
-	lead: "Ask SuperDot anything. It knows which Dots know what, asks them all at once, and hands you one answer with sources.",
+	lead: "Ask SuperDot anything. It knows which Dots know what, asks them all at once, and hands you one answer with sources. It can also manage a project across your team.",
 	question: "What do I need to prepare for tomorrow?",
 	dots: ["Inbox", "Calendar", "Research", "Money", "Travel"],
 	/** What each Dot can do: the second ring of the tree. */
@@ -69,6 +72,228 @@ export const superBot = {
 		Money: ["Receipts", "Subscriptions", "Invoices", "Budgets"],
 		Travel: ["Flights", "Itineraries", "Check-in", "Passport"],
 	} as Record<string, string[]>,
+};
+
+/** A department Dot as shown in the Organisation section. Jobs are the one-liners the app uses. */
+export type OrgDept = { id: string; emoji: string; name: string; job: string };
+
+export const orgDepartments: OrgDept[] = [
+	{ id: "engineering", emoji: "🛠️", name: "Engineering", job: "Builds and fixes software" },
+	{ id: "product", emoji: "🧭", name: "Product", job: "Decides what to build and why" },
+	{ id: "design", emoji: "🎨", name: "Design", job: "Shapes how it looks and feels" },
+	{ id: "security", emoji: "🛡️", name: "Security", job: "Finds risks and keeps data safe" },
+	{ id: "it", emoji: "🖥️", name: "IT", job: "Keeps systems, accounts and devices running" },
+	{ id: "data", emoji: "📊", name: "Data", job: "Turns numbers into answers" },
+	{ id: "hr", emoji: "🌱", name: "HR", job: "Hires, onboards and looks after people" },
+	{ id: "admin", emoji: "🗂️", name: "Admin", job: "Keeps the office running smoothly" },
+	{ id: "finance", emoji: "💰", name: "Finance", job: "Watches budgets, invoices and costs" },
+	{ id: "legal", emoji: "⚖️", name: "Legal", job: "Reads contracts and spots legal risks" },
+	{ id: "marketing", emoji: "📣", name: "Marketing", job: "Tells people what you make" },
+	{ id: "sales", emoji: "💼", name: "Sales", job: "Finds and looks after customers" },
+	{ id: "support", emoji: "🎧", name: "Support", job: "Helps customers and answers questions" },
+];
+
+export const organisation = {
+	id: "organisation",
+	eyebrow: "OpenDot Organisation",
+	h2: ["An organisation.", "Run by Dots."],
+	lead: "Give SuperDot a project and it acts as your project manager. It writes the plan, hands each task to the right department Dot (Engineering, Product, Design, Security, Finance, HR and more), and reports back when the work is done.",
+	learnMore: { href: "/features/organisation", label: "Learn more about OpenDot Organisation" },
+	stats: [
+		{ value: "13", label: "departments" },
+		{ value: "4", label: "team templates" },
+		{ value: "28", label: "built-in playbooks" },
+	],
+	example: "Illustrated example. The app screenshots are real.",
+	inApp: "In the app",
+	/** The five beats of the storyboard, in order. */
+	beats: [
+		{
+			id: "ask",
+			label: "Ask",
+			title: "Tell SuperDot what you need.",
+			body: "Type a request in plain words, the way you would message a colleague. No forms and no tickets.",
+		},
+		{
+			id: "plan",
+			label: "Plan",
+			title: "SuperDot writes the plan.",
+			body: "It breaks the request into tasks. Each task has one owner, the tasks it waits for and a reviewer. Edit anything. Nothing runs until you approve.",
+		},
+		{
+			id: "split",
+			label: "Split",
+			title: "Departments work in parallel.",
+			body: "Tasks that do not depend on each other start together, up to three at a time by default. Each Dot uses its own skills and only the access you gave it.",
+		},
+		{
+			id: "review",
+			label: "Review",
+			title: "Work is reviewed before it counts.",
+			body: "A reviewer Dot checks the result and can ask for changes. A Dot can stop and ask you a question. Tasks that need your yes wait for it.",
+		},
+		{
+			id: "done",
+			label: "Delivered",
+			title: "You get the board and a report.",
+			body: "Files the Dots made are listed as deliverables. SuperDot finishes with a report of what was done, where it is and what still needs you.",
+		},
+	],
+	ask: {
+		request: "Add single sign-on for our customers.",
+		reply: "Planning “Customer single sign-on”. Open Organisation to review the plan.",
+		to: "SuperDot",
+	},
+	plan: {
+		title: "Customer single sign-on",
+		note: "Five tasks. Product writes the requirements first. Design, Engineering and Support can then work at the same time.",
+		ownerLabel: "Owner",
+		reviewerLabel: "Reviewer",
+		afterLabel: "after",
+		approve: "Approve and start",
+		replan: "Ask SuperDot to replan",
+		/** deps are task numbers; owner and reviewer are department names (or "You"). */
+		tasks: [
+			{
+				n: 1,
+				short: "Requirements",
+				title: "Write the requirements",
+				owner: "Product",
+				after: [] as number[],
+				reviewer: "Engineering",
+			},
+			{ n: 2, short: "Screens", title: "Design the sign-in screens", owner: "Design", after: [1], reviewer: "Product" },
+			{ n: 3, short: "Build", title: "Build single sign-on", owner: "Engineering", after: [1], reviewer: "Security" },
+			{
+				n: 4,
+				short: "Help article",
+				title: "Write the help article",
+				owner: "Support",
+				after: [1],
+				reviewer: "Product",
+			},
+			{
+				n: 5,
+				short: "Announcement",
+				title: "Draft the customer announcement",
+				owner: "Marketing",
+				after: [3],
+				reviewer: "You",
+			},
+		],
+	},
+	split: {
+		center: "SuperDot",
+		/** Departments shown in the diagram, in order around the centre. */
+		nodes: ["Product", "Design", "Engineering", "Security", "Support", "Marketing"],
+		more: "and 7 more departments you can add",
+		running: "Running in parallel",
+		legend: ["Waiting", "Working", "Done"],
+		sr: "SuperDot sends task 1 to Product. When it is done, tasks 2, 3 and 4 go to Design, Engineering and Support at the same time. Security reviews Engineering’s work, and Marketing drafts the announcement once the build is done.",
+	},
+	review: {
+		title: "Build single sign-on",
+		owner: "Engineering",
+		reviewer: "Security",
+		round1: { status: "Changes requested", notes: ["Sessions need an expiry time.", "Log failed sign-ins."] },
+		revised: "Engineering revised the change.",
+		round2: { status: "Approved", note: "Both points are fixed." },
+		waiting: {
+			label: "Waiting for you",
+			title: "Draft the customer announcement",
+			from: "Marketing",
+			approve: "Approve",
+			changes: "Request changes",
+		},
+	},
+	done: {
+		columns: ["To do", "In progress", "In review", "Done"],
+		doneTitles: [
+			"Write the requirements",
+			"Design the sign-in screens",
+			"Build single sign-on",
+			"Write the help article",
+			"Draft the customer announcement",
+		],
+		reportLabel: "Report from SuperDot",
+		report:
+			"All 5 tasks are done. The requirements, sign-in screens, the single sign-on change, a help article and an announcement draft are in your deliverables. Security approved the build after one round of changes. Nothing was sent or published.",
+		deliverablesLabel: "Deliverables",
+		deliverables: [
+			"requirements.md",
+			"sign-in-screens.md",
+			"sso-change-notes.md",
+			"help-article.md",
+			"announcement-draft.md",
+		],
+	},
+	shots: {
+		chat: "SuperDot’s chat in OpenDot with a request for a project and a card that says the plan is ready to review.",
+		plan: "The plan SuperDot wrote in OpenDot: a list of tasks with owners, dependencies and reviewers, ready to edit and approve.",
+		drawer: "A task drawer in OpenDot showing the task’s result, its deliverables and the reviewer’s decision.",
+		board:
+			"The project board in OpenDot with columns To do, In progress, In review and Done, and a card for each task.",
+		summary: "SuperDot’s final report on a finished project in OpenDot, listing what was delivered and what needs you.",
+		setup:
+			"OpenDot’s Organisation set-up screen with four team templates: Startup, Software team, Small business and Full.",
+		team: "The Team tab in OpenDot: one Dot per department, each with its skills.",
+		skills: "The Skills library in OpenDot: built-in playbooks grouped by department, with an editor for your own.",
+	},
+	wall: {
+		eyebrow: "Departments",
+		title: "Thirteen departments. Pick the ones you need.",
+		lead: "Each department is a Dot with its own persona, skills and access. Start from a template or tick domains one by one. Add or remove a department any time.",
+		templatesTitle: "Start from a template",
+		templates: [
+			{ name: "Startup", domains: "Engineering, product, design, security, marketing, finance, admin", count: 7 },
+			{ name: "Software team", domains: "Engineering, product, design, security, IT, data", count: 6 },
+			{ name: "Small business", domains: "Admin, finance, HR, sales, marketing, support, legal", count: 7 },
+			{ name: "Full organisation", domains: "All thirteen departments", count: 13 },
+		],
+		dotsLabel: "Dots",
+		note: "Add or remove departments any time. You can also bring in a Dot you already have.",
+		setupCap: "Pick a template and create your team.",
+		teamCap: "One Dot per department, each with its skills.",
+	},
+	control: {
+		eyebrow: "In control",
+		title: "You stay the boss.",
+		items: [
+			{
+				title: "You approve the plan first",
+				body: "Edit the tasks, owners, order and reviewers. Nothing runs until you press Approve and start.",
+			},
+			{
+				title: "Reviews before anything counts as done",
+				body: "A reviewer Dot checks each task. If it asks for changes, the owner revises. After two rounds by default, the task comes to you.",
+			},
+			{
+				title: "Budgets, pause, approvals and masking still apply",
+				body: "Set a budget for a project, pause or cancel any time. Risky actions still wait for your yes. Dot Links rules and PII masking apply as always.",
+			},
+		],
+	},
+	skills: {
+		eyebrow: "Skills",
+		title: "Playbooks for every department, yours to edit.",
+		body: "Each department Dot starts with built-in skills: step-by-step playbooks such as shipping a change, reviewing a contract or triaging a ticket. Edit one and OpenDot saves your own copy. Add skills for how your team works.",
+		examples: [
+			"Ship a change",
+			"Threat review",
+			"Write a PRD",
+			"Contract review",
+			"Onboarding checklist",
+			"Triage a ticket",
+		],
+		note: "28 built-in playbooks, plus your own.",
+	},
+	cta: {
+		title: "Local, open source and yours to build.",
+		body: "Works with any model. Everything stays on your computer, and cloud models only see what masking allows.",
+		github: "Get it on GitHub",
+		how: "See how it works",
+		href: "/features/organisation",
+	},
 };
 
 export const dotLinks = {
@@ -167,6 +392,7 @@ export const footer = {
 		{
 			title: "Features",
 			links: [
+				{ label: "OpenDot Organisation", href: "/features/organisation" },
 				{ label: "SuperDot", href: "/features/superdot" },
 				{ label: "Private by default", href: "/features/privacy" },
 				{ label: "Always on", href: "/features/always-on" },
@@ -177,6 +403,7 @@ export const footer = {
 		{
 			title: "Guides",
 			links: [
+				{ label: "Run a project with an AI team", href: "/guides/run-a-project-with-ai-team" },
 				{ label: "Local AI with Ollama", href: "/guides/local-ai-assistant-mac-ollama" },
 				{ label: "AI email assistant for Gmail", href: "/guides/ai-email-assistant-gmail" },
 				{ label: "MCP servers on Mac", href: "/guides/mcp-servers-mac" },
@@ -215,6 +442,18 @@ export const faq = {
 		{
 			q: "What is SuperDot?",
 			a: "SuperDot is the assistant that sits above your Dots. Ask it one question, such as what you need to prepare for tomorrow. It asks the right Dots at once, combines their answers and shows you the sources.",
+		},
+		{
+			q: "What is OpenDot Organisation?",
+			a: "OpenDot Organisation lets you run a team of Dots like a small company. You set up one Dot per department, such as Engineering, Product, Security, Finance or HR, from a template or one at a time. You then ask SuperDot for a project. It writes a plan, you approve it, and the department Dots do the work, review each other and report back. It is built into the app and free.",
+		},
+		{
+			q: "Can SuperDot really manage a project across Dots?",
+			a: "Yes, within limits. SuperDot writes a plan of tasks, each with an owner, dependencies and a reviewer, and you can edit and approve it before anything runs. Tasks go to the Dots through Dot Links, so your rules, budgets and approvals apply, and risky actions still wait for you. How good the result is depends on the models you choose, so check the work before you rely on it.",
+		},
+		{
+			q: "Does it cost extra or send my data anywhere?",
+			a: "It costs nothing extra. Organisation is part of OpenDot, which is free and open source, and it runs on your computer. If you use a cloud model with your own API key, that provider bills you and only sees what PII masking allows. With a local model, the thinking stays on your computer. You can also set a budget for each project.",
 		},
 		{
 			q: "Can Dots talk to each other safely?",

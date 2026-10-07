@@ -358,4 +358,139 @@ save("history-superbot-1", [
 	),
 ]);
 
+
+// ───────────── Organisation: "Add single sign-on for customers" (one script drives the whole project) ─────────────
+// A "perDot" step answers every later call from a per-Dot queue, so parallel tasks do not depend on call order.
+// delayMs keeps a task "in flight" long enough to photograph the board mid-project.
+const deliver = (file, content, reply, delayMs) => ({ ...(delayMs ? { delayMs } : {}), deliver: { file, content, text: reply } });
+const late = (delayMs, t) => ({ delayMs, ...text(t) });
+save("org-sso", [
+	{
+		perDot: {
+			SuperDot: [
+				{
+					delayMs: 2500,
+					...tool("tc_org_plan", "propose_plan", {
+						projectId: "$PROJECT_ID",
+						note: "Engineering builds the login flow and Security reviews it. At the same time Security runs a threat review, Design sketches the sign-in screen, Legal reads the identity provider's contract and Support updates the onboarding docs. Marketing announces it once the flow has shipped and the docs are ready.",
+						tasks: [
+							{
+								id: "t1",
+								title: "Build the login flow",
+								brief: "Add single sign-on to the customer login page with SAML and OIDC. Done means customers can sign in with their company account and the callback has a test.",
+								assignee: "Engineering",
+								dependsOn: [],
+								reviewer: "Security",
+							},
+							{
+								id: "t2",
+								title: "Threat review",
+								brief: "Review the sign-in design for threats: session handling, token lifetime and account takeover. Done means a short list of risks with a fix for each.",
+								assignee: "Security",
+								dependsOn: [],
+							},
+							{
+								id: "t3",
+								title: "Update the onboarding docs",
+								brief: "Update the customer onboarding guide with the single sign-on setup steps. Done means one page a customer admin can follow alone.",
+								assignee: "Support",
+								dependsOn: [],
+							},
+							{
+								id: "t4",
+								title: "Vendor contract for the identity provider",
+								brief: "Read the identity provider's contract and summarise the key terms. Done means a one-page summary that lists anything to negotiate.",
+								assignee: "Legal",
+								dependsOn: [],
+								reviewer: "human",
+							},
+							{
+								id: "t5",
+								title: "Design the sign-in screen",
+								brief: "Sketch the new sign-in screen with the company-account button. Done means a short description of the layout and the error states.",
+								assignee: "Design",
+								dependsOn: [],
+							},
+							{
+								id: "t6",
+								title: "Announce to customers",
+								brief: "Write the announcement email and the changelog entry. Done means both are drafted and ready to send.",
+								assignee: "Marketing",
+								dependsOn: ["t1", "t3"],
+							},
+						],
+					}),
+				},
+				text("The plan is ready for your review."),
+				text(
+					[
+						"## Single sign-on for customers",
+						"",
+						"All six tasks are done. Customers can now sign in with their company account, and the rollout is ready to announce.",
+						"",
+						"**Delivered**",
+						"- The login flow with SAML and OIDC, with a callback test, reviewed and approved by Security (Engineering).",
+						"- A threat review: five risks, each with a fix, and none left open (Security).",
+						"- The sign-in screen, with the company-account button and its error states (Design).",
+						"- A one-page setup guide for Okta and Microsoft Entra ID (Support).",
+						"- A summary of the identity provider's contract, approved by you (Legal).",
+						"- The announcement email and the changelog entry, drafted for you to send (Marketing).",
+						"",
+						"**Needs you**",
+						"- Send the announcement when you are ready. Nothing else is waiting.",
+					].join("\n"),
+				),
+			],
+			Engineering: [
+				deliver(
+					"login-flow.md",
+					"# Single sign-on login flow\n\nSAML and OIDC sign-in on the customer login page.\n\n- New route /sso/start and /sso/callback\n- Sessions last 8 hours, tokens are never stored in the browser\n- Callback test covers a wrong audience and an expired assertion\n",
+					"[DONE] The login flow is built and works with both SAML and OIDC. Customers type their company email and are sent to their own identity provider, then land back in the app signed in. The callback has a test for a wrong audience and an expired assertion. Details are in login-flow.md.",
+					2500,
+				),
+			],
+			Security: [
+				deliver(
+					"threat-review.md",
+					"# Threat review: single sign-on\n\n1. Session fixation: rotate the session id after sign-in.\n2. Token lifetime: 8 hours, no refresh in the browser.\n3. Account takeover through a shared email: match on the verified domain.\n4. Replay of an old assertion: check the one-time id.\n5. Open redirect after sign-in: allow only our own paths.\n",
+					"[DONE] I found five risks and wrote a fix for each in threat-review.md. The two that matter most are rotating the session after sign-in and matching accounts on the verified company domain. None of them blocks the launch.",
+				),
+				late(18000, "[APPROVE] The session is rotated after sign-in, the callback checks the audience and the test covers an expired assertion."),
+			],
+			Design: [
+				deliver(
+					"sign-in-screen.md",
+					"# Sign-in screen\n\nOne field for the work email, one button labelled Continue with company account. Errors appear under the field in plain words.\n",
+					"[DONE] The sign-in screen has one field for the work email and one button, Continue with company account. If the company is not set up yet, we say so in plain words under the field and link to the setup guide.",
+				),
+			],
+			Support: [
+				text(
+					"[BLOCKED] Should the onboarding guide cover Okta only, or Microsoft Entra ID as well? Most customers who asked for single sign-on use one of the two, and a second set of steps adds about a page.",
+				),
+				deliver(
+					"onboarding-sso-guide.md",
+					"# Set up single sign-on\n\n1. Open Settings, then Security, and choose Single sign-on.\n2. Copy the sign-in URL and the certificate into Okta or Microsoft Entra ID.\n3. Paste your identity provider's metadata back and select Test.\n4. Turn on Require single sign-on for everyone.\n",
+					"[DONE] The onboarding guide now has a setup page that covers both Okta and Microsoft Entra ID, with four steps each. I also added a short troubleshooting list for the two errors customers will hit first. The guide is in onboarding-sso-guide.md.",
+				),
+			],
+			Legal: [
+				deliver(
+					"vendor-contract-summary.md",
+					"# Identity provider contract: summary\n\n- Term: 3 years at $18,400 a year\n- Uptime commitment: 99.9 percent, with service credits\n- Renewal: automatic, 60 days notice to cancel\n- To negotiate: the data-processing addendum and the exit fee\n",
+					"[DONE] I read the contract and summarised it in vendor-contract-summary.md. It is a three-year term at $18,400 a year with a 99.9 percent uptime commitment. Two things are worth negotiating before you sign: the data-processing addendum and the exit fee. This is a summary to help you decide and is not legal advice.",
+					40000,
+				),
+			],
+			Marketing: [
+				deliver(
+					"announcement.md",
+					"# Single sign-on is here\n\nSubject: Sign in to Northwind Labs with your company account\n\nStarting today, your team can sign in with Okta or Microsoft Entra ID. Setup takes about ten minutes.\n",
+					"[DONE] The announcement email and the changelog entry are drafted in announcement.md. The email is short, leads with the benefit for IT admins and links to the setup guide. It is ready for you to send.",
+				),
+			],
+		},
+	},
+]);
+
 console.log("scripts written to", out);
