@@ -7,6 +7,8 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Organisation screens: set up a team of Dots from a template, create projects, review and edit SuperDot's plan, follow the board
+  and answer questions or reviews in a task drawer, manage the team and the skills library, with a rail badge and chat update cards.
 - Daily briefing: at a time you choose, SuperDot asks your Dots what matters and streams one briefing (with Dot citations) into its
   chat, with a single notification. Off by default; set up in Settings → Daily briefing, or run it now with `/briefing`.
 - Approvals inbox: an Approvals screen (Waiting and History) replaces the rail popover. Cards show the Dot, what it wants to do

@@ -8,6 +8,7 @@ export type Route =
 	| { name: "connections"; connectionId?: string }
 	| { name: "settings"; section: string }
 	| { name: "onboarding" }
+	| { name: "organisation"; sub?: string }
 	| { name: "gallery" }
 	| { name: "quick" };
 
@@ -24,6 +25,8 @@ export function parseHash(hash: string): Route {
 			return { name: "connections", connectionId: parts[1] };
 		case "settings":
 			return { name: "settings", section: parts[1] ?? "models" };
+		case "organisation":
+			return { name: "organisation", sub: parts[1] };
 		case "onboarding":
 			return { name: "onboarding" };
 		case "gallery":
