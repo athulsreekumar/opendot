@@ -14,7 +14,7 @@ import {
 let base: string;
 let ws: string;
 beforeEach(() => {
-	base = realpathSync(mkdtempSync(join(tmpdir(), "opendot-deliv-")));
+	base = realpathSync.native(mkdtempSync(join(tmpdir(), "opendot-deliv-")));
 	ws = join(base, "workspace");
 	mkdirSync(join(ws, "projects", "prj_a", "t1"), { recursive: true });
 	writeFileSync(join(ws, "projects", "prj_a", "t1", "report.md"), "# Report\nhello");

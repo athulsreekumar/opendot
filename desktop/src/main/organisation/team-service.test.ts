@@ -27,7 +27,7 @@ const MAC: Connection = {
 } as unknown as Connection;
 
 async function setup(opts: { withComputer?: boolean } = {}) {
-	const root = realpathSync(mkdtempSync(join(tmpdir(), "od-team-")));
+	const root = realpathSync.native(mkdtempSync(join(tmpdir(), "od-team-")));
 	const paths = createPaths(root);
 	ensureBaseDirs(paths);
 	const store = new Store(paths);
