@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -7,7 +7,7 @@ import { isProjectId, newProjectId, normalizeProject, ProjectStore } from "./pro
 
 let root: string;
 beforeEach(() => {
-	root = mkdtempSync(join(tmpdir(), "opendot-pstore-"));
+	root = realpathSync(mkdtempSync(join(tmpdir(), "opendot-pstore-")));
 });
 afterEach(() => rmSync(root, { recursive: true, force: true }));
 

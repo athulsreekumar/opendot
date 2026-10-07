@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -39,7 +39,7 @@ interface Call {
 }
 
 class Harness {
-	root = mkdtempSync(join(tmpdir(), "opendot-proj-"));
+	root = realpathSync(mkdtempSync(join(tmpdir(), "opendot-proj-")));
 	repo = new MemRepo();
 	dots = new Map<DotId, Dot>();
 	org: OrgState;

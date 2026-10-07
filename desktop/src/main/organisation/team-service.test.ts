@@ -1,4 +1,4 @@
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
@@ -27,7 +27,7 @@ const MAC: Connection = {
 } as unknown as Connection;
 
 async function setup(opts: { withComputer?: boolean } = {}) {
-	const root = mkdtempSync(join(tmpdir(), "od-team-"));
+	const root = realpathSync(mkdtempSync(join(tmpdir(), "od-team-")));
 	const paths = createPaths(root);
 	ensureBaseDirs(paths);
 	const store = new Store(paths);
