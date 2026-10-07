@@ -8,6 +8,7 @@ import { builtinComputerLabel, MAC_ONLY_WATCHERS, platformFeatures } from "../sh
 import type { AppSettings, Connection, Dot, DotId, LinkExchange, MacPermissionStatus } from "../shared/types";
 import { ApprovalHistory } from "./approvals/history";
 import { ApprovalNotifier } from "./approvals/notifier";
+import { AttachmentService } from "./attachments/attachment-service";
 import { BriefingService, type BriefingState } from "./briefing/service";
 import { ConnectionService } from "./connections/connection-service";
 import { MAC_DEFAULT_DECISIONS } from "./connections/mac";
@@ -151,6 +152,11 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 	};
 
 	const dots = new DotService(store, paths, connections);
+	const attachments = new AttachmentService({
+		paths,
+		supportsImages: async (d) =>
+			(await models.resolveModel(d.model).catch(() => undefined))?.input.includes("image") ?? false,
+	});
 
 	// ── Knowledge (local notes index). Loads in the background so startup never waits on it. ──
 	const knowledge = new KnowledgeService({
@@ -390,6 +396,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 					bus: linkBus,
 					getDot: getFresh,
 					emitPeer: (tc, peer, status, patch) => runtime.get(dot.id).emitPeer(tc, peer, status, patch),
+					attachments: () => runtime.get(dot.id).currentAttachments(),
 					updates: (ref, since, limit) => profiles.updates(linkBus, ref, since, limit),
 					searchHistory: (ref, q, limit) => profiles.searchHistory(linkBus, ref, q, limit),
 				}),
@@ -411,6 +418,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 			store,
 			settings,
 			models,
+			attachments,
 			pii,
 			emit: (e) => bridge.broadcast("dot:event", e),
 			buildExtensions,
@@ -598,6 +606,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		approvals,
 		approvalHistory,
 		pii,
+		attachments,
 		connections,
 		knowledge,
 		dots,

@@ -1,6 +1,7 @@
 // Routes message_dot / ask_dots between Dots with RBAC, approvals, PII and streaming (spec 07 §4, spec 13 §5).
 import { newId } from "../../shared/ids";
 import type { AppSettings, Dot, DotId, LinkApproval, LinkExchange } from "../../shared/types";
+import type { AttachmentItem } from "../attachments/attachment-service";
 import { log } from "../log";
 import type { PiiService } from "../pii/pii-service";
 import type { ApprovalBroker } from "../security/approval-broker";
@@ -15,6 +16,7 @@ export interface LinkTarget {
 		chain: DotId[];
 		signal?: AbortSignal;
 		onDelta?: (d: string) => void;
+		attachments?: AttachmentItem[];
 	}): Promise<string>;
 }
 
@@ -106,6 +108,8 @@ export class LinkBus {
 		chain: DotId[],
 		opts: {
 			signal?: AbortSignal;
+			/** Files to forward with the message (SuperDot fan-out). */
+			attachments?: AttachmentItem[];
 			onDelta?: (to: Dot, delta: string) => void;
 			onStatus?: (to: Dot, status: "queued" | "running" | "done" | "error" | "blocked", detail?: string) => void;
 		} = {},
@@ -175,6 +179,7 @@ export class LinkBus {
 				purpose: d.purpose ?? "",
 				chain: [...chain, to.id],
 				signal,
+				attachments: opts.attachments,
 				onDelta: (delta) => opts.onDelta?.(to, delta),
 			});
 			await save({ status: "done", reply, endedAt: this.now().toISOString() });

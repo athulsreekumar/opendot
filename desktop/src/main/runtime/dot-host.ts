@@ -1,6 +1,7 @@
 // One DotHost per Dot: owns its pi AgentSession(s), maps pi events to ChatEvents (spec 03, 14).
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { parseAttachmentBlocks } from "../../shared/attachments";
 import { OpenDotError } from "../../shared/errors";
 import { newId } from "../../shared/ids";
 import type {
@@ -13,6 +14,7 @@ import type {
 	MessageId,
 	ToolCallView,
 } from "../../shared/types";
+import type { AttachmentItem, AttachmentService } from "../attachments/attachment-service";
 import { sourcesFromDetails } from "../knowledge/sources";
 import { log } from "../log";
 import type { ModelService } from "../models/model-service";
@@ -60,6 +62,7 @@ export interface DotHostDeps {
 	store: Store;
 	settings: SettingsService;
 	models: ModelService;
+	attachments: AttachmentService;
 	pii: PiiService;
 	emit: (e: ChatEvent) => void;
 	buildExtensions: (dot: Dot, ctx: SessionCtx) => Promise<InlineExtension[]>;
@@ -113,6 +116,8 @@ export class DotHost {
 	private linkSessions = new Map<DotId, LinkSession>();
 	private runEventIds: string[] = [];
 	private briefingMeta: { date: string; label: string } | undefined;
+	/** Files the user attached to the current SuperDot turn; forwarded by ask_dots. */
+	private turnAttachments: AttachmentItem[] = [];
 	lastActivity = Date.now();
 	disposed = false;
 
@@ -239,6 +244,7 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 		text: string,
 		mode: "auto" | "steer" | "followUp" = "auto",
 		clientNonce?: string,
+		attach?: { images: Array<{ type: "image"; data: string; mimeType: string }>; items?: AttachmentItem[] },
 	): Promise<{ queued?: "steer" | "followUp" }> {
 		this.lastActivity = Date.now();
 		let session: AgentSession;
@@ -250,6 +256,8 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 		}
 		this.pendingNonce = clientNonce;
 		this.pendingSentAt = Date.now();
+		if (attach?.items?.length || !session.isStreaming) this.turnAttachments = attach?.items ?? [];
+		const images = attach?.images.length ? attach.images : undefined;
 		if (session.isStreaming) {
 			const how: "steer" | "followUp" =
 				mode === "steer"
@@ -259,12 +267,17 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 						: this.runKind === "events"
 							? "steer"
 							: "followUp";
-			if (how === "steer") await session.steer(text);
-			else await session.followUp(text);
+			if (how === "steer") await session.steer(text, images);
+			else await session.followUp(text, images);
 			return { queued: how };
 		}
-		await this.startRun("user", () => session.prompt(text));
+		await this.startRun("user", () => session.prompt(text, images ? { images } : undefined));
 		return {};
+	}
+
+	/** Attachments of the current turn, for SuperDot's ask_dots fan-out. */
+	currentAttachments(): AttachmentItem[] {
+		return this.turnAttachments;
 	}
 
 	/** Deliver an events batch as a custom message (spec 12 §2.3). */
@@ -399,6 +412,7 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 				if (m.role === "user") {
 					const nonce = this.pendingNonce;
 					this.pendingNonce = undefined;
+					const parsed = parseAttachmentBlocks(this.deps.pii.restore(dotId, blocksText(m.content)), dotId);
 					this.deps.emit({
 						type: "message-start",
 						dotId,
@@ -407,7 +421,8 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 							id: newId("msg"),
 							dotId,
 							role: "user",
-							text: this.deps.pii.restore(dotId, blocksText(m.content)),
+							text: parsed.text,
+							attachments: parsed.attachments.length ? parsed.attachments : undefined,
 							toolCalls: [],
 							createdAt: new Date(m.timestamp ?? Date.now()).toISOString(),
 							streaming: false,
@@ -684,6 +699,8 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 		chain: DotId[];
 		signal?: AbortSignal;
 		onDelta?: (delta: string) => void;
+		/** Files from the user's SuperDot message, forwarded to this Dot. */
+		attachments?: AttachmentItem[];
 	}): Promise<string> {
 		const dot = await this.dot();
 		let ls = this.linkSessions.get(req.from.id);
@@ -732,7 +749,13 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 			const onAbort = () => void link.session.abort();
 			req.signal?.addEventListener("abort", onAbort, { once: true });
 			try {
-				await link.session.prompt(req.message);
+				if (req.attachments?.length) {
+					// Images only reach Dots whose model can see them; everyone gets a workspace copy.
+					const rendered = await this.deps.attachments.render(dot, req.message, req.attachments, {
+						supportsImages: await this.deps.attachments.supportsImages(dot),
+					});
+					await link.session.prompt(rendered.text, rendered.images.length ? { images: rendered.images } : undefined);
+				} else await link.session.prompt(req.message);
 				const msgs = link.session.messages as AnyMessage[];
 				const last = [...msgs].reverse().find((m) => m.role === "assistant");
 				if (last?.stopReason === "error") throw new Error(friendlyModelError(last.errorMessage));

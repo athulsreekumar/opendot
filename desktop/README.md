@@ -28,6 +28,7 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
   language. Allow once, deny (with a reason the Dot sees), always allow, or edit the email, message, file or command first.
 - **Memory**: each Dot remembers durable facts (`remember` / `forget`), plus a shared "About me" every Dot sees.
 - **Streaming everywhere**: replies appear from the first token, including background replies and SuperDot fan-outs.
+- **Files and images in chat**: drag them onto the chat, paste an image, or use the paperclip. See "Files and images" below.
 
 ## Install (macOS 14+)
 
@@ -112,6 +113,22 @@ Everything is on your computer in `~/.opendot/` (`%USERPROFILE%\.opendot\` on Wi
 └─ logs/main.log
 ```
 Sessions resume where you left off after a restart. Deleting a Dot moves its folder to `~/.opendot/trash/`.
+
+## Files and images
+
+Add files to a message by dragging them onto the chat ("Drop to add to the chat"), pasting an image (Cmd/Ctrl+V), or
+clicking the paperclip. They appear as removable chips above the input. Up to 10 files per message; images up to 20 MB
+(png, jpg, gif, webp), other files up to 10 MB. Folders are not accepted.
+
+- **Images** go to the model as image content, as-is. If the Dot's model can't see images, the composer says so and
+  offers to send them as file references only.
+- **Text files** (txt, md, csv, json, code, html, xml, yaml, log, ...) are put into your message in a delimited block
+  (very long files are shortened, with a note). They go through the same personal-details masking as typed text.
+- **PDF, Word and other files** are not read for you. The Dot is told where the copy is.
+- Every attachment is also copied to the Dot's workspace, in `dots/<id>/workspace/attachments/<timestamp>-<name>`.
+- Sent messages show thumbnails (click to enlarge) and file chips (click to open, or show in the folder). They are
+  still there after a restart.
+- With SuperDot, attachments are forwarded to every Dot it asks. Images only reach Dots whose model can see them.
 
 ## Connecting Google and Microsoft
 

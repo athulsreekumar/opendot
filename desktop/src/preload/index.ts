@@ -45,5 +45,6 @@ if (process.env.OPENDOT_E2E === "1") {
 		quickAskState: t("test.quickAskState"),
 		blurQuickAsk: t("test.blurQuickAsk"),
 		knowledgeAddFolder: t("test.knowledgeAddFolder"),
+		setNextPick: t("test.setNextPick"),
 	});
 }

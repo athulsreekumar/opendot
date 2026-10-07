@@ -14,6 +14,7 @@ import {
 import { bubbleTime } from "../../lib/format";
 import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
+import { MessageAttachments } from "./Attachments";
 import { EventCard } from "./EventCard";
 import { FanOutCard } from "./FanOutCard";
 import { KnowledgeSources } from "./KnowledgeSources";
@@ -155,10 +156,11 @@ function Bubble({ m, meta, dotName }: { m: ChatMessageView; meta: BubbleMeta; do
 			{linkTools.map((t) => (
 				<LinkCard key={t.id} tool={t} />
 			))}
+			{m.attachments && m.attachments.length > 0 && <MessageAttachments dotId={m.dotId} attachments={m.attachments} />}
 			{emptyStreaming ? (
 				<TypingDots />
 			) : out ? (
-				<div className="od-selectable whitespace-pre-wrap break-words text-md">{m.text}</div>
+				m.text && <div className="od-selectable whitespace-pre-wrap break-words text-md">{m.text}</div>
 			) : m.text || m.streaming ? (
 				<StreamingMarkdown text={m.text} streaming={m.streaming} messageId={m.id} />
 			) : null}

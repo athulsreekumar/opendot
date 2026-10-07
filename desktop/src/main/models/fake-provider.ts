@@ -2,6 +2,7 @@
 // Enabled only when OPENDOT_FAKE_PROVIDER=1.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { parseAttachmentBlocks } from "../../shared/attachments";
 import { type AssistantMessage, fauxAssistantMessage, fauxProvider, type ModelRuntime } from "../runtime/pi-adapter";
 
 export const FAKE_PROVIDER_ID = "opendot-fake";
@@ -106,11 +107,12 @@ export class FakeProvider {
 	private echoForever(): Step {
 		return (context) => {
 			this.faux.appendResponses([this.echoForever()]);
-			const text = lastUserText(context);
+			const text = parseAttachmentBlocks(lastUserText(context)).text;
+			const seen = lastUserImageCount(context);
 			return fauxAssistantMessage(
 				text.startsWith("[OpenDot")
 					? "[UPDATE] Got your events (fake model)."
-					: `You said: ${text}\n\nI'm the **fake test model**, so I just echo. Add a real model in Settings → Models.`,
+					: `You said: ${text}\n\nI'm the **fake test model**, so I just echo. Add a real model in Settings → Models.${seen ? `\n\n(Fake model received ${seen} image${seen === 1 ? "" : "s"}.)` : ""}`,
 			);
 		};
 	}
@@ -147,6 +149,17 @@ function lastToolResultText(context: unknown): string {
 		}
 	}
 	return "";
+}
+
+/** Number of image blocks in the last user message (attachments tests). */
+export function lastUserImageCount(context: unknown): number {
+	const msgs = (context as { messages?: Array<{ role: string; content: unknown }> }).messages ?? [];
+	for (let i = msgs.length - 1; i >= 0; i--) {
+		const m = msgs[i]!;
+		if (m.role !== "user") continue;
+		return Array.isArray(m.content) ? m.content.filter((b: { type?: string }) => b.type === "image").length : 0;
+	}
+	return 0;
 }
 
 /** ~10k characters of markdown with code fences, for streaming tests. */
