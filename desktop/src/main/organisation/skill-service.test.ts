@@ -1,4 +1,4 @@
-import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -7,7 +7,7 @@ import { parseSkill, SkillService, sanitizeSkillId, serializeSkill } from "./ski
 
 let root: string;
 beforeEach(async () => {
-	root = await mkdtemp(join(tmpdir(), "org-skills-"));
+	root = await realpath(await mkdtemp(join(tmpdir(), "org-skills-")));
 });
 afterEach(() => rm(root, { recursive: true, force: true }));
 

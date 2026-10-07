@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -14,7 +14,7 @@ import {
 let base: string;
 let ws: string;
 beforeEach(() => {
-	base = mkdtempSync(join(tmpdir(), "opendot-deliv-"));
+	base = realpathSync(mkdtempSync(join(tmpdir(), "opendot-deliv-")));
 	ws = join(base, "workspace");
 	mkdirSync(join(ws, "projects", "prj_a", "t1"), { recursive: true });
 	writeFileSync(join(ws, "projects", "prj_a", "t1", "report.md"), "# Report\nhello");
