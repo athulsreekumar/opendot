@@ -25,6 +25,8 @@ export interface BriefingDeps {
 	start: (superDot: Dot, req: { prompt: string; date: string; label: string }) => Promise<void>;
 	/** Post a short note into SuperDot's chat without a model call. */
 	note: (superDot: Dot, req: { text: string; date: string; label: string }) => Promise<void>;
+	/** One line about active organisation projects (spec 15 §8); omit or undefined when there are none. */
+	activeProjects?: () => Promise<string | undefined>;
 	now?: () => Date;
 	tickMs?: number;
 }
@@ -102,6 +104,7 @@ export class BriefingService {
 				dateText: meta.label.replace("Briefing · ", ""),
 				dotNames: chosen.map((c) => c.name),
 				instructions: cfg.instructions,
+				activeProjects: await this.deps.activeProjects?.().catch(() => undefined),
 			});
 			await this.deps.start(sup, { prompt, ...meta });
 			return { started: true };

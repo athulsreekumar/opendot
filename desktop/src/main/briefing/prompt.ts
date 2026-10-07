@@ -49,7 +49,13 @@ export function dotQuestion(dateText: string): string {
 }
 
 /** The message that starts SuperDot's briefing turn. */
-export function briefingPrompt(opts: { dateText: string; dotNames: string[]; instructions: string }): string {
+export function briefingPrompt(opts: {
+	dateText: string;
+	dotNames: string[];
+	instructions: string;
+	/** One line about active organisation projects, when there are any (spec 15 §8). */
+	activeProjects?: string;
+}): string {
 	const lines = [
 		`[OpenDot · daily briefing · ${opts.dateText}]`,
 		"Prepare the user's daily briefing now.",
@@ -63,6 +69,7 @@ export function briefingPrompt(opts: { dateText: string; dotNames: string[]; ins
 		"3. Write ONE briefing for today. Urgent things first, then today's schedule, then everything else in one line each. Attribute every fact with the Dot's name in square brackets, like [Inbox] or [Calendar]. Keep it short and scannable, with no greeting.",
 		"4. Never invent what a Dot said. If every Dot had nothing important, say that in one sentence.",
 	];
+	if (opts.activeProjects) lines.push(`${opts.activeProjects}. Mention them in one line at the end of the briefing.`);
 	if (opts.instructions.trim()) lines.push(`The user also asked: ${opts.instructions.trim().slice(0, 1000)}`);
 	return lines.join("\n");
 }

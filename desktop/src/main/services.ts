@@ -20,7 +20,10 @@ import { LinkBus } from "./links/link-bus";
 import { log } from "./log";
 import { MemoryService } from "./memory/memory-service";
 import { ModelService } from "./models/model-service";
+import { ORG_DOMAINS } from "./organisation/catalog";
 import { OrgStore } from "./organisation/org-store";
+import { ProjectService } from "./organisation/project-service";
+import { ProjectStore } from "./organisation/project-store";
 import { SkillService } from "./organisation/skill-service";
 import { TeamService } from "./organisation/team-service";
 import type { Paths } from "./paths";
@@ -31,6 +34,7 @@ import { linksExtension } from "./runtime/extensions/links";
 import { mcpExtensions } from "./runtime/extensions/mcp";
 import { memoryExtension } from "./runtime/extensions/memory";
 import { nativeOwner, nativeToolsExtension } from "./runtime/extensions/native-tools";
+import { organisationExtension } from "./runtime/extensions/organisation";
 import { piiExtension } from "./runtime/extensions/pii";
 import { policyExtension } from "./runtime/extensions/policy";
 import { sectionsExtension } from "./runtime/extensions/sections";
@@ -158,13 +162,15 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 	const dots = new DotService(store, paths, connections);
 
 	// ── Organisation: team and skills (spec 15) ──
+	// One shared team-file store: it caches in memory, so every reader must use this instance.
+	const orgStore = new OrgStore(paths.root);
 	const skills: SkillService = new SkillService({
 		root: paths.root,
 		emit: (list) => bridge.broadcast("org:skills", list),
 		onDeleted: (id) => team.dropSkill(id),
 	});
 	const team: TeamService = new TeamService({
-		store: new OrgStore(paths.root),
+		store: orgStore,
 		dots,
 		links: store.links,
 		connections,
@@ -191,6 +197,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 
 	// ── Link bus (needs runtime; resolved lazily) ──
 	let runtime: DotRuntime;
+	let projects: ProjectService;
 	const talking = new Map<DotId, DotId>();
 	const linkBus = new LinkBus({
 		store,
@@ -434,6 +441,17 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 				}),
 			);
 		}
+		if (dot.kind === "super") {
+			exts.push(
+				organisationExtension({
+					exists: async () => (await orgStore.read()).created,
+					team: () => projects.teamDirectory(),
+					create: (input) => projects.create(input),
+					proposePlan: (id, note, tasks) => projects.proposePlan(id, note, tasks),
+					status: (id) => projects.statusText(id),
+				}),
+			);
+		}
 		return exts;
 	};
 
@@ -514,6 +532,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 	};
 
 	const maybeNotify = async (dot: Dot, text: string, importance: string | undefined, runKind: string) => {
+		if (runKind === "org") return; // project updates have their own notifications
 		if (runKind === "briefing") return notifyBriefing(dot, text);
 		const s = await settings.get();
 		if (!s.notifications.enabled || dot.muted) return;
@@ -612,6 +631,52 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 			await runtime.get(sup.id).deliverBriefing(req);
 		},
 		note: (sup, req) => runtime.get(sup.id).postBriefingNote(req),
+		activeProjects: () => projects.activeProjectsLine(),
+	});
+
+	// ── Organisation projects (spec 15 §5 to §9) ──
+	projects = new ProjectService({
+		repo: new ProjectStore(paths.root),
+		org: () => orgStore.read(),
+		skillNames: async (ids) => {
+			const all = await skills.list();
+			return ids.map((id) => all.find((k) => k.id === id)?.name).filter((n): n is string => !!n);
+		},
+		reviewedBy: () => Object.fromEntries(ORG_DOMAINS.map((d) => [d.id, d.reviewedBy])),
+		dot: (id) => getDot(id),
+		superDot: () => dots.ensureSuperBot(),
+		runTask: async (from, toDotId, prompt, o) => {
+			const r = await linkBus.send(from, toDotId, prompt, [from.id], { signal: o.signal, timeoutMs: o.timeoutMs });
+			return r.ok ? { ok: true, reply: r.reply } : { ok: false, reason: r.reason };
+		},
+		runHiddenSuperTurn: async (req) => {
+			const sup = await dots.ensureSuperBot();
+			usage.recordTurn(sup.id);
+			return runtime.get(sup.id).runOrgTurn(req);
+		},
+		costOf: (id) => usage.costToday(id),
+		now: () => new Date(),
+		emit: (p) => bridge.broadcast("org:project", p),
+		notify: (n) => {
+			void settings.get().then((s) => {
+				if (!s.notifications.enabled) return;
+				bridge.notify({
+					title: n.title,
+					body: s.notifications.showPreview ? n.body : "Open Organisation to see it.",
+					silent: !s.notifications.sound,
+					hash: n.hash,
+				});
+			});
+		},
+		postUpdate: async (u) => {
+			const sup = await dots.ensureSuperBot();
+			await runtime.get(sup.id).postOrgUpdate(u);
+		},
+		settleMs: 150,
+		defaultConcurrency:
+			process.env.OPENDOT_E2E && process.env.OPENDOT_E2E_ORG_CONCURRENCY
+				? Number(process.env.OPENDOT_E2E_ORG_CONCURRENCY)
+				: undefined,
 	});
 
 	// ── Start ──
@@ -626,6 +691,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 	runtime.start();
 	profiles.start(runtime);
 	briefing.start();
+	await projects.start();
 
 	return {
 		paths,
@@ -647,6 +713,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		linkBus,
 		profiles,
 		briefing,
+		projects,
 		watchers,
 		router,
 		usage,
@@ -685,6 +752,8 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 			router.stop();
 			profiles.stop();
 			briefing.stop();
+			projects.stop();
+			await projects.flush();
 			await runtime.disposeAll();
 			await usage.save();
 			await pii.flushAll();

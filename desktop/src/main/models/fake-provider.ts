@@ -1,6 +1,6 @@
 // Scripted model for tests and e2e (spec 04 §6). Wraps pi-ai's built-in faux provider.
 // Enabled only when OPENDOT_FAKE_PROVIDER=1.
-import { readFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseAttachmentBlocks } from "../../shared/attachments";
 import { type AssistantMessage, fauxAssistantMessage, fauxProvider, type ModelRuntime } from "../runtime/pi-adapter";
@@ -21,7 +21,16 @@ interface ScriptStep {
 interface ByDotStep {
 	byDot: Record<string, string>;
 }
-type ScriptEntry = ScriptStep | ByDotStep | "$capture" | "$echo" | "$long" | "$toolresult";
+/**
+ * An Organisation task reply that also writes a file into the asking Dot's workspace folder for the task (the folder
+ * named in the prompt: projects/<projectId>/<taskId>/). Lets e2e tests produce deliverables without a tool call.
+ */
+interface DeliverStep {
+	deliver: { file: string; content: string; text: string };
+}
+/** In a script, replaced by the `prj_...` id found in the latest prompt (see ProjectService planner prompt). */
+const PROJECT_ID_TOKEN = "$PROJECT_ID";
+type ScriptEntry = ScriptStep | ByDotStep | DeliverStep | "$capture" | "$echo" | "$long" | "$toolresult";
 
 /** The Dot's name from its system prompt ("You are Inbox, one of …"). */
 export function dotNameFromSystemPrompt(systemPrompt: unknown): string | undefined {
@@ -94,9 +103,27 @@ export class FakeProvider {
 		if (s === "$echo") return (context) => fauxAssistantMessage(`You said: ${lastUserText(context)}`);
 		if (s === "$toolresult") return (context) => fauxAssistantMessage(`The tool said: ${lastToolResultText(context)}`);
 		if (s === "$long") return fauxAssistantMessage(longMarkdown());
+		if ("deliver" in s) {
+			const d = s.deliver;
+			return (context) => {
+				writeTaskFile(systemTextOf(context), lastUserText(context), d.file, d.content);
+				return fauxAssistantMessage(d.text);
+			};
+		}
 		if ("byDot" in s) {
 			const byDot = s.byDot;
 			return (context) => fauxAssistantMessage(pickByDot(byDot, systemTextOf(context)));
+		}
+		if (JSON.stringify(s.content ?? "").includes(PROJECT_ID_TOKEN)) {
+			// Tool-call arguments that name the Organisation project the prompt is about (its id is only known at run time).
+			const step = s;
+			return (context) => {
+				const id = /prj_[A-Za-z0-9]+/.exec(lastUserText(context))?.[0] ?? "";
+				const content = JSON.parse(JSON.stringify(step.content).split(PROJECT_ID_TOKEN).join(id)) as FauxContent;
+				return fauxAssistantMessage(content, {
+					...(step.stopReason ? { stopReason: step.stopReason } : {}),
+				});
+			};
 		}
 		return fauxAssistantMessage(s.content ?? "", {
 			...(s.stopReason ? { stopReason: s.stopReason } : {}),
@@ -115,6 +142,29 @@ export class FakeProvider {
 					: `You said: ${text}\n\nI'm the **fake test model**, so I just echo. Add a real model in Settings → Models.${seen ? `\n\n(Fake model received ${seen} image${seen === 1 ? "" : "s"}.)` : ""}`,
 			);
 		};
+	}
+}
+
+/** Writes `file` into the workspace of the Dot named in the system prompt, under the task folder found in the prompt. */
+function writeTaskFile(systemText: string, prompt: string, file: string, content: string): void {
+	const m = /projects\/(prj_[A-Za-z0-9]+)\/([A-Za-z0-9_-]+)\//.exec(prompt);
+	const name = dotNameFromSystemPrompt(systemText);
+	const root = process.env.OPENDOT_DATA_DIR;
+	if (!m || !name || !root) return;
+	const dotsDir = join(root, "dots");
+	for (const dir of readdirSync(dotsDir)) {
+		try {
+			const raw = JSON.parse(readFileSync(join(dotsDir, dir, "dot.json"), "utf8")) as {
+				data?: { name?: string; workspaceDir?: string };
+			};
+			if (raw.data?.name !== name || !raw.data.workspaceDir) continue;
+			const folder = join(raw.data.workspaceDir, "projects", m[1]!, m[2]!);
+			mkdirSync(folder, { recursive: true });
+			writeFileSync(join(folder, file), content);
+			return;
+		} catch {
+			// not a Dot folder
+		}
 	}
 }
 
