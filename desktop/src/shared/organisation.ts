@@ -322,7 +322,7 @@ export function summarizeProject(p: OrgProject): OrgProjectSummary {
 		status: p.status,
 		updatedAt: p.updatedAt,
 		taskCount: p.tasks.length,
-		doneCount: p.tasks.filter((t) => t.status === "done" || t.status === "skipped").length,
+		doneCount: p.tasks.filter((t) => t.status === "done").length,
 		attention: projectAttention(p),
 		spentUsd: p.spentUsd,
 	};
