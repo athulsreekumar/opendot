@@ -13,6 +13,9 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   in plain language, why, and readable details. Allow once, Deny with a reason the Dot sees, Always allow for this Dot, and
   Edit, then allow (the tool runs with your edited email, message, file content or command). Keyboard A, D and E, Deny all
   per Dot, a decision history in the audit log, and coalesced notifications for new requests.
+- Quick ask: a global shortcut (Option+Space on a Mac, Alt+Space on Windows) opens a small floating bar from any app. Ask
+  SuperDot or `@` a Dot, watch the answer stream in, answer tool approvals inline, and open the chat in OpenDot. Configurable
+  in Settings → Quick ask.
 - Windows 10 and 11 (x64) support: an installer and a portable zip, a **This PC** connection (files, shell through
   Git for Windows, screenshots, clipboard, notifications, opening apps and links), keys encrypted with Windows DPAPI,
   and Windows builds and tests in CI.

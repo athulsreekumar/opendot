@@ -1,3 +1,4 @@
+import { defaultQuickAsk } from "./quickask";
 import type {
 	AlwaysOnSettings,
 	AppSettings,
@@ -46,6 +47,7 @@ export function defaultSettings(): AppSettings {
 		localWebhook: { enabled: false, port: 47615 },
 		onboardingDone: false,
 		telemetry: false,
+		quickAsk: defaultQuickAsk(),
 	};
 }
 

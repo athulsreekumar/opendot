@@ -11,6 +11,7 @@ import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
 import { useSettings } from "../../stores/settings";
 import { useUi } from "../../stores/ui";
+import { useQuickAskLabel } from "../quick-ask/useQuickAskLabel";
 import { DaySeparator } from "./DaySeparator";
 import { type BubbleMeta, MessageBubble } from "./MessageBubble";
 import { TypingIndicator } from "./TypingIndicator";
@@ -93,12 +94,16 @@ function Chips({ dotId, kind }: { dotId: DotId; kind: "super" | "standard" }) {
 	const names = useDots((s) => s.dots.map((d) => d.name).join("\u0000"));
 	const list = suggestionsFor(kind, names.split("\u0000"));
 	const briefingOn = useSettings((s) => !!s.settings?.briefing?.enabled);
+	const quickAsk = useQuickAskLabel();
 	return (
-		<div className="flex flex-wrap gap-2 pt-2">
-			{kind === "super" && !briefingOn && <BriefingChip />}
-			{list.map((c) => (
-				<SuggestionChip key={c} dotId={dotId} text={c} />
-			))}
+		<div className="flex flex-col gap-2 pt-2">
+			<div className="flex flex-wrap gap-2">
+				{kind === "super" && !briefingOn && <BriefingChip />}
+				{list.map((c) => (
+					<SuggestionChip key={c} dotId={dotId} text={c} />
+				))}
+			</div>
+			{quickAsk && <p className="text-xs text-fg-3">Tip: press {quickAsk} anywhere to ask</p>}
 		</div>
 	);
 }

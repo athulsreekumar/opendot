@@ -639,6 +639,14 @@ export interface AppSettings {
 	telemetry: false;
 	/** Daily briefing by SuperDot. Optional so older settings files still load; read it with `resolveBriefing`. */
 	briefing?: BriefingSettings;
+	/** Global quick-ask bar. Absent in settings files from before the feature (defaults apply). */
+	quickAsk?: QuickAskSettings;
+}
+
+export interface QuickAskSettings {
+	enabled: boolean;
+	/** Electron accelerator, one of the presets in shared/quickask.ts. */
+	shortcut: string;
 }
 
 /** Daily briefing settings (docs/spec/13-superbot.md §6). */

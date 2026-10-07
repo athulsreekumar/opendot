@@ -385,7 +385,9 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 
 	// ── Runtime ──
 	let windowFocused = true;
-	const isFocused = (id: DotId) => windowFocused && uiSelected === id;
+	// The quick-ask bar counts as "looking at" the Dot it is answering, so no unread badge or notification for it.
+	let quickAskDot: DotId | undefined;
+	const isFocused = (id: DotId) => (windowFocused && uiSelected === id) || quickAskDot === id;
 	let uiSelected: DotId | undefined = (await store.uiState.read()).selectedDotId;
 
 	runtime = new DotRuntime(
@@ -596,6 +598,9 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		},
 		setSelectedDot(id?: DotId) {
 			uiSelected = id;
+		},
+		setQuickAskDot(id?: DotId) {
+			quickAskDot = id;
 		},
 		macPermissions: async (): Promise<MacPermissionStatus[]> => {
 			const { getMacPermissions } = await import("./connections/mac/permissions");
