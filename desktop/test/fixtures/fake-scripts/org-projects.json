@@ -1,0 +1,71 @@
+{
+	"name": "org-projects",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_plan_1",
+					"name": "propose_plan",
+					"arguments": {
+						"projectId": "$PROJECT_ID",
+						"note": "Engineering builds the login page while Design sketches the screen, then the rollout notes follow.",
+						"tasks": [
+							{
+								"id": "t1",
+								"title": "Build the login page",
+								"brief": "Implement the single sign-on login page. Done means the page works and has a test.",
+								"assignee": "Engineering",
+								"dependsOn": [],
+								"reviewer": "Security"
+							},
+							{
+								"id": "t2",
+								"title": "Design the sign-in screen",
+								"brief": "Sketch the sign-in screen. Done means a short description of the layout.",
+								"assignee": "Design",
+								"dependsOn": []
+							},
+							{
+								"id": "t3",
+								"title": "Write the rollout notes",
+								"brief": "Write the rollout notes for support. Done means one page of notes.",
+								"assignee": "Engineering",
+								"dependsOn": ["t1", "t2"]
+							}
+						]
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{ "content": [{ "type": "text", "text": "The plan is ready for your review." }] },
+		{ "content": [{ "type": "text", "text": "[BLOCKED] Which identity provider should we use?" }] },
+		{
+			"deliver": {
+				"file": "login.md",
+				"content": "# Login page\nUses Okta. First version.\n",
+				"text": "[DONE] Built the login page with Okta. See login.md."
+			}
+		},
+		{ "content": [{ "type": "text", "text": "[CHANGES]\n1. Add a test for the callback." }] },
+		{
+			"deliver": {
+				"file": "login.md",
+				"content": "# Login page\nUses Okta. Now with a callback test.\n",
+				"text": "[DONE] Added the callback test. See login.md."
+			}
+		},
+		{ "content": [{ "type": "text", "text": "[APPROVE] Looks good." }] },
+		{ "content": [{ "type": "text", "text": "[DONE] The sign-in screen has one field and one button." }] },
+		{ "content": [{ "type": "text", "text": "[DONE] The rollout notes are written." }] },
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "## Single sign-on\n\nAll three tasks are done. The login page is in login.md (Engineering)."
+				}
+			]
+		}
+	]
+}

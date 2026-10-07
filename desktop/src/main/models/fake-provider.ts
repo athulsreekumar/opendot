@@ -1,6 +1,6 @@
 // Scripted model for tests and e2e (spec 04 §6). Wraps pi-ai's built-in faux provider.
 // Enabled only when OPENDOT_FAKE_PROVIDER=1.
-import { readFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseAttachmentBlocks } from "../../shared/attachments";
 import { type AssistantMessage, fauxAssistantMessage, fauxProvider, type ModelRuntime } from "../runtime/pi-adapter";
@@ -13,6 +13,8 @@ type Step = Parameters<Faux["setResponses"]>[0][number];
 type FauxContent = Parameters<typeof fauxAssistantMessage>[0];
 
 interface ScriptStep {
+	/** Wait this long before replying (any kind of step may carry it). */
+	delayMs?: number;
 	content?: FauxContent;
 	stopReason?: AssistantMessage["stopReason"];
 	errorMessage?: string;
@@ -21,7 +23,24 @@ interface ScriptStep {
 interface ByDotStep {
 	byDot: Record<string, string>;
 }
-type ScriptEntry = ScriptStep | ByDotStep | "$capture" | "$echo" | "$long" | "$toolresult";
+/**
+ * An Organisation task reply that also writes a file into the asking Dot's workspace folder for the task (the folder
+ * named in the prompt: projects/<projectId>/<taskId>/). Lets e2e tests produce deliverables without a tool call.
+ */
+interface DeliverStep {
+	deliver: { file: string; content: string; text: string };
+}
+/** In a script, replaced by the `prj_...` id found in the latest prompt (see ProjectService planner prompt). */
+const PROJECT_ID_TOKEN = "$PROJECT_ID";
+/**
+ * One step that answers EVERY later call, choosing the reply from a per-Dot queue (the Dot that is asking is matched on
+ * the system prompt; "*" is the fallback queue). Each queue is consumed in order and then falls back to the echo reply.
+ * Lets parallel Organisation tasks be scripted without caring which Dot is called first.
+ */
+interface PerDotStep {
+	perDot: Record<string, ScriptEntry[]>;
+}
+type ScriptEntry = ScriptStep | ByDotStep | DeliverStep | PerDotStep | "$capture" | "$echo" | "$long" | "$toolresult";
 
 /** The Dot's name from its system prompt ("You are Inbox, one of …"). */
 export function dotNameFromSystemPrompt(systemPrompt: unknown): string | undefined {
@@ -41,6 +60,12 @@ export function systemTextOf(context: unknown): string {
 	return parts.filter((p): p is string => typeof p === "string").join("\n");
 }
 
+/** SuperDot's turns carry no "You are <Name>," text in the context; its Organisation tools identify it. */
+function isSuperContext(context: unknown): boolean {
+	const msgs = (context as { messages?: Array<{ toolsAdded?: Array<{ name?: string }> }> }).messages ?? [];
+	return msgs.some((m) => m.toolsAdded?.some((t) => t.name === "propose_plan"));
+}
+
 export function pickByDot(byDot: Record<string, string>, systemPrompt: unknown): string {
 	const name = dotNameFromSystemPrompt(systemPrompt);
 	return (name && byDot[name]) || byDot["*"] || "";
@@ -50,6 +75,7 @@ export class FakeProvider {
 	readonly faux: Faux;
 	readonly captured: string[] = [];
 	private scriptsDir: string;
+	private perDotSteps: Step[] = [];
 
 	constructor(runtime: ModelRuntime, scriptsDir: string) {
 		this.scriptsDir = scriptsDir;
@@ -64,12 +90,17 @@ export class FakeProvider {
 
 	/** Replace pending responses with the named script; an endless echo follows it. */
 	setScript(name: string): void {
-		this.faux.setResponses([...this.load(name), this.echoForever()]);
+		this.faux.setResponses(this.withTail(this.load(name)));
 	}
 
 	/** Queue a script after what's pending (before the trailing echo). */
 	appendScript(name: string): void {
-		this.faux.setResponses([...this.load(name), this.echoForever()]);
+		this.faux.setResponses(this.withTail(this.load(name)));
+	}
+
+	/** The endless echo after a script. Not after a "perDot" step: it answers every call itself, and a tail would steal turns. */
+	private withTail(steps: Step[]): Step[] {
+		return this.perDotSteps.some((s) => steps.includes(s)) ? steps : [...steps, this.echoForever()];
 	}
 
 	reset(): void {
@@ -85,6 +116,17 @@ export class FakeProvider {
 	}
 
 	private toStep(s: ScriptEntry): Step {
+		const step = this.toStepNow(s);
+		const delayMs = typeof s === "object" ? (s as { delayMs?: number }).delayMs : undefined;
+		if (!delayMs) return step;
+		// `delayMs` on any step: the reply arrives that much later (lets e2e tests see a "working" state).
+		return async (...args) => {
+			await new Promise((resolve) => setTimeout(resolve, delayMs));
+			return typeof step === "function" ? step(...args) : step;
+		};
+	}
+
+	private toStepNow(s: ScriptEntry): Step {
 		if (s === "$capture") {
 			return (context) => {
 				this.captured.push(JSON.stringify(context));
@@ -94,9 +136,42 @@ export class FakeProvider {
 		if (s === "$echo") return (context) => fauxAssistantMessage(`You said: ${lastUserText(context)}`);
 		if (s === "$toolresult") return (context) => fauxAssistantMessage(`The tool said: ${lastToolResultText(context)}`);
 		if (s === "$long") return fauxAssistantMessage(longMarkdown());
+		if ("perDot" in s) {
+			const queues = new Map(Object.entries(s.perDot).map(([k, list]) => [k, list.map((e) => this.toStep(e))]));
+			const step: Step = (context, ...rest) => {
+				this.faux.appendResponses([step]);
+				const name =
+					dotNameFromSystemPrompt(systemTextOf(context)) ?? (isSuperContext(context) ? "SuperDot" : undefined);
+				const queue = (name ? queues.get(name) : undefined) ?? queues.get("*");
+				const next = queue?.shift();
+				if (!next) return this.echoReply(context);
+				// A prebuilt message carries the time the script was loaded; stamp it now so the chat keeps its order.
+				return typeof next === "function" ? next(context, ...rest) : { ...next, timestamp: Date.now() };
+			};
+			this.perDotSteps.push(step);
+			return step;
+		}
+		if ("deliver" in s) {
+			const d = s.deliver;
+			return (context) => {
+				writeTaskFile(systemTextOf(context), lastUserText(context), d.file, d.content);
+				return fauxAssistantMessage(d.text);
+			};
+		}
 		if ("byDot" in s) {
 			const byDot = s.byDot;
 			return (context) => fauxAssistantMessage(pickByDot(byDot, systemTextOf(context)));
+		}
+		if (JSON.stringify(s.content ?? "").includes(PROJECT_ID_TOKEN)) {
+			// Tool-call arguments that name the Organisation project the prompt is about (its id is only known at run time).
+			const step = s;
+			return (context) => {
+				const id = /prj_[A-Za-z0-9]+/.exec(lastUserText(context))?.[0] ?? "";
+				const content = JSON.parse(JSON.stringify(step.content).split(PROJECT_ID_TOKEN).join(id)) as FauxContent;
+				return fauxAssistantMessage(content, {
+					...(step.stopReason ? { stopReason: step.stopReason } : {}),
+				});
+			};
 		}
 		return fauxAssistantMessage(s.content ?? "", {
 			...(s.stopReason ? { stopReason: s.stopReason } : {}),
@@ -107,14 +182,41 @@ export class FakeProvider {
 	private echoForever(): Step {
 		return (context) => {
 			this.faux.appendResponses([this.echoForever()]);
-			const text = parseAttachmentBlocks(lastUserText(context)).text;
-			const seen = lastUserImageCount(context);
-			return fauxAssistantMessage(
-				text.startsWith("[OpenDot")
-					? "[UPDATE] Got your events (fake model)."
-					: `You said: ${text}\n\nI'm the **fake test model**, so I just echo. Add a real model in Settings → Models.${seen ? `\n\n(Fake model received ${seen} image${seen === 1 ? "" : "s"}.)` : ""}`,
-			);
+			return this.echoReply(context);
 		};
+	}
+
+	private echoReply(context: unknown): AssistantMessage {
+		const text = parseAttachmentBlocks(lastUserText(context)).text;
+		const seen = lastUserImageCount(context);
+		return fauxAssistantMessage(
+			text.startsWith("[OpenDot")
+				? "[UPDATE] Got your events (fake model)."
+				: `You said: ${text}\n\nI'm the **fake test model**, so I just echo. Add a real model in Settings → Models.${seen ? `\n\n(Fake model received ${seen} image${seen === 1 ? "" : "s"}.)` : ""}`,
+		);
+	}
+}
+
+/** Writes `file` into the workspace of the Dot named in the system prompt, under the task folder found in the prompt. */
+function writeTaskFile(systemText: string, prompt: string, file: string, content: string): void {
+	const m = /projects\/(prj_[A-Za-z0-9]+)\/([A-Za-z0-9_-]+)\//.exec(prompt);
+	const name = dotNameFromSystemPrompt(systemText);
+	const root = process.env.OPENDOT_DATA_DIR;
+	if (!m || !name || !root) return;
+	const dotsDir = join(root, "dots");
+	for (const dir of readdirSync(dotsDir)) {
+		try {
+			const raw = JSON.parse(readFileSync(join(dotsDir, dir, "dot.json"), "utf8")) as {
+				data?: { name?: string; workspaceDir?: string };
+			};
+			if (raw.data?.name !== name || !raw.data.workspaceDir) continue;
+			const folder = join(raw.data.workspaceDir, "projects", m[1]!, m[2]!);
+			mkdirSync(folder, { recursive: true });
+			writeFileSync(join(folder, file), content);
+			return;
+		} catch {
+			// not a Dot folder
+		}
 	}
 }
 

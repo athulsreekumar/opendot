@@ -1,5 +1,6 @@
 // Test-only IPC (OPENDOT_E2E=1): fake model scripts, captured contexts, paint timings, synthetic events.
 import type { IpcMain } from "electron";
+import type { OrgState } from "../shared/organisation";
 import type { DotId } from "../shared/types";
 import type { QuickAskController } from "./quickask/quick-ask";
 import type { Services } from "./services";
@@ -19,6 +20,7 @@ export function registerTestIpc(ipcMain: IpcMain, s: Services, quickAsk?: QuickA
 	h("test.setNextPick", (paths: string[]) => {
 		s.attachments.testPicks.push(paths);
 	});
+	h("test.writeOrgState", (state: OrgState) => s.team.store.write(state));
 	h("test.emitEvent", async (dotId: string, title: string, body: string, importance?: "low" | "normal" | "high") => {
 		const dot = await s.store.dots.get(dotId as DotId);
 		if (!dot) throw new Error("no dot");

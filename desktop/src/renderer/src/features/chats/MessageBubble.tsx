@@ -14,6 +14,7 @@ import {
 import { bubbleTime } from "../../lib/format";
 import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
+import { OrgUpdateCard } from "../organisation/OrgUpdateCard";
 import { MessageAttachments } from "./Attachments";
 import { EventCard } from "./EventCard";
 import { FanOutCard } from "./FanOutCard";
@@ -85,6 +86,7 @@ function Inner({ m, meta, dotName }: { m: ChatMessageView; meta: BubbleMeta; dot
 				<LinkExchangeCard message={m} />
 			</div>
 		);
+	if (m.orgUpdate) return <OrgUpdateCard update={m.orgUpdate} />;
 	if (m.role === "system")
 		return (
 			<div className="flex w-full justify-center">

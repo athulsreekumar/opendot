@@ -505,6 +505,8 @@ export interface ChatMessageView {
 	briefing?: { date: string; label: string };
 	/** Files and images the user attached to this message. */
 	attachments?: AttachmentView[];
+	/** Set on SuperDot's Organisation project updates (rendered as a compact card that opens the project). */
+	orgUpdate?: import("./organisation").OrgUpdateView;
 }
 
 export type DotStatus =
