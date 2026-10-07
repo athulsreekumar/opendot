@@ -108,6 +108,8 @@ export class LinkBus {
 		chain: DotId[],
 		opts: {
 			signal?: AbortSignal;
+			/** Reply timeout in ms, instead of the Dot Links setting (long organisation tasks). */
+			timeoutMs?: number;
 			/** Files to forward with the message (SuperDot fan-out). */
 			attachments?: AttachmentItem[];
 			onDelta?: (to: Dot, delta: string) => void;
@@ -171,7 +173,7 @@ export class LinkBus {
 			if (!d.sharePii && (await this.deps.pii.shouldRedact(to.id)))
 				delivered = (await this.deps.pii.redact(from.id, message)).text;
 			opts.onStatus?.(to, "running");
-			const timeout = AbortSignal.timeout(settings.links.replyTimeoutSec * 1000);
+			const timeout = AbortSignal.timeout(opts.timeoutMs ?? settings.links.replyTimeoutSec * 1000);
 			const signal = opts.signal ? AbortSignal.any([opts.signal, timeout]) : timeout;
 			const reply = await this.deps.host(to.id).runLinkTurn({
 				from,

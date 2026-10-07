@@ -533,4 +533,6 @@ export interface OpenDotTestApi {
 	knowledgeAddFolder(path: string): Promise<KnowledgeFolderView>;
 	/** Make the next native file picker return these paths. */
 	setNextPick(paths: string[]): Promise<void>;
+	/** Write the organisation's team file (members are existing Dots), without the setup flow. */
+	writeOrgState(state: OrgState): Promise<void>;
 }
