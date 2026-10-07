@@ -4,15 +4,23 @@ import type { ApprovalDecision, ApprovalId, ApprovalRequest, ApprovalResponse, D
 
 export type ApprovalOutcome = ApprovalDecision | "expired";
 
+/** The full answer: the outcome plus what the user added (a reason, edited arguments) and who answered. */
+export interface ApprovalResolution {
+	outcome: ApprovalOutcome;
+	reason?: string;
+	editedArgs?: Record<string, unknown>;
+	by: "you" | "timeout" | "stopped";
+}
+
 interface Pending {
 	req: ApprovalRequest;
-	resolve: (o: ApprovalOutcome) => void;
+	resolve: (r: ApprovalResolution) => void;
 	timer: ReturnType<typeof setTimeout>;
 }
 
 export interface ApprovalEmitter {
 	requested(r: ApprovalRequest): void;
-	resolved(id: ApprovalId, decision: ApprovalOutcome): void;
+	resolved(id: ApprovalId, decision: ApprovalOutcome, req: ApprovalRequest, resolution: ApprovalResolution): void;
 }
 
 export class ApprovalBroker {
@@ -24,6 +32,14 @@ export class ApprovalBroker {
 		input: Omit<ApprovalRequest, "id" | "createdAt" | "expiresAt">,
 		opts: { signal?: AbortSignal; ttlMs?: number } = {},
 	): Promise<ApprovalOutcome> {
+		return this.requestDetailed(input, opts).then((r) => r.outcome);
+	}
+
+	/** Like request(), but also returns the user's reason or edited arguments. */
+	requestDetailed(
+		input: Omit<ApprovalRequest, "id" | "createdAt" | "expiresAt">,
+		opts: { signal?: AbortSignal; ttlMs?: number } = {},
+	): Promise<ApprovalResolution> {
 		const ttl = opts.ttlMs ?? 5 * 60_000;
 		const now = Date.now();
 		const req: ApprovalRequest = {
@@ -32,26 +48,39 @@ export class ApprovalBroker {
 			createdAt: new Date(now).toISOString(),
 			expiresAt: new Date(now + ttl).toISOString(),
 		};
-		return new Promise<ApprovalOutcome>((resolve) => {
-			const finish = (o: ApprovalOutcome) => {
+		return new Promise<ApprovalResolution>((resolve) => {
+			const finish = (r: ApprovalResolution) => {
 				const p = this.pendingMap.get(req.id);
 				if (!p) return;
 				clearTimeout(p.timer);
 				this.pendingMap.delete(req.id);
-				this.emit.resolved(req.id, o);
+				this.emit.resolved(req.id, r.outcome, req, r);
 				for (const l of this.listeners) l(req.dotId);
-				resolve(o);
+				resolve(r);
 			};
-			const timer = setTimeout(() => finish("expired"), ttl);
+			const timer = setTimeout(() => finish({ outcome: "expired", by: "timeout" }), ttl);
 			this.pendingMap.set(req.id, { req, resolve: finish, timer });
-			opts.signal?.addEventListener("abort", () => finish("deny"), { once: true });
+			opts.signal?.addEventListener("abort", () => finish({ outcome: "deny", by: "stopped" }), { once: true });
 			this.emit.requested(req);
 			for (const l of this.listeners) l(req.dotId);
 		});
 	}
 
 	respond(res: ApprovalResponse): void {
-		this.pendingMap.get(res.id)?.resolve(res.decision);
+		const reason = res.reason?.trim().slice(0, 500);
+		this.pendingMap.get(res.id)?.resolve({
+			outcome: res.decision,
+			by: "you",
+			...(res.decision === "deny" && reason ? { reason } : {}),
+			...(res.decision !== "deny" && res.editedArgs ? { editedArgs: res.editedArgs } : {}),
+		});
+	}
+
+	/** Deny every pending approval of one Dot (the inbox's "Deny all"). Returns how many were denied. */
+	denyAll(dotId: DotId, reason?: string): number {
+		const mine = this.pending().filter((r) => r.dotId === dotId);
+		for (const r of mine) this.respond({ id: r.id, decision: "deny", reason });
+		return mine.length;
 	}
 
 	pending(): ApprovalRequest[] {
@@ -63,7 +92,8 @@ export class ApprovalBroker {
 	}
 
 	cancelForDot(dotId: DotId): void {
-		for (const p of [...this.pendingMap.values()]) if (p.req.dotId === dotId) p.resolve("deny");
+		for (const p of [...this.pendingMap.values()])
+			if (p.req.dotId === dotId) p.resolve({ outcome: "deny", by: "stopped" });
 	}
 
 	onChange(l: (dotId: DotId) => void): () => void {

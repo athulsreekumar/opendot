@@ -20,7 +20,7 @@ interface ScriptStep {
 interface ByDotStep {
 	byDot: Record<string, string>;
 }
-type ScriptEntry = ScriptStep | ByDotStep | "$capture" | "$echo" | "$long";
+type ScriptEntry = ScriptStep | ByDotStep | "$capture" | "$echo" | "$long" | "$toolresult";
 
 /** The Dot's name from its system prompt ("You are Inbox, one of …"). */
 export function dotNameFromSystemPrompt(systemPrompt: unknown): string | undefined {
@@ -91,6 +91,7 @@ export class FakeProvider {
 			};
 		}
 		if (s === "$echo") return (context) => fauxAssistantMessage(`You said: ${lastUserText(context)}`);
+		if (s === "$toolresult") return (context) => fauxAssistantMessage(`The tool said: ${lastToolResultText(context)}`);
 		if (s === "$long") return fauxAssistantMessage(longMarkdown());
 		if ("byDot" in s) {
 			const byDot = s.byDot;
@@ -126,6 +127,23 @@ function lastUserText(context: unknown): string {
 				.filter((b: { type?: string }) => b.type === "text")
 				.map((b: { text?: string }) => b.text ?? "")
 				.join("");
+		}
+	}
+	return "";
+}
+
+/** Text of the most recent tool result in the context (what the last tool call returned or why it was blocked). */
+function lastToolResultText(context: unknown): string {
+	const msgs = (context as { messages?: Array<{ role: string; content: unknown }> }).messages ?? [];
+	for (let i = msgs.length - 1; i >= 0; i--) {
+		const m = msgs[i]!;
+		if (m.role !== "toolResult") continue;
+		if (typeof m.content === "string") return m.content;
+		if (Array.isArray(m.content)) {
+			return m.content
+				.filter((b: { type?: string }) => b.type === "text")
+				.map((b: { text?: string }) => b.text ?? "")
+				.join(" ");
 		}
 	}
 	return "";

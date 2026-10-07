@@ -85,7 +85,11 @@ export class ApprovalBroker {
 - DotStatus is `waiting-approval` while pending.
 - Title copy: tool → "<Dot> wants to <humanised tool>", e.g. "Inbox wants to send an email draft".
   `detail` = a pretty one-liner of the key args (to/subject; command; path), with the full args in `args`.
-- When the window is unfocused, also show a native notification "Approval needed" (click → focus Dot).
+- When the window is unfocused, also show a native notification ("Inbox wants to send an email"; click → Approvals screen on it). Several within 10 s become one "N approvals waiting".
+- The inbox (spec 10 §3.4) answers with `{ id, decision, reason?, editedArgs? }`. `reason` (deny) is appended to the block message the Dot reads.
+  `editedArgs` (allow) is applied by the policy extension by mutating `event.input` in place, which pi supports for `tool_call`
+  handlers; only fields the inbox exposes as editable are accepted, and the tool result gets a note listing the edited fields.
+  Each resolution is written to the audit log as an `approval` entry (masked one-line summary, outcome, by you / rule / timeout).
 
 ## 5. PII shield
 

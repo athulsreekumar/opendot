@@ -18,6 +18,8 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
 - **Dot Links (RBAC)**: decide which Dots (or roles) can message which, when (schedules), how often, and whether you approve each message.
 - **Private by default**: everything is stored in `~/.opendot` (`%USERPROFILE%\.opendot` on Windows) on your computer. Personal details (emails, phones, cards, keys…) are
   masked before they reach cloud models and restored locally. Tools that change things ask first.
+- **Approvals inbox**: when a Dot wants to send, delete or run something, it asks in one place, with the details in plain
+  language. Allow once, deny (with a reason the Dot sees), always allow, or edit the email, message, file or command first.
 - **Memory**: each Dot remembers durable facts (`remember` / `forget`), plus a shared "About me" every Dot sees.
 - **Streaming everywhere**: replies appear from the first token, including background replies and SuperDot fan-outs.
 
@@ -90,6 +92,24 @@ Connections → **Catalog** (one click for Filesystem, Memory, Fetch, Git, GitHu
 **Add MCP server** (any local command or remote URL), or **Import JSON** (paste a Claude Desktop / Cursor / VS Code `mcpServers`
 block). Then give a Dot access in **Dot info → Tools**, where each tool can be set to Allow, Ask or Block. Local MCP servers that
 use `npx`/`uvx` need Node.js / uv installed.
+
+## Approvals inbox
+
+Click **Approvals** in the left rail (the badge counts what is waiting). **Waiting** shows one card per request: which Dot
+asked, what it wants to do ("Send an email", "Run a command"), why (the Dot's own words), and the details (To, Subject and
+message; the command; the file path and a preview).
+
+- **Allow once** or press **A** on a focused card. **Deny** or **D**. **Deny with a reason** tells the Dot why so it can adapt.
+- **Edit, then allow** or **E** for emails, chat messages, file content and commands. The tool runs with your edited version
+  (pi lets a `tool_call` hook change the arguments in place) and the Dot is told which fields you changed.
+- **Always allow for this Dot** is offered when it would take effect (not when you set an explicit Ask rule for that tool in
+  Dot info → Tools). It is the same rule as before, listed in Dot info → Tools.
+- With three or more requests they are grouped by Dot, each group with **Deny all**.
+- **History** lists decisions (allowed, denied, edited, expired; by you or by an Always allow rule) and filters by Dot and
+  outcome. It lives in `~/.opendot/audit/audit.jsonl` as one-line summaries with personal details masked, never message contents.
+- When the window is not in front, a new request raises a notification ("Inbox wants to send an email"); several within 10
+  seconds become one ("3 approvals waiting"). Clicking it opens the inbox. Requests that nobody answers still expire (5 minutes,
+  30 for background work) and appear in History as Expired.
 
 ## Build from source
 
