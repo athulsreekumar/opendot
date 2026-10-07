@@ -201,8 +201,8 @@ test("quick ask: Settings turns the shortcut off and on", async () => {
 		await toggle.click();
 		await expect(toggle).toBeChecked();
 		await page.getByRole("combobox", { name: /quick ask shortcut/i }).click();
-		// The option is labelled with symbols on a Mac (⌃⇧Space) and with words elsewhere.
-		await page.getByRole("option", { name: /Ctrl\+Shift\+Space|⌃⇧Space/ }).click();
+		// A Mac says "Control+Shift+Space"; other systems say "Ctrl+Shift+Space".
+		await page.getByRole("option", { name: /^(Ctrl|Control)\+Shift\+Space$/ }).click();
 		await expect.poll(async () => (await state(page)).accelerator).toBe("Ctrl+Shift+Space");
 		expect(await app.evaluate(({ globalShortcut }) => globalShortcut.isRegistered("Alt+Space"))).toBe(false);
 		if (registered)
