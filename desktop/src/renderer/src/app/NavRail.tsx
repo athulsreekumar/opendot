@@ -1,8 +1,17 @@
 import { cn } from "@/design-system/cn";
 import { Badge, IconButton } from "@/design-system/components";
-import { IconActivity, IconApprove, IconChats, IconConnections, IconLinks, IconSettings } from "@/design-system/icons";
+import {
+	IconActivity,
+	IconApprove,
+	IconChats,
+	IconConnections,
+	IconLinks,
+	IconOrganisation,
+	IconSettings,
+} from "@/design-system/icons";
 import { useApprovals } from "@/stores/approvals";
 import { useDots } from "@/stores/dots";
+import { totalAttention, useOrganisation } from "@/stores/organisation";
 import { navigate, type Route } from "./router";
 
 export function BrandMark({ size = 24, className }: { size?: number; className?: string }) {
@@ -61,6 +70,8 @@ export function NavRail({ route }: { route: Route }) {
 	const pending = useApprovals((s) => s.pending.length);
 	const unread = useDots((s) => s.dots.reduce((n, d) => (d.archived || d.muted ? n : n + d.unreadCount), 0));
 
+	const orgAttention = useOrganisation((s) => totalAttention(s.projects));
+
 	return (
 		<nav
 			aria-label="Main"
@@ -92,6 +103,13 @@ export function NavRail({ route }: { route: Route }) {
 					active={route.name === "connections"}
 					icon={<IconConnections size={20} strokeWidth={1.75} />}
 					onClick={() => navigate("#/connections")}
+				/>
+				<NavItem
+					label="Organisation"
+					active={route.name === "organisation"}
+					icon={<IconOrganisation size={20} strokeWidth={1.75} />}
+					onClick={() => navigate("#/organisation")}
+					badge={orgAttention}
 				/>
 			</div>
 			<div className="flex-1" />
