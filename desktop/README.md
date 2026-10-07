@@ -18,6 +18,7 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
   and a local webhook. Dots reply with `[URGENT]`, `[UPDATE]` or stay quiet, within budgets you set.
 - **SuperDot**: ask anything; it fans out to the right Dots in parallel, streams their answers live, then streams one answer
   with `[Inbox]`-style citations. `@Inbox …` asks one Dot directly.
+- **Organisation projects**: a team of Dots led by SuperDot as project manager plans a request, you approve it, and the work runs in parallel with reviews and a final report (see below).
 - **Daily briefing**: once a day SuperDot asks your Dots what matters and sends one briefing and one notification (see below).
 - **Quick ask**: press **Option+Space** (Mac) or **Alt+Space** (Windows) anywhere to open a small floating bar, even when
   OpenDot's window is closed. Ask SuperDot, or `@` a Dot, and the answer streams right there.
@@ -178,6 +179,21 @@ Allow Knowledge for a Dot in **Dot info → Tools** (or tick it when you create 
 inside your indexed folders). Answers show the files they used as chips: click to open the file, right-click to show it in
 its folder. Passages reach a cloud model like any other tool output, so PII masking applies. The index lives in
 `~/.opendot/knowledge/`.
+
+## Organisation
+
+A team of Dots, one per domain, led by SuperDot as project manager.
+
+**Projects.** Ask SuperDot for something that needs several people ("add single sign-on for our customers"), or use New project in
+Organisation. SuperDot writes a plan of tasks with an owner, dependencies and an optional reviewer, and nothing runs until you
+approve it. Tasks without dependencies run in parallel (up to 3 at a time). Each task is a normal Dot Link message from SuperDot,
+so Dot Links rules, approvals, budgets and PII masking apply. A Dot that needs you replies `[BLOCKED]` with a question, and your
+answer continues the same conversation. Reviews: a Dot reviewer replies `[APPROVE]` or `[CHANGES]` (up to 2 rounds, then the task
+is handed to you); you can also be the reviewer, or own a task yourself. Files a Dot creates under
+`projects/<project>/<task>/` in its workspace are listed as deliverables and can only be opened from there. You can pause,
+resume or cancel a project, set a budget, and retry or skip a failed task. If OpenDot closes, running projects come back paused.
+SuperDot posts update cards in its chat, sends notifications for questions and reviews, writes a final report, and mentions
+active projects in the daily briefing. Data: `~/.opendot/organisation/projects/<id>/project.json`.
 
 ## Build from source
 

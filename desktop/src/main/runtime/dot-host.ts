@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { parseAttachmentBlocks } from "../../shared/attachments";
 import { OpenDotError } from "../../shared/errors";
 import { newId } from "../../shared/ids";
+import type { OrgUpdateView } from "../../shared/organisation";
 import type {
 	ChatEvent,
 	ChatMessageView,
@@ -87,7 +88,7 @@ export interface AssistantEndInfo {
 	error?: string;
 }
 
-type RunKind = "user" | "events" | "link" | "briefing";
+type RunKind = "user" | "events" | "link" | "briefing" | "org";
 
 interface LinkSession {
 	session: AgentSession;
@@ -328,6 +329,62 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 			details: { date: req.date, label: req.label },
 		};
 		await this.startRun("briefing", () => session.sendCustomMessage(msg, { triggerTurn: true, deliverAs: "followUp" }));
+	}
+
+	/**
+	 * A hidden SuperDot turn for the organisation (planner, final report). Waits for a running chat turn to end, then runs
+	 * the prompt as a hidden custom message like the briefing does. Resolves when the turn has ended, with its final text.
+	 */
+	async runOrgTurn(req: {
+		kind: "plan" | "report";
+		projectId: string;
+		prompt: string;
+	}): Promise<{ text: string; error?: string }> {
+		this.lastActivity = Date.now();
+		const session = await this.ensureSession();
+		for (let i = 0; i < 600 && session.isStreaming; i++) await new Promise((r) => setTimeout(r, 500));
+		const msg = {
+			customType: "opendot.org-turn",
+			content: req.prompt,
+			display: false,
+			details: { kind: req.kind, projectId: req.projectId },
+		};
+		let error: string | undefined;
+		await new Promise<void>((resolve) => {
+			void this.startRun("org", async () => {
+				try {
+					await session.sendCustomMessage(msg, { triggerTurn: true, deliverAs: "followUp" });
+				} catch (e) {
+					error = e instanceof Error ? e.message : String(e);
+				} finally {
+					resolve();
+				}
+			});
+		});
+		const last = [...(session.messages as AnyMessage[])].reverse().find((m) => m.role === "assistant");
+		if (last?.stopReason === "error") error = friendlyModelError(last.errorMessage);
+		return { text: blocksText(last?.content), ...(error ? { error } : {}) };
+	}
+
+	/** A project update card in the chat (docs/spec/15-organisation.md §8). No model call. */
+	async postOrgUpdate(update: OrgUpdateView): Promise<void> {
+		const session = await this.ensureSession();
+		await session.sendCustomMessage(
+			{ customType: "opendot.org-update", content: update.text, display: true, details: update },
+			{ triggerTurn: false },
+		);
+		const view: ChatMessageView = {
+			id: newId("msg"),
+			dotId: this.dotId,
+			role: "assistant",
+			text: update.text,
+			toolCalls: [],
+			createdAt: new Date().toISOString(),
+			streaming: false,
+			orgUpdate: update,
+		};
+		this.deps.emit({ type: "message-start", dotId: this.dotId, message: view });
+		this.deps.emit({ type: "message-end", dotId: this.dotId, message: view });
 	}
 
 	/** A short briefing-styled note in the chat, with no model call (skipped, nothing to brief). */

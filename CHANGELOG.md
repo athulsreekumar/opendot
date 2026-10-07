@@ -7,6 +7,8 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Organisation projects: SuperDot plans a request into tasks for your team of Dots, you approve the plan, and the work runs in parallel
+  with questions, reviews, deliverables, a budget, a final report, chat update cards and notifications. Running projects pause when OpenDot closes.
 - Daily briefing: at a time you choose, SuperDot asks your Dots what matters and streams one briefing (with Dot citations) into its
   chat, with a single notification. Off by default; set up in Settings → Daily briefing, or run it now with `/briefing`.
 - Approvals inbox: an Approvals screen (Waiting and History) replaces the rail popover. Cards show the Dot, what it wants to do

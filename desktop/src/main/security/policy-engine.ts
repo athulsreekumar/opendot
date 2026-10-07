@@ -35,6 +35,11 @@ const OPENDOT_TOOLS: Record<string, ToolDecision> = {
 	ask_dots: "allow",
 	get_dot_updates: "allow",
 	search_dot_history: "allow",
+	// Organisation (SuperDot only): creating a project and proposing a plan change nothing until the user approves the plan.
+	org_team: "allow",
+	create_project: "allow",
+	propose_plan: "allow",
+	project_status: "allow",
 	remember: "allow",
 	forget: "allow",
 	recall: "allow",
