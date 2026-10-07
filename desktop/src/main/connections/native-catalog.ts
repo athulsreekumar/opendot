@@ -2,6 +2,7 @@
 // The factories only build definitions; nothing here runs a tool, so the deps are inert stubs.
 import { platformFeatures } from "../../shared/platform";
 import type { Connection, ConnectionToolInfo } from "../../shared/types";
+import { knowledgeTools } from "../knowledge/tools";
 import type { ToolDefinition } from "../runtime/pi-adapter";
 import { googleTools } from "./google";
 import { macTools } from "./mac";
@@ -67,6 +68,7 @@ export function nativeToolCatalog(
 		}));
 		return [...builtins, ...describe(macTools(feats, inert, platform), c)];
 	}
+	if (c.type === "knowledge") return describe(knowledgeTools(inert), c);
 	if (c.type === "google") return describe(googleTools(c.features?.length ? c.features : GOOGLE_ALL, inert), c);
 	if (c.type === "microsoft")
 		return describe(microsoftTools(c.features?.length ? c.features : MICROSOFT_ALL, inert), c);

@@ -3,6 +3,7 @@ import { api } from "../lib/api";
 import { useApprovals } from "./approvals";
 import { useChat } from "./chat";
 import { useDots } from "./dots";
+import { useKnowledge } from "./knowledge";
 import { useRuntime } from "./runtime";
 import { useSettings } from "./settings";
 
@@ -24,11 +25,16 @@ export async function bootstrapStores(): Promise<void> {
 	api.on("connections:changed", (c) => useRuntime.getState().setConnections(c));
 	api.on("connection:status", (s) => useRuntime.getState().setConnectionStatus(s));
 	api.on("link:exchange", (x) => useRuntime.getState().addExchange(x));
+	api.on("knowledge:changed", (k) => useKnowledge.getState().set(k));
 	await Promise.all([
 		useDots.getState().load(),
 		useSettings.getState().load(),
 		useApprovals.getState().load(),
 		useRuntime.getState().loadHealth(),
 		useRuntime.getState().loadConnections(),
+		useKnowledge
+			.getState()
+			.load()
+			.catch(() => undefined),
 	]);
 }

@@ -26,6 +26,8 @@ import type {
 	DotTemplate,
 	InstallConnectionInput,
 	ISODate,
+	KnowledgeFolderView,
+	KnowledgeState,
 	LinkDecision,
 	LinkExchange,
 	LinkId,
@@ -208,6 +210,16 @@ export interface OpenDotApi {
 		upsert(scope: MemoryScope, item: { id?: string; text: string; pinned?: boolean }): Promise<MemoryItem>;
 		remove(scope: MemoryScope, id: string): Promise<void>;
 	};
+	knowledge: {
+		state(): Promise<KnowledgeState>;
+		addFolder(path: string): Promise<KnowledgeFolderView>;
+		removeFolder(id: string): Promise<void>;
+		/** Re-scan one folder, or all when no id is given. `full` re-reads every file. */
+		reindex(id?: string, full?: boolean): Promise<void>;
+		/** Open a source file with the OS (documents) or show it in its folder (code and data). */
+		open(path: string): Promise<void>;
+		reveal(path: string): Promise<void>;
+	};
 	on<E extends keyof EventMap>(event: E, listener: (payload: EventMap[E]) => void): () => void;
 }
 
@@ -225,6 +237,7 @@ export interface EventMap {
 	"watcher:changed": Watcher;
 	"connections:changed": Connection[];
 	"app:navigate": { hash: string };
+	"knowledge:changed": KnowledgeState;
 }
 
 export const INVOKE_CHANNELS = [
@@ -311,6 +324,12 @@ export const INVOKE_CHANNELS = [
 	"memory.get",
 	"memory.upsert",
 	"memory.remove",
+	"knowledge.state",
+	"knowledge.addFolder",
+	"knowledge.removeFolder",
+	"knowledge.reindex",
+	"knowledge.open",
+	"knowledge.reveal",
 ] as const;
 
 export type InvokeChannel = (typeof INVOKE_CHANNELS)[number];
@@ -329,6 +348,7 @@ export const EVENT_CHANNELS = [
 	"watcher:changed",
 	"connections:changed",
 	"app:navigate",
+	"knowledge:changed",
 ] as const;
 
 /** Maps "ns.method" channel to the api function type. */
@@ -353,4 +373,6 @@ export interface OpenDotTestApi {
 	reportPaint(messageId: string, at: number): Promise<void>;
 	getPaints(): Promise<Array<{ messageId: string; firstTokenAt?: number; paintAt: number }>>;
 	emitEvent(dotId: string, title: string, body: string, importance?: "low" | "normal" | "high"): Promise<void>;
+	/** Add a folder to Knowledge without the native folder picker. */
+	knowledgeAddFolder(path: string): Promise<KnowledgeFolderView>;
 }
