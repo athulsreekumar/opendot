@@ -20,6 +20,9 @@ import { LinkBus } from "./links/link-bus";
 import { log } from "./log";
 import { MemoryService } from "./memory/memory-service";
 import { ModelService } from "./models/model-service";
+import { OrgStore } from "./organisation/org-store";
+import { SkillService } from "./organisation/skill-service";
+import { TeamService } from "./organisation/team-service";
 import type { Paths } from "./paths";
 import { PiiService } from "./pii/pii-service";
 import type { SessionCtx } from "./runtime/dot-host";
@@ -31,6 +34,7 @@ import { nativeOwner, nativeToolsExtension } from "./runtime/extensions/native-t
 import { piiExtension } from "./runtime/extensions/pii";
 import { policyExtension } from "./runtime/extensions/policy";
 import { sectionsExtension } from "./runtime/extensions/sections";
+import { skillsExtension } from "./runtime/extensions/skills";
 import { superbotExtension } from "./runtime/extensions/superbot";
 import { type InlineExtension, McpClient, StdioTransport, StreamableHttpTransport } from "./runtime/pi-adapter";
 import { blocksText, previewLine } from "./runtime/views";
@@ -152,6 +156,25 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 	};
 
 	const dots = new DotService(store, paths, connections);
+
+	// ── Organisation: team and skills (spec 15) ──
+	const skills: SkillService = new SkillService({
+		root: paths.root,
+		emit: (list) => bridge.broadcast("org:skills", list),
+		onDeleted: (id) => team.dropSkill(id),
+	});
+	const team: TeamService = new TeamService({
+		store: new OrgStore(paths.root),
+		dots,
+		links: store.links,
+		connections,
+		skillExists: (id) => skills.exists(id),
+		emitState: (st) => bridge.broadcast("org:state", st),
+		audit: (summary, data) => void store.audit({ kind: "settings-change", summary, data }),
+		membersChanged: (ids) => {
+			for (const id of ids) runtime?.peek(id)?.markNeedsRecreate();
+		},
+	});
 	const attachments = new AttachmentService({
 		paths,
 		supportsImages: async (d) =>
@@ -390,6 +413,15 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 				reportStatus: (s) => connections.reportStatus(s),
 			}),
 		];
+		// Organisation members with skills get the `skills` section and the use_skill tool.
+		const orgMember = (await team.store.read()).members.find((m) => m.dotId === dot.id);
+		if (orgMember && orgMember.skillIds.length > 0)
+			exts.push(
+				skillsExtension({
+					member: async () => (await team.store.read()).members.find((m) => m.dotId === dot.id),
+					skill: (id) => skills.get(id).catch(() => undefined),
+				}),
+			);
 		if (dot.kind === "super") {
 			exts.push(
 				superbotExtension({
@@ -610,6 +642,8 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		connections,
 		knowledge,
 		dots,
+		team,
+		skills,
 		linkBus,
 		profiles,
 		briefing,
