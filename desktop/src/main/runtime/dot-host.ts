@@ -13,6 +13,7 @@ import type {
 	MessageId,
 	ToolCallView,
 } from "../../shared/types";
+import { sourcesFromDetails } from "../knowledge/sources";
 import { log } from "../log";
 import type { ModelService } from "../models/model-service";
 import type { Paths } from "../paths";
@@ -486,7 +487,9 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 				const tool = this.tools.get(ev.toolCallId);
 				const messageId = this.toolMsg.get(ev.toolCallId);
 				if (tool && messageId) {
-					const result = ev.result as { content?: unknown } | undefined;
+					const result = ev.result as { content?: unknown; details?: unknown } | undefined;
+					const sources = sourcesFromDetails(tool.name, result?.details);
+					if (sources) tool.sources = sources;
 					const preview = this.deps.pii.restore(dotId, previewOf(result?.content ?? ""));
 					const blocked = ev.isError && /Blocked by OpenDot|declined/i.test(preview);
 					tool.status = blocked ? "blocked" : ev.isError ? "error" : "done";

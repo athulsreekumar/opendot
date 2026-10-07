@@ -10,6 +10,7 @@ import { MAC_DEFAULT_DECISIONS } from "./connections/mac";
 import { runJxaReal } from "./connections/mac/jxa";
 import { shellAvailable } from "./connections/shell-support";
 import { DotService } from "./dots/dot-service";
+import { KnowledgeService } from "./knowledge/knowledge-service";
 import { LinkBus } from "./links/link-bus";
 import { log } from "./log";
 import { MemoryService } from "./memory/memory-service";
@@ -123,6 +124,14 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 	};
 
 	const dots = new DotService(store, paths, connections);
+
+	// ── Knowledge (local notes index). Loads in the background so startup never waits on it. ──
+	const knowledge = new KnowledgeService({
+		dir: join(paths.root, "knowledge"),
+		emit: (state) => bridge.broadcast("knowledge:changed", state),
+		watchDebounceMs: process.env.OPENDOT_E2E ? 300 : undefined,
+	});
+	void knowledge.start().catch((e) => log.warn("knowledge start failed", e));
 
 	// ── Link bus (needs runtime; resolved lazily) ──
 	let runtime: DotRuntime;
@@ -298,7 +307,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 				approvals,
 				getDot: getFresh,
 				connectionFor,
-				nativeDefault: (t) => MAC_DEFAULT_DECISIONS[t],
+				nativeDefault: (t) => MAC_DEFAULT_DECISIONS[t] ?? (t.startsWith("knowledge_") ? "allow" : undefined),
 				allowedRoots,
 				audit: (kind, d, summary, data) => void store.audit({ kind, dotId: d.id, summary, data }),
 				approvalTtlMs: () => (runtime.peek(dot.id)?.status.kind === "handling-events" ? 30 * 60_000 : 5 * 60_000),
@@ -324,6 +333,12 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 				grants: resolved.native,
 				base: { fetch: (...a) => fetch(...a), runJxa: (s, t) => runJxaReal(s, t), now: () => new Date() },
 				accessToken: (type) => connections.accessToken(type),
+				knowledge: {
+					search: (q, limit) => knowledge.search(q, limit),
+					read: (p, a, b) => knowledge.read(p, a, b),
+					busy: () => knowledge.busy(),
+					folderCount: () => knowledge.roots().length,
+				},
 				mac: {
 					clipboardRead: () => bridge.clipboardRead(),
 					clipboardWrite: (t) => bridge.clipboardWrite(t),
@@ -506,6 +521,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		approvals,
 		pii,
 		connections,
+		knowledge,
 		dots,
 		linkBus,
 		profiles,
@@ -540,6 +556,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		},
 		async shutdown() {
 			await watchers.stop();
+			await knowledge.stop().catch(() => undefined);
 			router.stop();
 			profiles.stop();
 			await runtime.disposeAll();

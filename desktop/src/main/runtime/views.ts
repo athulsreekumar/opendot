@@ -1,5 +1,7 @@
 // Maps pi messages / session entries to renderer view models.
+
 import type { ChatMessageView, DotEventView, DotId, ToolCallView } from "../../shared/types";
+import { sourcesFromDetails } from "../knowledge/sources";
 
 type Block = {
 	type: string;
@@ -33,6 +35,7 @@ const LABELS: Record<string, string> = {
 	onedrive: "OneDrive",
 	teams: "Teams",
 	mac: "Mac",
+	knowledge: "Knowledge",
 	read: "Files · read",
 	write: "Files · write",
 	edit: "Files · edit",
@@ -217,6 +220,8 @@ export function entriesToViews(
 			const v = toolIndex.get(m.toolCallId);
 			if (v) {
 				v.resultPreview = restore(previewOf(m.content));
+				const sources = sourcesFromDetails(v.name, m.details);
+				if (sources) v.sources = sources;
 				v.isError = !!m.isError;
 				v.status = m.isError ? "error" : "done";
 			}

@@ -1,0 +1,24 @@
+{
+	"name": "knowledge-search",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_know_1",
+					"name": "knowledge_search",
+					"arguments": { "query": "sourdough starter feeding" }
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Your notes in sourdough.md say to feed the starter every morning with rye flour and water."
+				}
+			]
+		}
+	]
+}

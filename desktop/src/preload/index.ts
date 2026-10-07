@@ -41,5 +41,6 @@ if (process.env.OPENDOT_E2E === "1") {
 		reportPaint: t("test.reportPaint"),
 		getPaints: t("test.getPaints"),
 		emitEvent: t("test.emitEvent"),
+		knowledgeAddFolder: t("test.knowledgeAddFolder"),
 	});
 }

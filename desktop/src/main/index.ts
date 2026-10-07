@@ -244,6 +244,7 @@ async function main(): Promise<void> {
 					if (/^(https:|mailto:|x-apple\.systempreferences:)/.test(url)) await shell.openExternal(url);
 				},
 				revealPath: async (p) => shell.showItemInFolder(p),
+				openPath: (p) => shell.openPath(p),
 				pickFolder: async (title) => {
 					const r = await dialog.showOpenDialog({
 						title: title ?? "Choose a folder",

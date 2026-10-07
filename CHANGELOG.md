@@ -7,6 +7,8 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Knowledge: index folders of notes and documents on your computer and let Dots you allow search them (`knowledge_search`,
+  `knowledge_read`) and answer with clickable source chips.
 - Windows 10 and 11 (x64) support: an installer and a portable zip, a **This PC** connection (files, shell through
   Git for Windows, screenshots, clipboard, notifications, opening apps and links), keys encrypted with Windows DPAPI,
   and Windows builds and tests in CI.
