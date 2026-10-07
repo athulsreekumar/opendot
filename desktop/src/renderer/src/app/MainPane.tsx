@@ -2,6 +2,7 @@ import type { DotId } from "@shared/types";
 import { Button } from "@/design-system/components";
 import { IconNewDot } from "@/design-system/icons";
 import { ActivityScreen } from "@/features/activity/ActivityScreen";
+import { ApprovalsScreen } from "@/features/approvals/ApprovalsScreen";
 import { ChatView } from "@/features/chats/ChatView";
 import { ConnectionsScreen } from "@/features/connections/ConnectionsScreen";
 import { LinksScreen } from "@/features/links/LinksScreen";
@@ -39,6 +40,8 @@ export function MainPane({ route }: { route: Route }) {
 			return <LinksScreen />;
 		case "activity":
 			return <ActivityScreen />;
+		case "approvals":
+			return <ApprovalsScreen approvalId={route.approvalId} />;
 		case "connections":
 			return <ConnectionsScreen connectionId={route.connectionId} />;
 		case "settings":

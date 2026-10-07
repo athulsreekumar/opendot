@@ -153,6 +153,8 @@ export function buildHandlers(s: Services, app: AppActions, info: { version: str
 		// ── approvals ──
 		"approvals.pending": async () => s.approvals.pending(),
 		"approvals.respond": async (res) => s.approvals.respond(res),
+		"approvals.denyAll": async (dotId, reason) => s.approvals.denyAll(dotId, reason),
+		"approvals.history": async (q) => s.approvalHistory.list(q ?? {}),
 		// ── links ──
 		"links.list": () => s.store.links.read(),
 		"links.upsert": async (input) => {

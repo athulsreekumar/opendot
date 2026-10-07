@@ -18,7 +18,10 @@ export async function bootstrapStores(): Promise<void> {
 	});
 	api.on("dots:changed", (dots) => useDots.getState().setAll(dots));
 	api.on("approval:requested", (r) => useApprovals.getState().add(r));
-	api.on("approval:resolved", (r) => useApprovals.getState().remove(r.id));
+	api.on("approval:resolved", (r) => {
+		useApprovals.getState().remove(r.id);
+		if (r.item) useApprovals.getState().addHistory(r.item);
+	});
 	api.on("settings:changed", (s) => useSettings.getState().set(s));
 	api.on("runtime:health", (h) => useRuntime.getState().setHealth(h));
 	api.on("connections:changed", (c) => useRuntime.getState().setConnections(c));
