@@ -6,6 +6,12 @@ test("screen tour renders without errors", async () => {
 	const { app, page } = await launchApp();
 	const errors: string[] = [];
 	page.on("pageerror", (e) => errors.push(e.message));
+	// The Organisation screens must show their error or empty state quietly (no console errors).
+	let onOrganisation = false;
+	const orgConsoleErrors: string[] = [];
+	page.on("console", (m) => {
+		if (onOrganisation && m.type() === "error") orgConsoleErrors.push(m.text());
+	});
 	try {
 		await quickSetup(page);
 		const t = (await page.evaluate(() => window.opendot.dots.templates())).find((x) => x.id === "inbox")!;
@@ -19,14 +25,20 @@ test("screen tour renders without errors", async () => {
 			["#/settings/about-me", "settings-about-me"],
 			["#/settings/background", "settings-background"],
 			["#/connections", "connections"],
+			["#/organisation", "organisation"],
+			["#/organisation/team", "organisation-team"],
+			["#/organisation/skills", "organisation-skills"],
 			[`#/chats/${id}`, "chat-inbox"],
 		] as const) {
+			onOrganisation = hash.startsWith("#/organisation");
 			await page.evaluate((h) => {
 				window.location.hash = h;
 			}, hash);
 			await page.waitForTimeout(700);
 			await screenshot(page, name);
 		}
+		onOrganisation = false;
+		expect(orgConsoleErrors).toEqual([]);
 		await page
 			.getByRole("button", { name: /dot info|info/i })
 			.first()
