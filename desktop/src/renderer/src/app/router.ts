@@ -4,6 +4,7 @@ export type Route =
 	| { name: "chats"; dotId?: string }
 	| { name: "links" }
 	| { name: "activity" }
+	| { name: "approvals"; approvalId?: string }
 	| { name: "connections"; connectionId?: string }
 	| { name: "settings"; section: string }
 	| { name: "onboarding" }
@@ -16,6 +17,8 @@ export function parseHash(hash: string): Route {
 			return { name: "links" };
 		case "activity":
 			return { name: "activity" };
+		case "approvals":
+			return { name: "approvals", approvalId: parts[1] };
 		case "connections":
 			return { name: "connections", connectionId: parts[1] };
 		case "settings":

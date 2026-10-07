@@ -81,7 +81,7 @@ Spec 09 §4.23. Behaviour:
 
 ### 3.4 Approvals
 - Inline ApprovalCard in the requesting Dot's chat (at the bottom, above the composer, sticky until resolved).
-- The rail badge counts all pending. Clicking it opens a popover listing the pending approvals across Dots (title, Dot avatar, age) → click to jump.
+- The rail badge counts all pending. Clicking it opens the **Approvals** screen (`#/approvals[/<id>]`) with two tabs, **Waiting** (cards with Dot, plain-language action, why, readable details; Allow once / Edit, then allow / Always allow for this Dot / Deny with an optional reason; keys A, D, E; grouped by Dot with Deny all from 3 requests) and **History** (decided approvals from the audit log, filter by Dot and outcome).
 - A native notification when the window is not focused.
 
 ### 3.5 Privacy indicator

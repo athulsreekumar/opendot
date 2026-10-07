@@ -4,8 +4,9 @@ import { Button, Tooltip, TooltipProvider, toast } from "../../design-system/com
 import { IconCheck, IconClose } from "../../design-system/icons";
 import { errorText } from "../../lib/api";
 import { useApprovals } from "../../stores/approvals";
+import { ApprovalDetailView } from "../approvals/ApprovalDetailView";
 
-function useCountdown(expiresAt: string): number {
+export function useCountdown(expiresAt: string): number {
 	const [left, setLeft] = useState(() => Math.max(0, Math.round((new Date(expiresAt).getTime() - Date.now()) / 1000)));
 	useEffect(() => {
 		const t = setInterval(
@@ -17,7 +18,7 @@ function useCountdown(expiresAt: string): number {
 	return left;
 }
 
-function fmt(s: number): string {
+export function fmt(s: number): string {
 	return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 
@@ -48,7 +49,8 @@ export function ApprovalCard({
 		>
 			<span className="absolute inset-y-0 left-0 w-[3px] bg-warning" />
 			<div className="text-md font-semibold text-fg">{approval.title}</div>
-			{approval.detail && <div className="mt-0.5 text-sm text-fg-2">{approval.detail}</div>}
+			{approval.why && <div className="mt-0.5 line-clamp-3 text-sm text-fg-2">{approval.why}</div>}
+			{!approval.why && approval.detail && <div className="mt-0.5 text-sm text-fg-2">{approval.detail}</div>}
 			{approval.args !== undefined && (
 				<div className="mt-1">
 					<button
@@ -60,9 +62,9 @@ export function ApprovalCard({
 						{details ? "Hide details" : "Details"}
 					</button>
 					{details && (
-						<pre className="od-selectable mt-1 max-h-40 overflow-auto rounded-md bg-sunken p-2 font-mono text-xs text-fg-2">
-							{JSON.stringify(approval.args, null, 2)}
-						</pre>
+						<div className="mt-1">
+							<ApprovalDetailView approval={approval} />
+						</div>
 					)}
 				</div>
 			)}

@@ -145,7 +145,8 @@ export function AppShell({ route }: { route: Route }) {
 
 	useGlobalShortcuts(route);
 
-	const hideList = route.name === "links" || route.name === "activity" || route.name === "connections";
+	const hideList =
+		route.name === "links" || route.name === "activity" || route.name === "approvals" || route.name === "connections";
 	const showSettingsNav = route.name === "settings";
 	const showDrawer = route.name === "chats" && Boolean(route.dotId) && drawerOpen;
 	const overlay = windowWidth < OVERLAY_BREAKPOINT;

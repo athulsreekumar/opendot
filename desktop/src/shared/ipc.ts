@@ -1,6 +1,8 @@
 // The renderer ⇄ main contract. Spec: docs/spec/02-data-and-ipc.md §3
 import type {
 	AddProviderInput,
+	ApprovalHistoryItem,
+	ApprovalHistoryOutcome,
 	ApprovalRequest,
 	ApprovalResponse,
 	AppSettings,
@@ -140,6 +142,8 @@ export interface OpenDotApi {
 	approvals: {
 		pending(): Promise<ApprovalRequest[]>;
 		respond(res: ApprovalResponse): Promise<void>;
+		denyAll(dotId: DotId, reason?: string): Promise<number>;
+		history(q?: { dotId?: DotId; outcome?: ApprovalHistoryOutcome; limit?: number }): Promise<ApprovalHistoryItem[]>;
 	};
 	links: {
 		list(): Promise<DotLink[]>;
@@ -220,7 +224,11 @@ export interface OpenDotApi {
 export interface EventMap {
 	"dot:event": ChatEvent;
 	"approval:requested": ApprovalRequest;
-	"approval:resolved": { id: ApprovalRequest["id"]; decision: ApprovalResponse["decision"] | "expired" };
+	"approval:resolved": {
+		id: ApprovalRequest["id"];
+		decision: ApprovalResponse["decision"] | "expired";
+		item?: ApprovalHistoryItem;
+	};
 	"connection:status": ConnectionStatus;
 	"link:exchange": LinkExchange;
 	"settings:changed": AppSettings;
@@ -291,6 +299,8 @@ export const INVOKE_CHANNELS = [
 	"connections.nodeAvailable",
 	"approvals.pending",
 	"approvals.respond",
+	"approvals.denyAll",
+	"approvals.history",
 	"links.list",
 	"links.upsert",
 	"links.remove",
