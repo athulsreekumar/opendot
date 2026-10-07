@@ -113,6 +113,21 @@ export class ConnectionService {
 				createdAt: now,
 			});
 		}
+		if (!list.some((c) => c.type === "knowledge")) {
+			add.push({
+				id: newId("con"),
+				type: "knowledge",
+				name: "knowledge",
+				label: "Knowledge",
+				description: "Search your own notes and documents on this computer, with sources.",
+				icon: "book-open",
+				enabled: true,
+				exposure: "direct",
+				toolExposure: {},
+				features: [],
+				createdAt: now,
+			});
+		}
 		for (const [type, label, icon, desc] of [
 			["google", "Google Workspace", "mail", "Gmail, Google Calendar and Drive."],
 			["microsoft", "Microsoft 365", "calendar", "Outlook mail and calendar, OneDrive and Teams."],
@@ -345,6 +360,7 @@ export class ConnectionService {
 		if (!c) return;
 		if (c.type === "mac")
 			throw new OpenDotError("BUILTIN", "This computer connection can't be removed. Disable it instead.");
+		if (c.type === "knowledge") throw new OpenDotError("BUILTIN", "Knowledge can't be removed. Disable it instead.");
 		await this.secrets.deletePrefix(`conn:${id}:`);
 		await this.secrets.delete(`oauth:${id}`);
 		await this.secrets.delete(`oauthclient:${id}`);
@@ -462,7 +478,7 @@ export class ConnectionService {
 			this.reportStatus(st);
 			return st;
 		}
-		if (c.type === "mac") {
+		if (c.type === "mac" || c.type === "knowledge") {
 			const tools = nativeToolCatalog(c);
 			const st: ConnectionStatus = {
 				connectionId: id,
@@ -688,6 +704,15 @@ export class ConnectionService {
 				features: [f],
 			});
 		}
+		const knowledge = this.byType(list, "knowledge");
+		if (knowledge)
+			out.push({
+				id: "knowledge",
+				label: "Knowledge",
+				kind: knowledge.enabled ? "installed" : "available",
+				icon: "book-open",
+				group: "Other",
+			});
 		for (const c of list.filter((x) => x.type === "mcp-stdio" || x.type === "mcp-http")) {
 			out.push({ id: c.id, label: c.label, kind: "installed", icon: c.icon, group: "MCP" });
 		}
@@ -703,6 +728,10 @@ export class ConnectionService {
 		const list = await this.list();
 		if (choiceId.startsWith("con_"))
 			return list.some((c) => c.id === choiceId) ? { connectionId: choiceId as ConnectionId } : undefined;
+		if (choiceId === "knowledge") {
+			const k = this.byType(list, "knowledge");
+			return k ? { connectionId: k.id } : undefined;
+		}
 		const [type, feature] = choiceId.split(":");
 		if (type === "google" || type === "microsoft" || type === "mac") {
 			const c = this.byType(list, type);

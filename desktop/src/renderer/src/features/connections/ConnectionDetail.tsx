@@ -5,6 +5,7 @@ import { Avatar, Badge, Button, Dialog, DialogFooter, Select, Switch, toast } fr
 import { api, errorText } from "@/lib/api";
 import { useDots } from "@/stores/dots";
 import { useRuntime } from "@/stores/runtime";
+import { KnowledgePanel } from "../knowledge/KnowledgePanel";
 import { ConnectionStatePill, dotsUsing, IconTile } from "./ConnectionCard";
 import { ShellNote, useShellAvailable } from "./ShellNote";
 
@@ -28,7 +29,7 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 	// Built-in connections (This Mac, Google, Microsoft) list their tools without starting anything, so refresh on open
 	// and whenever their features change. MCP servers are only checked when you press Test.
 	useEffect(() => {
-		if (type !== "mac" && type !== "google" && type !== "microsoft") return;
+		if (type !== "mac" && type !== "google" && type !== "microsoft" && type !== "knowledge") return;
 		void featureKey; // re-list when the enabled features change
 		api.connections
 			.check(connectionId as Connection["id"])
@@ -130,6 +131,8 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 				)}
 			</section>
 
+			{type === "knowledge" && <KnowledgePanel />}
+
 			<section className="flex flex-col gap-2">
 				<h3 className="text-lg font-semibold text-fg">Tools</h3>
 				{!status || status.tools.length === 0 ? (
@@ -207,11 +210,13 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 				)}
 			</section>
 
-			<div>
-				<Button variant="danger" size="sm" onClick={() => setConfirmRemove(true)}>
-					Remove connection
-				</Button>
-			</div>
+			{type !== "knowledge" && (
+				<div>
+					<Button variant="danger" size="sm" onClick={() => setConfirmRemove(true)}>
+						Remove connection
+					</Button>
+				</div>
+			)}
 			<Dialog
 				open={confirmRemove}
 				onOpenChange={setConfirmRemove}

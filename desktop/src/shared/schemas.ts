@@ -176,7 +176,7 @@ export const SettingsSchema = z.object({
 
 export const ConnectionSchema = z.object({
 	id: ConnectionIdSchema,
-	type: z.enum(["mcp-stdio", "mcp-http", "google", "microsoft", "mac"]),
+	type: z.enum(["mcp-stdio", "mcp-http", "google", "microsoft", "mac", "knowledge"]),
 	name: z.string().regex(/^[A-Za-z0-9_-]{1,40}$/),
 	label: z.string().min(1).max(80),
 	description: z.string().max(400),
@@ -327,6 +327,10 @@ export const ARG_SCHEMAS: Partial<Record<string, z.ZodType<unknown[]>>> = {
 	"quickAsk.report": z.tuple([
 		z.object({ dotId: DotIdSchema.optional(), pinned: z.boolean() }),
 	]) as unknown as z.ZodType<unknown[]>,
+	"knowledge.addFolder": z.tuple([z.string().min(1).max(4096)]) as unknown as z.ZodType<unknown[]>,
+	"knowledge.removeFolder": z.tuple([z.string().min(1).max(64)]) as unknown as z.ZodType<unknown[]>,
+	"knowledge.open": z.tuple([z.string().min(1).max(4096)]) as unknown as z.ZodType<unknown[]>,
+	"knowledge.reveal": z.tuple([z.string().min(1).max(4096)]) as unknown as z.ZodType<unknown[]>,
 	"dots.get": z.tuple([DotIdSchema]) as unknown as z.ZodType<unknown[]>,
 	"dots.remove": z.tuple([DotIdSchema]) as unknown as z.ZodType<unknown[]>,
 	"app.openExternal": z.tuple([

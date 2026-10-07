@@ -15,6 +15,7 @@ export function registerTestIpc(ipcMain: IpcMain, s: Services, quickAsk?: QuickA
 		if (!paints.some((p) => p.messageId === messageId)) paints.push({ messageId, paintAt: at });
 	});
 	h("test.getPaints", () => paints);
+	h("test.knowledgeAddFolder", (path: string) => s.knowledge.addFolder(path));
 	h("test.emitEvent", async (dotId: string, title: string, body: string, importance?: "low" | "normal" | "high") => {
 		const dot = await s.store.dots.get(dotId as DotId);
 		if (!dot) throw new Error("no dot");

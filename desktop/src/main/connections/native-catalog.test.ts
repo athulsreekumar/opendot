@@ -78,6 +78,12 @@ describe("nativeToolCatalog", () => {
 		expect(nativeToolCatalog(conn("microsoft", [])).some((t) => t.name.startsWith("outlook_"))).toBe(true);
 	});
 
+	it("lists the read-only Knowledge tools", () => {
+		const tools = nativeToolCatalog(conn("knowledge", []));
+		expect(tools.map((t) => t.name).sort()).toEqual(["knowledge_read", "knowledge_search"]);
+		expect(tools.every((t) => t.readOnly)).toBe(true);
+	});
+
 	it("returns nothing for MCP connections", () => {
 		expect(nativeToolCatalog(conn("mcp-stdio", []))).toEqual([]);
 	});

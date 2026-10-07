@@ -31,6 +31,8 @@ import type {
 	DotTemplate,
 	InstallConnectionInput,
 	ISODate,
+	KnowledgeFolderView,
+	KnowledgeState,
 	LinkDecision,
 	LinkExchange,
 	LinkId,
@@ -230,6 +232,16 @@ export interface OpenDotApi {
 		/** The bar tells main which Dot it is showing and whether an approval keeps it open on blur. */
 		report(state: { dotId?: DotId; pinned: boolean }): Promise<void>;
 	};
+	knowledge: {
+		state(): Promise<KnowledgeState>;
+		addFolder(path: string): Promise<KnowledgeFolderView>;
+		removeFolder(id: string): Promise<void>;
+		/** Re-scan one folder, or all when no id is given. `full` re-reads every file. */
+		reindex(id?: string, full?: boolean): Promise<void>;
+		/** Open a source file with the OS (documents) or show it in its folder (code and data). */
+		open(path: string): Promise<void>;
+		reveal(path: string): Promise<void>;
+	};
 	on<E extends keyof EventMap>(event: E, listener: (payload: EventMap[E]) => void): () => void;
 }
 
@@ -253,6 +265,7 @@ export interface EventMap {
 	"app:navigate": { hash: string };
 	"quickask:shown": Record<string, never>;
 	"quickask:hidden": Record<string, never>;
+	"knowledge:changed": KnowledgeState;
 }
 
 export const INVOKE_CHANNELS = [
@@ -348,6 +361,12 @@ export const INVOKE_CHANNELS = [
 	"quickAsk.hide",
 	"quickAsk.openInApp",
 	"quickAsk.report",
+	"knowledge.state",
+	"knowledge.addFolder",
+	"knowledge.removeFolder",
+	"knowledge.reindex",
+	"knowledge.open",
+	"knowledge.reveal",
 ] as const;
 
 export type InvokeChannel = (typeof INVOKE_CHANNELS)[number];
@@ -368,6 +387,7 @@ export const EVENT_CHANNELS = [
 	"app:navigate",
 	"quickask:shown",
 	"quickask:hidden",
+	"knowledge:changed",
 ] as const;
 
 /** Maps "ns.method" channel to the api function type. */
@@ -403,4 +423,6 @@ export interface OpenDotTestApi {
 	}>;
 	/** Test only: blur the bar the way clicking another window would. */
 	blurQuickAsk(): Promise<void>;
+	/** Add a folder to Knowledge without the native folder picker. */
+	knowledgeAddFolder(path: string): Promise<KnowledgeFolderView>;
 }
