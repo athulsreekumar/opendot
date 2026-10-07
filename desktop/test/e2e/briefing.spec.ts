@@ -47,8 +47,14 @@ test("Run briefing now streams a briefing card with citations into SuperDot's ch
 		await expect(page.getByText(/Briefing · \w{3} \d{1,2} \w{3}/).first()).toBeVisible();
 		// Citations render as chips for known Dots.
 		await expect(page.getByText("Inbox").first()).toBeVisible();
-		const ex = await page.evaluate(() => window.opendot.links.exchanges());
-		expect(ex.filter((x) => x.status === "done").length).toBe(2);
+		// Exchanges are recorded a moment after the card text appears (slower on CI), so wait for both.
+		await expect
+			.poll(
+				async () =>
+					(await page.evaluate(() => window.opendot.links.exchanges())).filter((x) => x.status === "done").length,
+				{ timeout: 15000 },
+			)
+			.toBe(2);
 		// The card survives a history reload, and today is recorded as done.
 		await page.waitForTimeout(800);
 		const hist = await page.evaluate((id) => window.opendot.chat.history(id as `dot_${string}`), superId);
