@@ -15,6 +15,8 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
   and a local webhook. Dots reply with `[URGENT]`, `[UPDATE]` or stay quiet, within budgets you set.
 - **SuperDot**: ask anything; it fans out to the right Dots in parallel, streams their answers live, then streams one answer
   with `[Inbox]`-style citations. `@Inbox …` asks one Dot directly.
+- **Quick ask**: press **Option+Space** (Mac) or **Alt+Space** (Windows) anywhere to open a small floating bar, even when
+  OpenDot's window is closed. Ask SuperDot, or `@` a Dot, and the answer streams right there.
 - **Dot Links (RBAC)**: decide which Dots (or roles) can message which, when (schedules), how often, and whether you approve each message.
 - **Private by default**: everything is stored in `~/.opendot` (`%USERPROFILE%\.opendot` on Windows) on your computer. Personal details (emails, phones, cards, keys…) are
   masked before they reach cloud models and restored locally. Tools that change things ask first.
@@ -51,6 +53,20 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
 On Windows the built-in connection is called **This PC** and offers files, shell, screenshots, clipboard, notifications and
 opening apps and links. Calendar, Reminders, Contacts and Notes are macOS only; use Google Workspace or Microsoft 365 for those.
 Your data lives in `%USERPROFILE%\.opendot` (see below).
+
+## Quick ask
+
+A system-wide shortcut opens a small bar in the upper part of the screen, from any app (OpenDot only has to be running;
+with **Run in the background** on, closing the window is fine).
+
+- Press **Option+Space** on a Mac or **Alt+Space** on Windows. Press it again, press **Esc** or click elsewhere to hide the bar.
+- Type a question and press **Enter**. It goes to SuperDot, which asks the right Dots. Type `@` to pick a Dot (arrow keys and
+  Enter) and the question goes to that Dot only.
+- The answer streams in below the input. **Open in OpenDot** (or **Cmd/Ctrl+Enter**) shows the same chat in the main window;
+  **Copy** copies the answer. The exchange is saved in that Dot's normal chat history.
+- If a tool needs your approval, the bar shows "Needs your approval" with **Allow once** and **Deny**, and stays open until you answer.
+- Settings → Quick ask turns it off or switches to **Ctrl+Shift+Space** or **Cmd/Ctrl+Shift+O**. If another app already owns
+  the shortcut, Settings says so and you can pick a different one.
 
 ## Where your data lives
 

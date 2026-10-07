@@ -1,9 +1,10 @@
 // Test-only IPC (OPENDOT_E2E=1): fake model scripts, captured contexts, paint timings, synthetic events.
 import type { IpcMain } from "electron";
 import type { DotId } from "../shared/types";
+import type { QuickAskController } from "./quickask/quick-ask";
 import type { Services } from "./services";
 
-export function registerTestIpc(ipcMain: IpcMain, s: Services): void {
+export function registerTestIpc(ipcMain: IpcMain, s: Services, quickAsk?: QuickAskController): void {
 	const paints: Array<{ messageId: string; paintAt: number }> = [];
 	const h = (c: string, fn: (...a: never[]) => unknown) =>
 		ipcMain.handle(c, (_e, args: unknown[]) => fn(...((args ?? []) as never[])));
@@ -30,4 +31,7 @@ export function registerTestIpc(ipcMain: IpcMain, s: Services): void {
 			},
 		);
 	});
+	h("test.openQuickAsk", (toggle?: boolean) => (toggle ? quickAsk?.toggle() : quickAsk?.show()));
+	h("test.quickAskState", () => quickAsk?.state());
+	h("test.blurQuickAsk", () => quickAsk?.simulateBlur());
 }

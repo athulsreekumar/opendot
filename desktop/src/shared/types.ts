@@ -605,6 +605,14 @@ export interface AppSettings {
 	localWebhook: { enabled: boolean; port: number };
 	onboardingDone: boolean;
 	telemetry: false;
+	/** Global quick-ask bar. Absent in settings files from before the feature (defaults apply). */
+	quickAsk?: QuickAskSettings;
+}
+
+export interface QuickAskSettings {
+	enabled: boolean;
+	/** Electron accelerator, one of the presets in shared/quickask.ts. */
+	shortcut: string;
 }
 
 export interface UiState {
