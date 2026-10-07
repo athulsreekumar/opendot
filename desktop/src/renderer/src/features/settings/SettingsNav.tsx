@@ -9,6 +9,7 @@ export const SETTINGS_SECTIONS = [
 	{ id: "briefing", label: "Daily briefing" },
 	{ id: "background", label: "Background" },
 	{ id: "notifications", label: "Notifications" },
+	{ id: "quick-ask", label: "Quick ask" },
 	{ id: "audit", label: "Audit log" },
 	{ id: "advanced", label: "Advanced" },
 	{ id: "about", label: "About" },

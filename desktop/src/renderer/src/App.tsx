@@ -5,10 +5,13 @@ import { Spinner, Toaster, TooltipProvider } from "@/design-system/components";
 import { applyAccent, applyTheme } from "@/design-system/theme";
 import { Gallery } from "@/features/gallery/Gallery";
 import { Onboarding } from "@/features/onboarding/Onboarding";
+import { QuickAsk } from "@/features/quick-ask/QuickAsk";
 import { api } from "@/lib/api";
 import { bootstrapStores } from "@/stores/bootstrap";
 import { useSettings } from "@/stores/settings";
 import { useUi } from "@/stores/ui";
+
+const isQuickWindow = () => window.location.hash.startsWith("#/quick");
 
 export function App() {
 	const route = useRoute();
@@ -38,13 +41,17 @@ export function App() {
 
 	useEffect(() => {
 		const offs = [
+			// The quick-ask window stays on its own route; these are for the main window.
 			api.on("app:focus-dot", ({ dotId, scrollTo }) => {
+				if (isQuickWindow()) return;
 				navigate(`#/chats/${dotId}`);
 				// A briefing notification opens SuperDot's chat scrolled to the briefing card.
 				if (scrollTo === "briefing")
 					setTimeout(() => window.dispatchEvent(new CustomEvent("od:scroll-briefing", { detail: { dotId } })), 400);
 			}),
-			api.on("app:navigate", ({ hash }) => navigate(hash)),
+			api.on("app:navigate", ({ hash }) => {
+				if (!isQuickWindow()) navigate(hash);
+			}),
 		];
 		const onFocus = () => useUi.getState().setFocused(true);
 		const onBlur = () => useUi.getState().setFocused(false);
@@ -69,18 +76,22 @@ export function App() {
 		if (accent) applyAccent(accent);
 	}, [accent]);
 
-	const needsOnboarding = ready && settings?.onboardingDone === false && route.name !== "onboarding";
+	const needsOnboarding =
+		ready && settings?.onboardingDone === false && route.name !== "onboarding" && route.name !== "quick";
 	useEffect(() => {
 		if (needsOnboarding) navigate("#/onboarding");
 	}, [needsOnboarding]);
 
 	let content: React.ReactNode;
 	if (!ready) {
-		content = (
-			<div className="flex h-full w-full items-center justify-center bg-app">
-				<Spinner size={24} />
-			</div>
-		);
+		content =
+			route.name === "quick" ? null : (
+				<div className="flex h-full w-full items-center justify-center bg-app">
+					<Spinner size={24} />
+				</div>
+			);
+	} else if (route.name === "quick") {
+		content = <QuickAsk />;
 	} else if (route.name === "gallery" && (import.meta.env.DEV || e2e)) {
 		content = <Gallery />;
 	} else if (route.name === "onboarding") {

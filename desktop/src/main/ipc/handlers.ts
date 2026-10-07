@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { OpenDotError } from "../../shared/errors";
 import { newId } from "../../shared/ids";
 import type { IpcHandlers } from "../../shared/ipc";
+import type { QuickAskStatus } from "../../shared/quickask";
 import type { Dot, DotId, LinkId } from "../../shared/types";
 import { shellAvailable } from "../connections/shell-support";
 import { draftFromDescription } from "../dots/dot-architect";
@@ -20,6 +21,13 @@ export interface AppActions {
 	setLaunchAtLogin(on: boolean): Promise<void>;
 	reset(): Promise<void>;
 	broadcast: ElectronBridge["broadcast"];
+	quickAsk: {
+		status(): QuickAskStatus;
+		resize(height: number): void;
+		hide(): void;
+		openInApp(dotId: DotId): Promise<void>;
+		report(state: { dotId?: DotId; pinned: boolean }): void;
+	};
 }
 
 export function buildHandlers(s: Services, app: AppActions, info: { version: string; e2e: boolean }): IpcHandlers {
@@ -277,6 +285,12 @@ export function buildHandlers(s: Services, app: AppActions, info: { version: str
 		"memory.remove": async (scope, id) => {
 			await s.memory.remove(scope, id);
 		},
+		// ── quick ask ──
+		"quickAsk.status": async () => app.quickAsk.status(),
+		"quickAsk.resize": async (height) => app.quickAsk.resize(height),
+		"quickAsk.hide": async () => app.quickAsk.hide(),
+		"quickAsk.openInApp": (dotId) => app.quickAsk.openInApp(dotId),
+		"quickAsk.report": async (state) => app.quickAsk.report(state),
 	};
 }
 

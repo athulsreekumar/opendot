@@ -140,7 +140,7 @@ async function main(): Promise<void> {
 		{ fakeScriptsDir },
 	);
 
-	const createWindow = async () => {
+	const createWindow = async (initialHash?: string) => {
 		const ui = await s.store.uiState.read();
 		const b = ui.window;
 		win = new BrowserWindow({
@@ -177,6 +177,10 @@ async function main(): Promise<void> {
 			const hidden = !E2E && (app.getLoginItemSettings().wasOpenedAtLogin || process.argv.includes("--hidden"));
 			if (!hidden) w.show();
 		});
+		w.on("closed", () => {
+			// A hidden quick-ask window would keep the app from quitting once the last window is gone (Windows, Linux).
+			if (process.platform !== "darwin") quickAsk?.destroyWindow();
+		});
 		w.on("focus", () => s.setWindowFocused(true));
 		w.on("blur", () => s.setWindowFocused(false));
 		w.on("close", async (e) => {
@@ -208,8 +212,12 @@ async function main(): Promise<void> {
 		w.webContents.on("render-process-gone", () => {
 			if (!w.isDestroyed()) w.reload();
 		});
-		if (process.env.ELECTRON_RENDERER_URL) await w.loadURL(process.env.ELECTRON_RENDERER_URL);
-		else await w.loadFile(join(import.meta.dirname, "../renderer/index.html"));
+		if (process.env.ELECTRON_RENDERER_URL) await w.loadURL(`${process.env.ELECTRON_RENDERER_URL}${initialHash ?? ""}`);
+		else
+			await w.loadFile(
+				join(import.meta.dirname, "../renderer/index.html"),
+				initialHash ? { hash: initialHash.replace(/^#/, "") } : undefined,
+			);
 	};
 
 	const showWindow = () => {
@@ -221,6 +229,27 @@ async function main(): Promise<void> {
 		win.show();
 		win.focus();
 	};
+
+	// Quick-ask bar: the global hotkey and its small window (src/main/quickask).
+	const { QuickAskController } = await import("./quickask/quick-ask");
+	const quickAsk: InstanceType<typeof QuickAskController> = new QuickAskController({
+		services: s,
+		e2e: E2E,
+		preloadPath: join(import.meta.dirname, "../preload/index.cjs"),
+		load: async (w) => {
+			if (process.env.ELECTRON_RENDERER_URL) await w.loadURL(`${process.env.ELECTRON_RENDERER_URL}#/quick`);
+			else await w.loadFile(join(import.meta.dirname, "../renderer/index.html"), { hash: "/quick" });
+		},
+		openDot: async (dotId) => {
+			if (!win || win.isDestroyed()) {
+				if (process.platform === "darwin") void app.dock?.show();
+				await createWindow(`#/chats/${dotId}`);
+				return;
+			}
+			showWindow();
+			win.webContents.send("app:focus-dot", { dotId });
+		},
+	});
 
 	// CSP via headers (dev server needs ws + inline for HMR).
 	const dev = !!process.env.ELECTRON_RENDERER_URL;
@@ -267,6 +296,13 @@ async function main(): Promise<void> {
 				broadcast: (event, payload) => {
 					for (const w of windows()) if (!w.isDestroyed()) w.webContents.send(event, payload);
 				},
+				quickAsk: {
+					status: () => quickAsk.status(),
+					resize: (h) => quickAsk.resize(h),
+					hide: () => quickAsk.hide(),
+					openInApp: (id) => quickAsk.openInApp(id),
+					report: (st) => quickAsk.report(st),
+				},
 			},
 			{ version: app.getVersion(), e2e: E2E },
 		),
@@ -274,7 +310,7 @@ async function main(): Promise<void> {
 
 	if (E2E) {
 		const { registerTestIpc } = await import("./test-ipc");
-		registerTestIpc(ipcMain, s);
+		registerTestIpc(ipcMain, s, quickAsk);
 	}
 
 	setupBackground({
@@ -295,6 +331,8 @@ async function main(): Promise<void> {
 		},
 	});
 
+	void quickAsk.start().catch((e) => log.warn("quick ask failed to start", e));
+
 	app.on("second-instance", () => showWindow());
 	app.on("activate", () => showWindow());
 	app.on("window-all-closed", () => {
@@ -305,6 +343,7 @@ async function main(): Promise<void> {
 	let shuttingDown = false;
 	app.on("before-quit", (e) => {
 		quitting = true;
+		quickAsk.dispose();
 		if (shuttingDown) return;
 		shuttingDown = true;
 		e.preventDefault();
