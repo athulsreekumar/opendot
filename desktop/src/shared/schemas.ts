@@ -1,6 +1,7 @@
 // zod schemas for persisted data and IPC arguments. Spec 02 §3.4.
 import { z } from "zod";
 import { LIMITS } from "./defaults";
+import { ORG_LIMITS } from "./organisation";
 import type { AppSettings, Connection, Dot, DotLink, MemoryItem, UiState, Watcher } from "./types";
 
 const iso = z.string();
@@ -336,6 +337,74 @@ export const ARG_SCHEMAS: Partial<Record<string, z.ZodType<unknown[]>>> = {
 	"knowledge.addFolder": z.tuple([z.string().min(1).max(4096)]) as unknown as z.ZodType<unknown[]>,
 	"knowledge.removeFolder": z.tuple([z.string().min(1).max(64)]) as unknown as z.ZodType<unknown[]>,
 	"knowledge.open": z.tuple([z.string().min(1).max(4096)]) as unknown as z.ZodType<unknown[]>,
+	"org.setup": z.tuple([
+		z.object({
+			templateId: z.string().min(1).max(64),
+			name: z.string().max(80).optional(),
+			domains: z.array(z.string().min(1).max(64)).max(40).optional(),
+		}),
+	]) as unknown as z.ZodType<unknown[]>,
+	"org.addMember": z.tuple([
+		z.object({ domain: z.string().min(1).max(64), dotId: DotIdSchema.optional() }),
+	]) as unknown as z.ZodType<unknown[]>,
+	"org.removeMember": z.tuple([DotIdSchema]) as unknown as z.ZodType<unknown[]>,
+	"org.setMemberSkills": z.tuple([DotIdSchema, z.array(z.string().max(80)).max(40)]) as unknown as z.ZodType<unknown[]>,
+	"org.saveSkill": z.tuple([
+		z.object({
+			id: z.string().max(80).optional(),
+			name: z.string().min(1).max(80),
+			description: z.string().min(1).max(200),
+			domain: z.string().max(64).optional(),
+			body: z.string().min(1).max(20000),
+		}),
+	]) as unknown as z.ZodType<unknown[]>,
+	"org.createProject": z.tuple([
+		z.object({
+			title: z.string().min(1).max(ORG_LIMITS.projectTitleMax),
+			brief: z.string().min(1).max(ORG_LIMITS.projectBriefMax),
+			budgetUsd: z.number().positive().max(100000).optional(),
+		}),
+	]) as unknown as z.ZodType<unknown[]>,
+	"org.replan": z.tuple([
+		z.string().min(1).max(64),
+		z.string().max(ORG_LIMITS.briefMax).optional(),
+	]) as unknown as z.ZodType<unknown[]>,
+	"org.savePlan": z.tuple([
+		z.string().min(1).max(64),
+		z
+			.array(
+				z.object({
+					id: z.string().min(1).max(24),
+					title: z.string().max(ORG_LIMITS.titleMax),
+					brief: z.string().max(ORG_LIMITS.briefMax),
+					assignee: z.union([z.literal("human"), DotIdSchema]),
+					dependsOn: z.array(z.string().max(24)).max(ORG_LIMITS.maxTasks),
+					reviewer: z.union([z.literal("human"), DotIdSchema]).optional(),
+				}),
+			)
+			.max(ORG_LIMITS.maxTasks + 5),
+	]) as unknown as z.ZodType<unknown[]>,
+	"org.reviewTask": z.tuple([
+		z.string().min(1).max(64),
+		z.string().min(1).max(24),
+		z.enum(["approved", "changes"]),
+		z.string().max(ORG_LIMITS.answerMax).optional(),
+	]) as unknown as z.ZodType<unknown[]>,
+	"org.completeTask": z.tuple([
+		z.string().min(1).max(64),
+		z.string().min(1).max(24),
+		z.string().max(ORG_LIMITS.answerMax).optional(),
+	]) as unknown as z.ZodType<unknown[]>,
+	"org.answerTask": z.tuple([
+		z.string().min(1).max(64),
+		z.string().min(1).max(24),
+		z.string().min(1).max(ORG_LIMITS.answerMax),
+	]) as unknown as z.ZodType<unknown[]>,
+	"org.openDeliverable": z.tuple([
+		z.string().min(1).max(64),
+		z.string().min(1).max(24),
+		z.number().int().min(0).max(200),
+	]) as unknown as z.ZodType<unknown[]>,
 	"knowledge.reveal": z.tuple([z.string().min(1).max(4096)]) as unknown as z.ZodType<unknown[]>,
 	"dots.get": z.tuple([DotIdSchema]) as unknown as z.ZodType<unknown[]>,
 	"dots.remove": z.tuple([DotIdSchema]) as unknown as z.ZodType<unknown[]>,
