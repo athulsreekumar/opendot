@@ -9,6 +9,7 @@ import { errorText } from "../../lib/api";
 import { dayLabel } from "../../lib/format";
 import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
+import { useOrganisation } from "../../stores/organisation";
 import { useSettings } from "../../stores/settings";
 import { useUi } from "../../stores/ui";
 import { useQuickAskLabel } from "../quick-ask/useQuickAskLabel";
@@ -93,6 +94,8 @@ function suggestionsFor(kind: "super" | "standard", dotNames: string[]): string[
 function Chips({ dotId, kind }: { dotId: DotId; kind: "super" | "standard" }) {
 	const names = useDots((s) => s.dots.map((d) => d.name).join("\u0000"));
 	const list = suggestionsFor(kind, names.split("\u0000"));
+	const hasOrg = useOrganisation((s) => !!s.org?.created);
+	if (kind === "super" && hasOrg) list.push("Plan a project with my team");
 	const briefingOn = useSettings((s) => !!s.settings?.briefing?.enabled);
 	const quickAsk = useQuickAskLabel();
 	return (
