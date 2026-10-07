@@ -326,7 +326,7 @@ export function buildHandlers(s: Services, app: AppActions, info: { version: str
 		"superbot.refreshProfiles": () => s.profiles.refreshAll(),
 		// ── organisation ──
 		...teamHandlers(s),
-		...projectHandlers(s),
+		...projectHandlers(s, app),
 		// ── briefing ──
 		"briefing.run": () => s.briefing.run({ manual: true }),
 		"briefing.status": () => s.briefing.status(),

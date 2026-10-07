@@ -1,6 +1,8 @@
 // Organisation IPC handlers: projects, plans, tasks and reviews (docs/spec/15-organisation.md §6 to §9).
+import { isOpenSafe } from "../../shared/attachments";
 import { OpenDotError } from "../../shared/errors";
 import type { IpcHandlers } from "../../shared/ipc";
+import type { AppActions } from "../ipc/handlers";
 import type { Services } from "../services";
 
 type Keys =
@@ -21,28 +23,38 @@ type Keys =
 	| "org.skipTask"
 	| "org.openDeliverable";
 
-const notYet = async (): Promise<never> => {
-	throw new OpenDotError("INTERNAL", "Not built yet.");
-};
-
-/** Replace each stub with a real implementation. */
-export function projectHandlers(_s: Services): Pick<IpcHandlers, Keys> {
+export function projectHandlers(
+	s: Services,
+	app?: Pick<AppActions, "openPath" | "revealPath" | "openExternal">,
+): Pick<IpcHandlers, Keys> {
+	const p = () => s.projects;
 	return {
-		"org.projects": notYet,
-		"org.project": notYet,
-		"org.createProject": notYet,
-		"org.replan": notYet,
-		"org.savePlan": notYet,
-		"org.approve": notYet,
-		"org.pause": notYet,
-		"org.resume": notYet,
-		"org.cancel": notYet,
-		"org.deleteProject": notYet,
-		"org.reviewTask": notYet,
-		"org.completeTask": notYet,
-		"org.answerTask": notYet,
-		"org.retryTask": notYet,
-		"org.skipTask": notYet,
-		"org.openDeliverable": notYet,
+		"org.projects": () => p().list(),
+		"org.project": (id) => p().get(id),
+		"org.createProject": (input) => p().create(input),
+		"org.replan": (id, feedback) => p().replan(id, feedback),
+		"org.savePlan": (id, tasks) => p().savePlan(id, tasks),
+		"org.approve": (id) => p().approve(id),
+		"org.pause": (id) => p().pause(id),
+		"org.resume": (id) => p().resume(id),
+		"org.cancel": (id) => p().cancel(id),
+		"org.deleteProject": (id) => p().deleteProject(id),
+		"org.reviewTask": (id, taskId, verdict, note) => p().reviewTask(id, taskId, verdict, note),
+		"org.completeTask": (id, taskId, note) => p().completeTask(id, taskId, note),
+		"org.answerTask": (id, taskId, answer) => p().answerTask(id, taskId, answer),
+		"org.retryTask": (id, taskId) => p().retryTask(id, taskId),
+		"org.skipTask": (id, taskId) => p().skipTask(id, taskId),
+		"org.openDeliverable": async (id, taskId, index) => {
+			if (!app) throw new OpenDotError("INTERNAL", "Can't open files here.");
+			const target = await p().deliverablePath(id, taskId, index);
+			if (target.url) {
+				if (!/^https:\/\//i.test(target.url)) throw new OpenDotError("INVALID", "Only secure links can be opened.");
+				return app.openExternal(target.url);
+			}
+			const file = target.path!;
+			if (!isOpenSafe(file)) return app.revealPath(file);
+			const err = await app.openPath(file);
+			if (err) await app.revealPath(file);
+		},
 	};
 }

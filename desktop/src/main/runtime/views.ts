@@ -1,5 +1,6 @@
 // Maps pi messages / session entries to renderer view models.
 import { parseAttachmentBlocks } from "../../shared/attachments";
+import type { OrgUpdateView } from "../../shared/organisation";
 import type { ChatMessageView, DotEventView, DotId, ToolCallView } from "../../shared/types";
 import { sourcesFromDetails } from "../knowledge/sources";
 
@@ -48,6 +49,10 @@ const LABELS: Record<string, string> = {
 	ask_dots: "Ask Dots",
 	get_dot_updates: "Dot updates",
 	search_dot_history: "Search Dot history",
+	org_team: "Organisation team",
+	create_project: "Create project",
+	propose_plan: "Propose plan",
+	project_status: "Project status",
 	remember: "Memory · save",
 	forget: "Memory · forget",
 	recall: "Memory · recall",
@@ -144,6 +149,22 @@ export function entriesToViews(
 				streaming: false,
 				briefing: { date: d?.date ?? "", label: d?.label ?? "Briefing" },
 			});
+			continue;
+		}
+		if (e.type === "custom_message" && e.customType === "opendot.org-update") {
+			const d = e.details as OrgUpdateView | undefined;
+			if (d?.projectId) {
+				out.push({
+					id: e.id,
+					dotId,
+					role: "assistant",
+					text: restore(blocksText(e.content)) || d.text,
+					toolCalls: [],
+					createdAt: e.timestamp,
+					streaming: false,
+					orgUpdate: { projectId: d.projectId, title: d.title ?? "", kind: d.kind, text: d.text ?? "" },
+				});
+			}
 			continue;
 		}
 		if (e.type === "custom_message" && e.customType === "opendot.events") {
