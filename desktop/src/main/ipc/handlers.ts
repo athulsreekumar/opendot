@@ -1,12 +1,14 @@
 // Every IPC channel → service call (spec 02 §3).
+import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { isOpenSafe, MAX_ATTACHMENTS, TOO_MANY_MESSAGE } from "../../shared/attachments";
 import { OpenDotError } from "../../shared/errors";
 import { newId } from "../../shared/ids";
 import type { IpcHandlers } from "../../shared/ipc";
 import type { QuickAskStatus } from "../../shared/quickask";
-import type { Dot, DotId, LinkId } from "../../shared/types";
+import type { AttachmentStageResult, Dot, DotId, LinkId } from "../../shared/types";
 import { shellAvailable } from "../connections/shell-support";
 import { draftFromDescription } from "../dots/dot-architect";
 import { detectLocalServers } from "../models/discovery";
@@ -17,6 +19,8 @@ import { watcherAvailability } from "../services";
 export interface AppActions {
 	openExternal(url: string): Promise<void>;
 	revealPath(path: string): Promise<void>;
+	/** Native multi-file picker. */
+	pickFiles(): Promise<string[]>;
 	pickFolder(title?: string): Promise<string | undefined>;
 	/** Open a file with the OS default app. Resolves to an error message, or "" on success (Electron's shell.openPath). */
 	openPath(path: string): Promise<string>;
@@ -130,6 +134,28 @@ export function buildHandlers(s: Services, app: AppActions, info: { version: str
 		"chat.send": async (id, text, opts) => {
 			const d = await dot(id);
 			const host = s.runtime.get(id);
+			const attachmentIds = opts?.attachments ?? [];
+			if (attachmentIds.length > MAX_ATTACHMENTS) throw new OpenDotError("INVALID_ARGS", TOO_MANY_MESSAGE);
+			if (!text.trim() && attachmentIds.length === 0) throw new OpenDotError("INVALID_ARGS", "Write a message first.");
+			if (attachmentIds.length > 0) {
+				const supportsImages = await s.attachments.supportsImages(d);
+				// Check before taking, so a refused send keeps the files in the composer.
+				if (!supportsImages && !opts?.imagesAsFiles && s.attachments.kindsOf(attachmentIds).includes("image"))
+					throw new OpenDotError(
+						"INVALID_ARGS",
+						"This model can't see images. Send them as file references or remove them.",
+					);
+				const items = await s.attachments.take(attachmentIds);
+				const rendered = await s.attachments.render(d, text, items, {
+					supportsImages,
+					imagesAsFiles: opts?.imagesAsFiles,
+				});
+				const r = await host.send(rendered.text, opts?.mode ?? "auto", opts?.clientNonce, {
+					images: rendered.images,
+					items: d.kind === "super" ? items : undefined,
+				});
+				return { accepted: true, ...r };
+			}
 			// SuperBot @mention fast path (spec 13 §4).
 			if (d.kind === "super" && /^@\S/.test(text.trim())) {
 				const res = await superMention(s, d, text, opts?.clientNonce);
@@ -144,6 +170,24 @@ export function buildHandlers(s: Services, app: AppActions, info: { version: str
 			await s.dots.patchQuiet(id, (d) => ({ ...d, lastMessagePreview: "", unreadCount: 0 }));
 		},
 		"chat.linkHistory": (id, peer) => s.runtime.get(id).linkHistory(peer),
+		// ── attachments ──
+		"attachments.pick": async (o) => {
+			const existing = o?.existing ?? 0;
+			const paths =
+				info.e2e && s.attachments.testPicks.length ? s.attachments.testPicks.shift()! : await app.pickFiles();
+			const out: AttachmentStageResult[] = [];
+			for (const p of paths) out.push(await s.attachments.stagePath(p, existing + out.filter((r) => r.ok).length));
+			return out;
+		},
+		"attachments.stage": (input) => s.attachments.stageBytes(input, input.existing ?? 0),
+		"attachments.discard": (id) => s.attachments.discard(id),
+		"attachments.open": async (id, path, reveal) => {
+			const d = await dot(id);
+			const file = s.attachments.resolveWorkspaceFile(d.workspaceDir, path);
+			if (!file || !existsSync(file)) throw new OpenDotError("NOT_FOUND", "That file is no longer in the workspace.");
+			if (reveal || !isOpenSafe(file)) await app.revealPath(file);
+			else await app.openPath(file);
+		},
 		// ── connections ──
 		"connections.catalog": async () => s.connections.catalog(),
 		"connections.list": () => s.connections.list(),

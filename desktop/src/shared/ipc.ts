@@ -8,6 +8,7 @@ import type {
 	ApprovalRequest,
 	ApprovalResponse,
 	AppSettings,
+	AttachmentStageResult,
 	AuditEntry,
 	AuditKind,
 	BriefingStatus,
@@ -121,7 +122,14 @@ export interface OpenDotApi {
 		send(
 			dotId: DotId,
 			text: string,
-			opts?: { mode?: "auto" | "steer" | "followUp"; clientNonce?: string },
+			opts?: {
+				mode?: "auto" | "steer" | "followUp";
+				clientNonce?: string;
+				/** Ids returned by attachments.pick / attachments.stage. */
+				attachments?: string[];
+				/** Send images as workspace file references only (for models that can't see images). */
+				imagesAsFiles?: boolean;
+			},
 		): Promise<{ accepted: true; queued?: "steer" | "followUp" }>;
 		abort(dotId: DotId): Promise<void>;
 		clear(dotId: DotId): Promise<void>;
@@ -241,6 +249,15 @@ export interface OpenDotApi {
 		/** Open a source file with the OS (documents) or show it in its folder (code and data). */
 		open(path: string): Promise<void>;
 		reveal(path: string): Promise<void>;
+	};
+	attachments: {
+		/** Native file picker. Returns one result per chosen file; `existing` is how many are already in the composer. */
+		pick(opts?: { existing?: number }): Promise<AttachmentStageResult[]>;
+		/** Stage a dropped or pasted file (bytes, not a path). */
+		stage(input: { name: string; mime?: string; data: Uint8Array; existing?: number }): Promise<AttachmentStageResult>;
+		discard(id: string): Promise<void>;
+		/** Open (or reveal) a file the Dot has in its workspace attachments folder. */
+		open(dotId: DotId, path: string, reveal?: boolean): Promise<void>;
 	};
 	on<E extends keyof EventMap>(event: E, listener: (payload: EventMap[E]) => void): () => void;
 }
@@ -367,6 +384,10 @@ export const INVOKE_CHANNELS = [
 	"knowledge.reindex",
 	"knowledge.open",
 	"knowledge.reveal",
+	"attachments.pick",
+	"attachments.stage",
+	"attachments.discard",
+	"attachments.open",
 ] as const;
 
 export type InvokeChannel = (typeof INVOKE_CHANNELS)[number];
@@ -425,4 +446,6 @@ export interface OpenDotTestApi {
 	blurQuickAsk(): Promise<void>;
 	/** Add a folder to Knowledge without the native folder picker. */
 	knowledgeAddFolder(path: string): Promise<KnowledgeFolderView>;
+	/** Make the next native file picker return these paths. */
+	setNextPick(paths: string[]): Promise<void>;
 }

@@ -1,5 +1,5 @@
 // Chat state per Dot, fed by "dot:event" (spec 02 §3.5, spec 14 §4).
-import type { ChatEvent, ChatMessageView, DotId, MessageId } from "@shared/types";
+import type { AttachmentDraft, ChatEvent, ChatMessageView, DotId, MessageId } from "@shared/types";
 import { create } from "zustand";
 import { api, errorText } from "../lib/api";
 
@@ -31,7 +31,12 @@ interface ChatState {
 	byDot: Record<string, DotChat>;
 	loadHistory(dotId: DotId, force?: boolean): Promise<void>;
 	loadMore(dotId: DotId): Promise<void>;
-	send(dotId: DotId, text: string, mode?: "auto" | "steer" | "followUp"): Promise<void>;
+	send(
+		dotId: DotId,
+		text: string,
+		mode?: "auto" | "steer" | "followUp",
+		files?: { drafts: AttachmentDraft[]; imagesAsFiles?: boolean },
+	): Promise<void>;
 	abort(dotId: DotId): Promise<void>;
 	clear(dotId: DotId): Promise<void>;
 	apply(e: ChatEvent): void;
@@ -183,7 +188,7 @@ export const useChat = create<ChatState>((set, get) => ({
 		});
 	},
 
-	async send(dotId, text, mode = "auto") {
+	async send(dotId, text, mode = "auto", files) {
 		const nonce = Math.random().toString(36).slice(2, 12);
 		const localId = `local_${nonce}`;
 		const sentAt = Date.now();
@@ -194,6 +199,15 @@ export const useChat = create<ChatState>((set, get) => ({
 				dotId,
 				role: "user",
 				text,
+				attachments: files?.drafts.length
+					? files.drafts.map((d) => ({
+							name: d.name,
+							kind: d.kind,
+							mime: d.mime,
+							size: d.size,
+							url: d.kind === "image" ? d.previewUrl : undefined,
+						}))
+					: undefined,
 				toolCalls: [],
 				createdAt: new Date().toISOString(),
 				streaming: false,
@@ -204,7 +218,13 @@ export const useChat = create<ChatState>((set, get) => ({
 			};
 		});
 		try {
-			const res = await api.chat.send(dotId, text, { mode, clientNonce: nonce });
+			const res = await api.chat.send(dotId, text, {
+				mode,
+				clientNonce: nonce,
+				...(files?.drafts.length
+					? { attachments: files.drafts.map((d) => d.id), imagesAsFiles: files.imagesAsFiles || undefined }
+					: {}),
+			});
 			if (res.queued) {
 				set((s) => {
 					const c = s.byDot[dotId];

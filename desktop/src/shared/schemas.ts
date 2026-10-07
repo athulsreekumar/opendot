@@ -313,9 +313,15 @@ const text = (max: number) => z.string().max(max);
 export const ARG_SCHEMAS: Partial<Record<string, z.ZodType<unknown[]>>> = {
 	"chat.send": z.tuple([
 		DotIdSchema,
-		text(LIMITS.chatMax).min(1),
+		// May be empty when the message is only attachments (the handler rejects empty text without any).
+		text(LIMITS.chatMax),
 		z
-			.object({ mode: z.enum(["auto", "steer", "followUp"]).optional(), clientNonce: z.string().max(64).optional() })
+			.object({
+				mode: z.enum(["auto", "steer", "followUp"]).optional(),
+				clientNonce: z.string().max(64).optional(),
+				attachments: z.array(z.string().max(64)).max(10).optional(),
+				imagesAsFiles: z.boolean().optional(),
+			})
 			.optional(),
 	]) as unknown as z.ZodType<unknown[]>,
 	"chat.history": z.tuple([
