@@ -105,6 +105,9 @@ both messages in the Super transcript (custom messages: `opendot.direct-ask` for
   (or opens the Dot). Implement as a remark plugin in `Markdown` that converts `[Name]` only when Name is a known Dot name.
 
 ## 6. Briefings (optional, T67)
+
+> Superseded by the Daily briefing feature (`src/main/briefing`, Settings → Daily briefing): a dedicated scheduler runs a Super turn with a hidden `opendot.briefing` message, replies render as a briefing card, and the last run date lives in `~/.opendot/briefing.json`. The schedule-watcher preset below is the older design.
+
 In Super's Dot Info "Always on" section, the "Briefing" preset adds a `schedule` watcher (default weekdays 08:30) whose standing instruction is:
 "Call get_dot_updates for the last 24 h, then ask_dots only where you need detail. Post a briefing: urgent first, then today's schedule, then
 everything else in one line each." It is delivered like any event (spec 12 §2.3) and streams into Super's chat. Notification "Your briefing is ready".

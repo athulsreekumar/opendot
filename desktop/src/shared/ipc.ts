@@ -6,6 +6,7 @@ import type {
 	AppSettings,
 	AuditEntry,
 	AuditKind,
+	BriefingStatus,
 	CatalogEntry,
 	ChatEvent,
 	ChatMessageView,
@@ -203,6 +204,11 @@ export interface OpenDotApi {
 		directory(): Promise<Array<{ dotId: DotId; name: string; card: string }>>;
 		refreshProfiles(): Promise<void>;
 	};
+	briefing: {
+		/** Run SuperDot's briefing now. `started: false` carries a plain-language reason. */
+		run(): Promise<{ started: boolean; reason?: string }>;
+		status(): Promise<BriefingStatus>;
+	};
 	memory: {
 		get(scope: MemoryScope): Promise<MemoryItem[]>;
 		upsert(scope: MemoryScope, item: { id?: string; text: string; pinned?: boolean }): Promise<MemoryItem>;
@@ -219,7 +225,7 @@ export interface EventMap {
 	"link:exchange": LinkExchange;
 	"settings:changed": AppSettings;
 	"dots:changed": Dot[];
-	"app:focus-dot": { dotId: DotId };
+	"app:focus-dot": { dotId: DotId; scrollTo?: "briefing" };
 	"dots:draft-stream": { requestId: string; delta: string };
 	"runtime:health": DotHealth;
 	"watcher:changed": Watcher;
@@ -308,6 +314,8 @@ export const INVOKE_CHANNELS = [
 	"superbot.get",
 	"superbot.directory",
 	"superbot.refreshProfiles",
+	"briefing.run",
+	"briefing.status",
 	"memory.get",
 	"memory.upsert",
 	"memory.remove",

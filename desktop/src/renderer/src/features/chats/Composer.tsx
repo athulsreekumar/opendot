@@ -2,8 +2,9 @@ import type { Dot, DotId } from "@shared/types";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { navigate } from "../../app/router";
 import { cn } from "../../design-system/cn";
-import { Avatar, IconButton, TextArea } from "../../design-system/components";
+import { Avatar, IconButton, TextArea, toast } from "../../design-system/components";
 import { IconSend, IconStop } from "../../design-system/icons";
+import { api, errorText } from "../../lib/api";
 import { modKey } from "../../lib/platform";
 import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
@@ -18,6 +19,7 @@ const COMMANDS = [
 	{ name: "/model", hint: "Change the model" },
 	{ name: "/persona", hint: "Edit personality" },
 	{ name: "/links", hint: "Open Dot Links" },
+	{ name: "/briefing", hint: "Run your daily briefing now" },
 ] as const;
 
 const BUSY = new Set(["thinking", "typing", "tool", "talking-to", "handling-events", "waiting-approval"]);
@@ -135,8 +137,8 @@ export function Composer({ dotId }: { dotId: DotId }) {
 
 	const commandItems = useMemo(() => {
 		if (!/^\/\w*$/.test(text)) return [];
-		return COMMANDS.filter((c) => c.name.startsWith(text.toLowerCase()));
-	}, [text]);
+		return COMMANDS.filter((c) => (isSuper || c.name !== "/briefing") && c.name.startsWith(text.toLowerCase()));
+	}, [text, isSuper]);
 
 	const mention = useMemo(() => {
 		if (!isSuper) return undefined;
@@ -172,6 +174,14 @@ export function Composer({ dotId }: { dotId: DotId }) {
 			case "/links":
 				navigate("#/links");
 				break;
+			case "/briefing":
+				api.briefing
+					.run()
+					.then((r) => {
+						if (!r.started) toast({ title: "Briefing not started", description: r.reason, variant: "info" });
+					})
+					.catch((e) => toast({ title: "Couldn't run the briefing", description: errorText(e), variant: "error" }));
+				break;
 		}
 	};
 
@@ -192,7 +202,7 @@ export function Composer({ dotId }: { dotId: DotId }) {
 	const submit = (mode: "auto" | "steer" | "followUp") => {
 		const t = text.trim();
 		if (!t || disabled || t.length > MAX_CHARS) return;
-		const cmd = COMMANDS.find((c) => c.name === t.toLowerCase());
+		const cmd = COMMANDS.find((c) => c.name === t.toLowerCase() && (isSuper || c.name !== "/briefing"));
 		if (cmd) {
 			runCommand(cmd.name);
 			return;

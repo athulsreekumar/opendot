@@ -83,7 +83,7 @@ export interface AssistantEndInfo {
 	error?: string;
 }
 
-type RunKind = "user" | "events" | "link";
+type RunKind = "user" | "events" | "link" | "briefing";
 
 interface LinkSession {
 	session: AgentSession;
@@ -111,6 +111,7 @@ export class DotHost {
 	private currentAssistant: ChatMessageView | undefined;
 	private linkSessions = new Map<DotId, LinkSession>();
 	private runEventIds: string[] = [];
+	private briefingMeta: { date: string; label: string } | undefined;
 	lastActivity = Date.now();
 	disposed = false;
 
@@ -299,12 +300,55 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 		await this.startRun("events", () => session.sendCustomMessage(msg, { triggerTurn: true, deliverAs: "followUp" }));
 	}
 
+	/** Start SuperDot's daily briefing turn. The prompt is a hidden custom message; the reply streams as a briefing card. */
+	async deliverBriefing(req: { prompt: string; date: string; label: string }): Promise<void> {
+		this.lastActivity = Date.now();
+		const session = await this.ensureSession();
+		// Never queue behind a running chat turn: the briefing flag is per run.
+		for (let i = 0; i < 120 && session.isStreaming; i++) await new Promise((r) => setTimeout(r, 1000));
+		this.briefingMeta = { date: req.date, label: req.label };
+		const msg = {
+			customType: "opendot.briefing",
+			content: req.prompt,
+			display: false,
+			details: { date: req.date, label: req.label },
+		};
+		await this.startRun("briefing", () => session.sendCustomMessage(msg, { triggerTurn: true, deliverAs: "followUp" }));
+	}
+
+	/** A short briefing-styled note in the chat, with no model call (skipped, nothing to brief). */
+	async postBriefingNote(req: { text: string; date: string; label: string }): Promise<void> {
+		const session = await this.ensureSession();
+		await session.sendCustomMessage(
+			{
+				customType: "opendot.briefing-note",
+				content: req.text,
+				display: true,
+				details: { date: req.date, label: req.label },
+			},
+			{ triggerTurn: false },
+		);
+		const view: ChatMessageView = {
+			id: newId("msg"),
+			dotId: this.dotId,
+			role: "assistant",
+			text: req.text,
+			toolCalls: [],
+			createdAt: new Date().toISOString(),
+			streaming: false,
+			briefing: { date: req.date, label: req.label },
+		};
+		this.deps.emit({ type: "message-start", dotId: this.dotId, message: view });
+		this.deps.emit({ type: "message-end", dotId: this.dotId, message: view });
+	}
+
 	private async startRun(kind: RunKind, run: () => Promise<unknown>): Promise<void> {
 		const release = await this.deps.acquireRunSlot();
 		this.releaseSlot?.();
 		this.releaseSlot = release;
 		this.runKind = kind;
 		this.setStatus(kind === "events" ? { kind: "handling-events", count: 1 } : { kind: "thinking" });
+		if (kind !== "briefing") this.briefingMeta = undefined;
 		void run()
 			.catch((e) => this.reportError(e, true))
 			.finally(() => {
@@ -379,6 +423,7 @@ Do not ask the user questions in this conversation; if you can't proceed, say wh
 						createdAt: new Date().toISOString(),
 						streaming: true,
 						timing: { sentAt: this.pendingSentAt },
+						...(this.runKind === "briefing" && this.briefingMeta ? { briefing: this.briefingMeta } : {}),
 					};
 					this.currentAssistant = view;
 					this.emitter.start(view, { tagHoldback: this.runKind === "events" });

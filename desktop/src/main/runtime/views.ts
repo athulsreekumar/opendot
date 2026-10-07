@@ -122,9 +122,30 @@ export function entriesToViews(
 	const out: ChatMessageView[] = [];
 	const toolIndex = new Map<string, ToolCallView>();
 	let lastWasEvents = false;
+	let briefing: ChatMessageView["briefing"];
 	for (const e of entries) {
+		if (e.type === "custom_message" && e.customType === "opendot.briefing") {
+			const d = e.details as { date?: string; label?: string } | undefined;
+			briefing = { date: d?.date ?? "", label: d?.label ?? "Briefing" };
+			continue;
+		}
+		if (e.type === "custom_message" && e.customType === "opendot.briefing-note") {
+			const d = e.details as { date?: string; label?: string } | undefined;
+			out.push({
+				id: e.id,
+				dotId,
+				role: "assistant",
+				text: restore(blocksText(e.content)),
+				toolCalls: [],
+				createdAt: e.timestamp,
+				streaming: false,
+				briefing: { date: d?.date ?? "", label: d?.label ?? "Briefing" },
+			});
+			continue;
+		}
 		if (e.type === "custom_message" && e.customType === "opendot.events") {
 			const ids = ((e.details as { eventIds?: string[] } | undefined)?.eventIds ?? []) as string[];
+			briefing = undefined;
 			out.push({
 				id: e.id,
 				dotId,
@@ -157,6 +178,7 @@ export function entriesToViews(
 		const m = e.message;
 		const createdAt = m.timestamp ? new Date(m.timestamp).toISOString() : e.timestamp;
 		if (m.role === "user") {
+			briefing = undefined;
 			out.push({
 				id: e.id,
 				dotId,
@@ -208,6 +230,7 @@ export function entriesToViews(
 				error: m.stopReason === "error" ? (m.errorMessage ?? "The model returned an error.") : undefined,
 				importance,
 				hidden,
+				...(briefing ? { briefing } : {}),
 				usage: m.usage
 					? { input: m.usage.input ?? 0, output: m.usage.output ?? 0, costUsd: m.usage.cost?.total }
 					: undefined,

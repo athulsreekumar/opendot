@@ -1,12 +1,15 @@
+import { resolveBriefing } from "@shared/defaults";
 import type { ChatMessageView, DotId } from "@shared/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Virtuoso, type VirtuosoHandle } from "react-virtuoso";
 import { cn } from "../../design-system/cn";
-import { Spinner } from "../../design-system/components";
+import { Spinner, toast } from "../../design-system/components";
 import { IconArrowDown } from "../../design-system/icons";
+import { errorText } from "../../lib/api";
 import { dayLabel } from "../../lib/format";
 import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
+import { useSettings } from "../../stores/settings";
 import { useUi } from "../../stores/ui";
 import { DaySeparator } from "./DaySeparator";
 import { type BubbleMeta, MessageBubble } from "./MessageBubble";
@@ -29,7 +32,7 @@ function structureKey(dotId: DotId) {
 		let out = "";
 		for (const id of c.order) {
 			const m = c.byId[id];
-			if (m && !m.hidden) out += `${id}|${m.role}|${m.createdAt}|${m.error ? 1 : 0};`;
+			if (m && !m.hidden) out += `${id}|${m.role}|${m.createdAt}|${m.error ? 1 : 0}|${m.briefing ? 1 : 0};`;
 		}
 		return out;
 	};
@@ -65,6 +68,7 @@ function buildItems(dotId: DotId, typing: boolean, showChips: boolean): Item[] {
 				grouped,
 				followedByAssistant: msgs.slice(i + 1).some((x) => x.role === "assistant") || next?.role === "assistant",
 				isLastAssistant: i === lastAssistantIdx,
+				briefingFirst: !!m.briefing && !prev?.briefing,
 				retryText: m.role === "assistant" ? lastUser : undefined,
 			},
 		});
@@ -88,12 +92,37 @@ function suggestionsFor(kind: "super" | "standard", dotNames: string[]): string[
 function Chips({ dotId, kind }: { dotId: DotId; kind: "super" | "standard" }) {
 	const names = useDots((s) => s.dots.map((d) => d.name).join("\u0000"));
 	const list = suggestionsFor(kind, names.split("\u0000"));
+	const briefingOn = useSettings((s) => !!s.settings?.briefing?.enabled);
 	return (
 		<div className="flex flex-wrap gap-2 pt-2">
+			{kind === "super" && !briefingOn && <BriefingChip />}
 			{list.map((c) => (
 				<SuggestionChip key={c} dotId={dotId} text={c} />
 			))}
 		</div>
+	);
+}
+
+/** One-click switch-on for the daily briefing (spec 13 §6). */
+function BriefingChip() {
+	const enable = () => {
+		const cur = useSettings.getState().settings;
+		void useSettings
+			.getState()
+			.update({ briefing: { ...resolveBriefing(cur), enabled: true, time: "08:00" } })
+			.then(() =>
+				toast({ title: "Daily briefing is on", description: "You'll get it at 8:00 on weekdays.", variant: "success" }),
+			)
+			.catch((e) => toast({ title: "Couldn't turn it on", description: errorText(e), variant: "error" }));
+	};
+	return (
+		<button
+			type="button"
+			onClick={enable}
+			className="h-8 rounded-full border border-accent bg-accent-subtle px-3 text-sm font-medium text-accent transition-colors hover:bg-hover"
+		>
+			Get a daily briefing at 8:00
+		</button>
 	);
 }
 
@@ -179,6 +208,20 @@ export function MessageList({ dotId }: { dotId: DotId }) {
 	useEffect(() => {
 		if (atBottom) setNewCount(0);
 	}, [atBottom]);
+
+	// A briefing notification was clicked: scroll to the newest briefing card.
+	useEffect(() => {
+		const on = (e: Event) => {
+			if ((e as CustomEvent<{ dotId?: string }>).detail?.dotId !== dotId) return;
+			let at = -1;
+			items.forEach((it, i) => {
+				if (it.kind === "msg" && it.meta.briefingFirst) at = i;
+			});
+			if (at >= 0) ref.current?.scrollToIndex({ index: at, align: "start", behavior: "smooth" });
+		};
+		window.addEventListener("od:scroll-briefing", on);
+		return () => window.removeEventListener("od:scroll-briefing", on);
+	}, [dotId, items]);
 
 	const loadMore = useCallback(() => void useChat.getState().loadMore(dotId), [dotId]);
 

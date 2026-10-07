@@ -7,6 +7,8 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Daily briefing: at a time you choose, SuperDot asks your Dots what matters and streams one briefing (with Dot citations) into its
+  chat, with a single notification. Off by default; set up in Settings → Daily briefing, or run it now with `/briefing`.
 - Windows 10 and 11 (x64) support: an installer and a portable zip, a **This PC** connection (files, shell through
   Git for Windows, screenshots, clipboard, notifications, opening apps and links), keys encrypted with Windows DPAPI,
   and Windows builds and tests in CI.

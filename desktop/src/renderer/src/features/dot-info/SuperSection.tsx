@@ -1,5 +1,6 @@
 import type { Dot } from "@shared/types";
 import { useCallback, useEffect, useState } from "react";
+import { navigate } from "@/app/router";
 import { Avatar, Button, Switch, toast } from "@/design-system/components";
 import { IconRefresh } from "@/design-system/icons";
 import { api, errorText } from "@/lib/api";
@@ -69,6 +70,13 @@ export function SuperSection() {
 						))}
 					</ul>
 				)}
+			</Field>
+			<Field label="Daily briefing" hint="One message a day with what matters, from the Dots you pick.">
+				<div>
+					<Button size="sm" variant="secondary" onClick={() => navigate("#/settings/briefing")}>
+						Daily briefing settings
+					</Button>
+				</div>
 			</Field>
 			<Field label="Visibility">
 				<ul className="flex flex-col gap-1.5">

@@ -1,4 +1,12 @@
-import type { AlwaysOnSettings, AppSettings, DotProfile, Persona, PiiSettings, UiState } from "./types";
+import type {
+	AlwaysOnSettings,
+	AppSettings,
+	BriefingSettings,
+	DotProfile,
+	Persona,
+	PiiSettings,
+	UiState,
+} from "./types";
 
 export function defaultPiiSettings(): PiiSettings {
 	return {
@@ -6,6 +14,15 @@ export function defaultPiiSettings(): PiiSettings {
 		customTerms: [],
 		detectNames: false,
 	};
+}
+
+export function defaultBriefing(): BriefingSettings {
+	return { enabled: false, time: "08:00", days: "weekdays", dots: {}, instructions: "" };
+}
+
+/** Briefing settings with defaults filled in (old settings files have none). */
+export function resolveBriefing(s: Pick<AppSettings, "briefing"> | undefined): BriefingSettings {
+	return { ...defaultBriefing(), ...(s?.briefing ?? {}) };
 }
 
 export function defaultSettings(): AppSettings {

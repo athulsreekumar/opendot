@@ -130,6 +130,17 @@ const ProviderSchema = z.object({
 	createdAt: iso,
 });
 
+export const BriefingSettingsSchema = z.object({
+	enabled: z.boolean().default(false),
+	time: z
+		.string()
+		.regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+		.default("08:00"),
+	days: z.enum(["weekdays", "daily"]).default("weekdays"),
+	dots: z.record(z.string(), z.boolean()).default({}),
+	instructions: z.string().max(1000).default(""),
+});
+
 export const SettingsSchema = z.object({
 	version: z.literal(1),
 	theme: z.enum(["light", "dark", "system"]),
@@ -159,6 +170,7 @@ export const SettingsSchema = z.object({
 	localWebhook: z.object({ enabled: z.boolean(), port: z.number().int().min(1024).max(65535) }),
 	onboardingDone: z.boolean(),
 	telemetry: z.literal(false),
+	briefing: BriefingSettingsSchema.optional(),
 }) as unknown as z.ZodType<AppSettings>;
 
 export const ConnectionSchema = z.object({

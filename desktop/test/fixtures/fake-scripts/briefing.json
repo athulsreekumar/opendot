@@ -1,0 +1,43 @@
+{
+	"name": "briefing",
+	"steps": [
+		{
+			"content": [
+				{
+					"type": "toolCall",
+					"id": "tc_brief_1",
+					"name": "ask_dots",
+					"arguments": {
+						"requests": [
+							{ "dot": "Inbox", "question": "Daily briefing for Tue 7 Oct. Anything that needs the user?" },
+							{ "dot": "Calendar", "question": "Daily briefing for Tue 7 Oct. What is on today?" }
+						]
+					}
+				}
+			],
+			"stopReason": "toolUse"
+		},
+		{
+			"byDot": {
+				"Inbox": "Priya needs a reply about the invoice today.",
+				"Calendar": "Design review at 15:00.",
+				"*": "NOTHING_IMPORTANT"
+			}
+		},
+		{
+			"byDot": {
+				"Inbox": "Priya needs a reply about the invoice today.",
+				"Calendar": "Design review at 15:00.",
+				"*": "NOTHING_IMPORTANT"
+			}
+		},
+		{
+			"content": [
+				{
+					"type": "text",
+					"text": "Reply to Priya about the invoice today [Inbox].\n\nDesign review at 15:00 [Calendar]."
+				}
+			]
+		}
+	]
+}
