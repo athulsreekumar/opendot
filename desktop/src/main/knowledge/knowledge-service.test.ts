@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, rm, stat, symlink, utimes, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, realpath, rm, stat, symlink, utimes, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -22,7 +22,8 @@ async function settle(s: KnowledgeService, id?: string) {
 }
 
 beforeEach(async () => {
-	base = await mkdtemp(join(tmpdir(), "od-know-"));
+	// realpath: macOS tmp is a /var -> /private/var link and Windows tmp can be an 8.3 short name (RUNNER~1); the service reports real paths.
+	base = await realpath(await mkdtemp(join(tmpdir(), "od-know-")));
 	notes = join(base, "notes");
 	dataDir = join(base, "data", "knowledge");
 	states = [];
