@@ -6,6 +6,7 @@ import { ApprovalsScreen } from "@/features/approvals/ApprovalsScreen";
 import { ChatView } from "@/features/chats/ChatView";
 import { ConnectionsScreen } from "@/features/connections/ConnectionsScreen";
 import { LinksScreen } from "@/features/links/LinksScreen";
+import { OrganisationScreen } from "@/features/organisation/OrganisationScreen";
 import { SettingsScreen } from "@/features/settings/SettingsScreen";
 import { useUi } from "@/stores/ui";
 import { BrandMark } from "./NavRail";
@@ -44,6 +45,8 @@ export function MainPane({ route }: { route: Route }) {
 			return <ApprovalsScreen approvalId={route.approvalId} />;
 		case "connections":
 			return <ConnectionsScreen connectionId={route.connectionId} />;
+		case "organisation":
+			return <OrganisationScreen sub={route.sub} />;
 		case "settings":
 			return <SettingsScreen section={route.section} />;
 		default:

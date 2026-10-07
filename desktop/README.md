@@ -179,6 +179,15 @@ inside your indexed folders). Answers show the files they used as chips: click t
 its folder. Passages reach a cloud model like any other tool output, so PII masking applies. The index lives in
 `~/.opendot/knowledge/`.
 
+## Organisation screens
+
+The **Organisation** item in the rail (with a badge for things waiting on you) opens four views: **Projects** (the list, a
+New project dialog, then a project page with plan review, a Board or List of tasks, a task drawer, Activity and a Summary),
+**Team** (one card per domain Dot with its skills, Add a domain, Open chat), **Skills** (the playbook library: built-in skills
+are read-only and can be duplicated, your own can be edited and deleted) and the first-run **set-up** with template cards and
+"Choose domains". The routes are `#/organisation`, `#/organisation/<projectId>`, `#/organisation/team` and
+`#/organisation/skills`. SuperDot's project updates show up in its chat as small cards with an "Open project" button.
+
 ## Build from source
 
 ```bash

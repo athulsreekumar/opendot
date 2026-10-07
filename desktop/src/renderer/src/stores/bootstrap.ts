@@ -4,6 +4,7 @@ import { useApprovals } from "./approvals";
 import { useChat } from "./chat";
 import { useDots } from "./dots";
 import { useKnowledge } from "./knowledge";
+import { useOrganisation } from "./organisation";
 import { useRuntime } from "./runtime";
 import { useSettings } from "./settings";
 
@@ -29,6 +30,9 @@ export async function bootstrapStores(): Promise<void> {
 	api.on("connection:status", (s) => useRuntime.getState().setConnectionStatus(s));
 	api.on("link:exchange", (x) => useRuntime.getState().addExchange(x));
 	api.on("knowledge:changed", (k) => useKnowledge.getState().set(k));
+	api.on("org:state", (o) => useOrganisation.getState().setOrg(o));
+	api.on("org:project", (p) => useOrganisation.getState().setProject(p));
+	api.on("org:skills", (k) => useOrganisation.getState().setSkills(k));
 	await Promise.all([
 		useDots.getState().load(),
 		useSettings.getState().load(),
@@ -36,6 +40,10 @@ export async function bootstrapStores(): Promise<void> {
 		useRuntime.getState().loadHealth(),
 		useRuntime.getState().loadConnections(),
 		useKnowledge
+			.getState()
+			.load()
+			.catch(() => undefined),
+		useOrganisation
 			.getState()
 			.load()
 			.catch(() => undefined),
