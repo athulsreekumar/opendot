@@ -7,6 +7,8 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Organisation (team): set up a team of Dots from a template (Startup, Software team, Small business, Full) with 13 domains, role
+  descriptions, built-in skills (playbooks), your own skills, and a Dot Links rule so the team can work together.
 - Daily briefing: at a time you choose, SuperDot asks your Dots what matters and streams one briefing (with Dot citations) into its
   chat, with a single notification. Off by default; set up in Settings → Daily briefing, or run it now with `/briefing`.
 - Approvals inbox: an Approvals screen (Waiting and History) replaces the rail popover. Cards show the Dot, what it wants to do
