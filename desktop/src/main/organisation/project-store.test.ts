@@ -7,7 +7,7 @@ import { isProjectId, newProjectId, normalizeProject, ProjectStore } from "./pro
 
 let root: string;
 beforeEach(() => {
-	root = realpathSync(mkdtempSync(join(tmpdir(), "opendot-pstore-")));
+	root = realpathSync.native(mkdtempSync(join(tmpdir(), "opendot-pstore-")));
 });
 afterEach(() => rmSync(root, { recursive: true, force: true }));
 

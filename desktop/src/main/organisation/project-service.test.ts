@@ -39,7 +39,7 @@ interface Call {
 }
 
 class Harness {
-	root = realpathSync(mkdtempSync(join(tmpdir(), "opendot-proj-")));
+	root = realpathSync.native(mkdtempSync(join(tmpdir(), "opendot-proj-")));
 	repo = new MemRepo();
 	dots = new Map<DotId, Dot>();
 	org: OrgState;
