@@ -1,5 +1,6 @@
 // SuperBot tools: ask_dots (parallel fan-out), get_dot_updates, search_dot_history (spec 13 §4).
 import type { Dot, DotId } from "../../../shared/types";
+import type { AttachmentItem } from "../../attachments/attachment-service";
 import type { LinkBus } from "../../links/link-bus";
 import { defineTool, type InlineExtension, Type } from "../pi-adapter";
 
@@ -12,6 +13,8 @@ export interface SuperExtDeps {
 		status: "queued" | "running" | "done" | "error" | "blocked",
 		patch?: { delta?: string; text?: string; error?: string },
 	) => void;
+	/** Files the user attached to the current message; forwarded to every Dot that is asked. */
+	attachments?: () => AttachmentItem[];
 	updates: (dotRef: string | undefined, sinceMs: number, limit: number) => Promise<string>;
 	searchHistory: (dotRef: string, query: string, limit: number) => Promise<string>;
 }
@@ -38,7 +41,7 @@ export function superbotExtension(deps: SuperExtDeps): InlineExtension {
 					name: "ask_dots",
 					label: "Ask Dots",
 					description:
-						"Ask one or more Dots in parallel and wait for all replies. Give each a self-contained question. Use this once with every Dot you need.",
+						"Ask one or more Dots in parallel and wait for all replies. Give each a self-contained question. Use this once with every Dot you need. Files and images the user attached to their message are forwarded to each Dot automatically.",
 					parameters: Type.Object({
 						requests: Type.Array(Type.Object({ dot: Type.String(), question: Type.String() }), {
 							minItems: 1,
@@ -55,6 +58,7 @@ export function superbotExtension(deps: SuperExtDeps): InlineExtension {
 								let acc = "";
 								const res = await deps.bus.send(me, r.dot, r.question, [me.id], {
 									signal,
+									attachments: deps.attachments?.(),
 									onStatus: (to, status, detail) =>
 										deps.emitPeer(toolCallId, to.id, status, {
 											error: status === "error" || status === "blocked" ? detail : undefined,

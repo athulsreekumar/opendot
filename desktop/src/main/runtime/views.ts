@@ -1,4 +1,5 @@
 // Maps pi messages / session entries to renderer view models.
+import { parseAttachmentBlocks } from "../../shared/attachments";
 import type { ChatMessageView, DotEventView, DotId, ToolCallView } from "../../shared/types";
 
 type Block = {
@@ -157,11 +158,13 @@ export function entriesToViews(
 		const m = e.message;
 		const createdAt = m.timestamp ? new Date(m.timestamp).toISOString() : e.timestamp;
 		if (m.role === "user") {
+			const parsed = parseAttachmentBlocks(restore(blocksText(m.content)), dotId);
 			out.push({
 				id: e.id,
 				dotId,
 				role: "user",
-				text: restore(blocksText(m.content)),
+				text: parsed.text,
+				attachments: parsed.attachments.length ? parsed.attachments : undefined,
 				toolCalls: [],
 				createdAt,
 				streaming: false,

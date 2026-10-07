@@ -2,13 +2,15 @@ import type { Dot, DotId } from "@shared/types";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { navigate } from "../../app/router";
 import { cn } from "../../design-system/cn";
-import { Avatar, IconButton, TextArea } from "../../design-system/components";
+import { Avatar, IconButton, TextArea, toast } from "../../design-system/components";
 import { IconSend, IconStop } from "../../design-system/icons";
 import { modKey } from "../../lib/platform";
+import { draftsOf, incomingFromPaste, useAttachments } from "../../stores/attachments";
 import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
 import { useSettings } from "../../stores/settings";
 import { useUi } from "../../stores/ui";
+import { AttachButton, ComposerTray, ImageWarning } from "./Attachments";
 import { ClearChatDialog } from "./ChatHeader";
 
 const MAX_CHARS = 100_000;
@@ -99,6 +101,15 @@ export function Composer({ dotId }: { dotId: DotId }) {
 	const hasModels = useSettings((s) => s.models.length > 0);
 	const hasDefault = useSettings((s) => !!s.settings?.defaultModel);
 	const dots = useDots((s) => s.dots);
+	const drafts = useAttachments((s) => draftsOf(s, dotId));
+	const asFiles = useAttachments((s) => !!s.asFiles[dotId]);
+	const canSeeImages = useSettings((s) => {
+		const ref = dot?.model ?? s.settings?.defaultModel;
+		const m = ref ? s.models.find((x) => x.providerId === ref.providerId && x.modelId === ref.modelId) : undefined;
+		return m ? m.vision : true;
+	});
+	const hasImages = drafts.some((d) => d.kind === "image");
+	const needsImageChoice = hasImages && !canSeeImages && !asFiles;
 	const busyStatus = useDots((s) => BUSY.has(s.statuses[dotId]?.kind ?? "idle"));
 	const anyStreaming = useChat((s) => {
 		const c = s.byDot[dotId];
@@ -191,14 +202,31 @@ export function Composer({ dotId }: { dotId: DotId }) {
 
 	const submit = (mode: "auto" | "steer" | "followUp") => {
 		const t = text.trim();
-		if (!t || disabled || t.length > MAX_CHARS) return;
-		const cmd = COMMANDS.find((c) => c.name === t.toLowerCase());
+		if ((!t && drafts.length === 0) || disabled || t.length > MAX_CHARS) return;
+		const cmd = drafts.length === 0 ? COMMANDS.find((c) => c.name === t.toLowerCase()) : undefined;
 		if (cmd) {
 			runCommand(cmd.name);
 			return;
 		}
+		if (needsImageChoice) {
+			toast({ title: "This model can't see images. Send them as file references or remove them.", variant: "error" });
+			return;
+		}
 		setDraft(dotId, "");
-		void useChat.getState().send(dotId, t, mode);
+		if (drafts.length === 0) void useChat.getState().send(dotId, t, mode);
+		else {
+			const files = { drafts, imagesAsFiles: asFiles && hasImages };
+			useAttachments.getState().clear(dotId);
+			void useChat.getState().send(dotId, t, mode, files);
+		}
+	};
+
+	const onPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+		const files = incomingFromPaste(e.clipboardData);
+		if (files.length === 0) return;
+		// Files on the clipboard (screenshots, copied images): attach them. Plain text pastes are left alone.
+		e.preventDefault();
+		void useAttachments.getState().addFiles(dotId, files);
 	};
 
 	const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -243,9 +271,19 @@ export function Composer({ dotId }: { dotId: DotId }) {
 	const over = text.length > MAX_CHARS * 0.9;
 	return (
 		<div className="shrink-0 border-t border-border-subtle bg-sidebar px-4 py-2.5">
+			<ComposerTray
+				drafts={drafts}
+				onRemove={(id) => useAttachments.getState().remove(dotId, id)}
+				warning={
+					hasImages && !canSeeImages ? (
+						<ImageWarning asFiles={asFiles} onChange={(on) => useAttachments.getState().setAsFiles(dotId, on)} />
+					) : undefined
+				}
+			/>
 			<div className="relative mx-auto flex w-full max-w-[var(--od-chat-max-w)] items-end gap-2">
 				{commandItems.length > 0 && <CommandMenu items={commandItems} index={menuIndex} onPick={runCommand} />}
 				{mentionDots.length > 0 && <MentionPicker dots={mentionDots} index={menuIndex} onPick={pickMention} />}
+				<AttachButton disabled={disabled} onClick={() => void useAttachments.getState().pick(dotId)} />
 				<div className="min-w-0 flex-1">
 					<TextArea
 						ref={ref}
@@ -267,11 +305,12 @@ export function Composer({ dotId }: { dotId: DotId }) {
 							caret.current = e.currentTarget.selectionStart ?? 0;
 						}}
 						onKeyDown={onKeyDown}
+						onPaste={onPaste}
 					/>
 				</div>
 				{streaming ? (
 					<>
-						{text.trim() && (
+						{(text.trim() || drafts.length > 0) && (
 							<IconButton
 								variant="accent"
 								size="lg"
@@ -294,7 +333,7 @@ export function Composer({ dotId }: { dotId: DotId }) {
 						size="lg"
 						label="Send"
 						icon={<IconSend size={18} />}
-						disabled={disabled || !text.trim()}
+						disabled={disabled || (!text.trim() && drafts.length === 0)}
 						onClick={() => submit("auto")}
 					/>
 				)}

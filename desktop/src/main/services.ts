@@ -5,6 +5,7 @@ import { OpenDotError } from "../shared/errors";
 import type { EventMap } from "../shared/ipc";
 import { builtinComputerLabel, MAC_ONLY_WATCHERS, platformFeatures } from "../shared/platform";
 import type { AppSettings, Connection, Dot, DotId, LinkExchange, MacPermissionStatus } from "../shared/types";
+import { AttachmentService } from "./attachments/attachment-service";
 import { ConnectionService } from "./connections/connection-service";
 import { MAC_DEFAULT_DECISIONS } from "./connections/mac";
 import { runJxaReal } from "./connections/mac/jxa";
@@ -123,6 +124,11 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 	};
 
 	const dots = new DotService(store, paths, connections);
+	const attachments = new AttachmentService({
+		paths,
+		supportsImages: async (d) =>
+			(await models.resolveModel(d.model).catch(() => undefined))?.input.includes("image") ?? false,
+	});
 
 	// ── Link bus (needs runtime; resolved lazily) ──
 	let runtime: DotRuntime;
@@ -346,6 +352,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 					bus: linkBus,
 					getDot: getFresh,
 					emitPeer: (tc, peer, status, patch) => runtime.get(dot.id).emitPeer(tc, peer, status, patch),
+					attachments: () => runtime.get(dot.id).currentAttachments(),
 					updates: (ref, since, limit) => profiles.updates(linkBus, ref, since, limit),
 					searchHistory: (ref, q, limit) => profiles.searchHistory(linkBus, ref, q, limit),
 				}),
@@ -365,6 +372,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 			store,
 			settings,
 			models,
+			attachments,
 			pii,
 			emit: (e) => bridge.broadcast("dot:event", e),
 			buildExtensions,
@@ -505,6 +513,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		policy,
 		approvals,
 		pii,
+		attachments,
 		connections,
 		dots,
 		linkBus,
