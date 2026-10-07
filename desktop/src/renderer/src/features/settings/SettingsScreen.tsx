@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { QuickAskSettings } from "../quick-ask/QuickAskSettings";
 import { AboutMeSettings } from "./AboutMeSettings";
 import { AboutSettings } from "./AboutSettings";
 import { AdvancedSettings } from "./AdvancedSettings";
@@ -16,6 +17,7 @@ const SECTIONS: Record<string, { title: string; render: () => ReactNode }> = {
 	"about-me": { title: "About me", render: () => <AboutMeSettings /> },
 	background: { title: "Background", render: () => <BackgroundSettings /> },
 	notifications: { title: "Notifications", render: () => <NotificationSettings /> },
+	"quick-ask": { title: "Quick ask", render: () => <QuickAskSettings /> },
 	audit: { title: "Audit log", render: () => <AuditLog /> },
 	advanced: { title: "Advanced", render: () => <AdvancedSettings /> },
 	about: { title: "About", render: () => <AboutSettings /> },

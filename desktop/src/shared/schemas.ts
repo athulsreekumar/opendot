@@ -159,6 +159,7 @@ export const SettingsSchema = z.object({
 	localWebhook: z.object({ enabled: z.boolean(), port: z.number().int().min(1024).max(65535) }),
 	onboardingDone: z.boolean(),
 	telemetry: z.literal(false),
+	quickAsk: z.object({ enabled: z.boolean(), shortcut: z.string().min(1).max(60) }).optional(),
 }) as unknown as z.ZodType<AppSettings>;
 
 export const ConnectionSchema = z.object({
@@ -308,6 +309,11 @@ export const ARG_SCHEMAS: Partial<Record<string, z.ZodType<unknown[]>>> = {
 	"chat.history": z.tuple([
 		DotIdSchema,
 		z.object({ before: z.string().optional(), limit: z.number().int().min(1).max(500).optional() }).optional(),
+	]) as unknown as z.ZodType<unknown[]>,
+	"quickAsk.resize": z.tuple([z.number().finite()]) as unknown as z.ZodType<unknown[]>,
+	"quickAsk.openInApp": z.tuple([DotIdSchema]) as unknown as z.ZodType<unknown[]>,
+	"quickAsk.report": z.tuple([
+		z.object({ dotId: DotIdSchema.optional(), pinned: z.boolean() }),
 	]) as unknown as z.ZodType<unknown[]>,
 	"dots.get": z.tuple([DotIdSchema]) as unknown as z.ZodType<unknown[]>,
 	"dots.remove": z.tuple([DotIdSchema]) as unknown as z.ZodType<unknown[]>,

@@ -1,4 +1,6 @@
 // The renderer ⇄ main contract. Spec: docs/spec/02-data-and-ipc.md §3
+
+import type { QuickAskStatus } from "./quickask";
 import type {
 	AddProviderInput,
 	ApprovalRequest,
@@ -208,6 +210,16 @@ export interface OpenDotApi {
 		upsert(scope: MemoryScope, item: { id?: string; text: string; pinned?: boolean }): Promise<MemoryItem>;
 		remove(scope: MemoryScope, id: string): Promise<void>;
 	};
+	quickAsk: {
+		status(): Promise<QuickAskStatus>;
+		/** Height of the bar's content in px; the window follows (clamped in main). */
+		resize(height: number): Promise<void>;
+		hide(): Promise<void>;
+		/** Hide the bar and show the main window at this Dot's chat. */
+		openInApp(dotId: DotId): Promise<void>;
+		/** The bar tells main which Dot it is showing and whether an approval keeps it open on blur. */
+		report(state: { dotId?: DotId; pinned: boolean }): Promise<void>;
+	};
 	on<E extends keyof EventMap>(event: E, listener: (payload: EventMap[E]) => void): () => void;
 }
 
@@ -225,6 +237,8 @@ export interface EventMap {
 	"watcher:changed": Watcher;
 	"connections:changed": Connection[];
 	"app:navigate": { hash: string };
+	"quickask:shown": Record<string, never>;
+	"quickask:hidden": Record<string, never>;
 }
 
 export const INVOKE_CHANNELS = [
@@ -311,6 +325,11 @@ export const INVOKE_CHANNELS = [
 	"memory.get",
 	"memory.upsert",
 	"memory.remove",
+	"quickAsk.status",
+	"quickAsk.resize",
+	"quickAsk.hide",
+	"quickAsk.openInApp",
+	"quickAsk.report",
 ] as const;
 
 export type InvokeChannel = (typeof INVOKE_CHANNELS)[number];
@@ -329,6 +348,8 @@ export const EVENT_CHANNELS = [
 	"watcher:changed",
 	"connections:changed",
 	"app:navigate",
+	"quickask:shown",
+	"quickask:hidden",
 ] as const;
 
 /** Maps "ns.method" channel to the api function type. */
@@ -353,4 +374,15 @@ export interface OpenDotTestApi {
 	reportPaint(messageId: string, at: number): Promise<void>;
 	getPaints(): Promise<Array<{ messageId: string; firstTokenAt?: number; paintAt: number }>>;
 	emitEvent(dotId: string, title: string, body: string, importance?: "low" | "normal" | "high"): Promise<void>;
+	/** Same action as the global hotkey: shows the quick-ask bar (or hides it when open and toggle is true). */
+	openQuickAsk(toggle?: boolean): Promise<void>;
+	quickAskState(): Promise<{
+		exists: boolean;
+		visible: boolean;
+		height: number;
+		shortcutRegistered: boolean;
+		accelerator: string;
+	}>;
+	/** Test only: blur the bar the way clicking another window would. */
+	blurQuickAsk(): Promise<void>;
 }

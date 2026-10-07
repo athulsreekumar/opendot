@@ -7,7 +7,8 @@ export type Route =
 	| { name: "connections"; connectionId?: string }
 	| { name: "settings"; section: string }
 	| { name: "onboarding" }
-	| { name: "gallery" };
+	| { name: "gallery" }
+	| { name: "quick" };
 
 export function parseHash(hash: string): Route {
 	const parts = hash.replace(/^#\/?/, "").split("/").filter(Boolean);
@@ -24,6 +25,8 @@ export function parseHash(hash: string): Route {
 			return { name: "onboarding" };
 		case "gallery":
 			return { name: "gallery" };
+		case "quick":
+			return { name: "quick" };
 		default:
 			return { name: "chats", dotId: parts[1] };
 	}

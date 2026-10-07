@@ -1,0 +1,9 @@
+/* The quick-ask window is transparent so the rounded surface floats; mac also gets vibrancy behind it. */
+html.od-quick,
+html.od-quick body,
+html.od-quick #root {
+	background: transparent;
+}
+html.od-quick.od-quick-vibrancy .od-quick-surface {
+	background: color-mix(in srgb, var(--od-bg-elevated) 70%, transparent);
+}
