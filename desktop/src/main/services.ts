@@ -5,6 +5,8 @@ import { OpenDotError } from "../shared/errors";
 import type { EventMap } from "../shared/ipc";
 import { builtinComputerLabel, MAC_ONLY_WATCHERS, platformFeatures } from "../shared/platform";
 import type { AppSettings, Connection, Dot, DotId, LinkExchange, MacPermissionStatus } from "../shared/types";
+import { ApprovalHistory } from "./approvals/history";
+import { ApprovalNotifier } from "./approvals/notifier";
 import { ConnectionService } from "./connections/connection-service";
 import { MAC_DEFAULT_DECISIONS } from "./connections/mac";
 import { runJxaReal } from "./connections/mac/jxa";
@@ -45,7 +47,7 @@ export interface ElectronBridge {
 	openExternal(url: string): Promise<void>;
 	broadcast<E extends keyof EventMap>(event: E, payload: EventMap[E]): void;
 	isWindowFocused(): boolean;
-	notify(opts: { title: string; body: string; silent?: boolean; dotId?: DotId }): void;
+	notify(opts: { title: string; body: string; silent?: boolean; dotId?: DotId; hash?: string }): void;
 	clipboardRead(): string | Promise<string>;
 	clipboardWrite(t: string): void;
 	screenshot(): Promise<{ base64Png: string; width: number; height: number }>;
@@ -69,14 +71,29 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 	const models = await ModelService.create({ paths, settings, secrets, fakeScriptsDir: opts.fakeScriptsDir });
 	const memory = new MemoryService(store);
 	const policy = new PolicyEngine(store);
-	const approvals = new ApprovalBroker({
+	const approvalHistory = new ApprovalHistory({
+		append: (entry) => store.auditLog.append(entry),
+		read: (q) => store.queryAudit({ dotId: q.dotId, kinds: ["approval"], limit: q.limit }),
+		piiSettings: async () => (await settings.get()).pii,
+	});
+	const approvalNotifier = new ApprovalNotifier({
+		notify: (n) => bridge.notify({ title: n.title, body: n.body, hash: n.hash }),
+		pendingCount: () => approvals.pending().length,
+	});
+	const approvals: ApprovalBroker = new ApprovalBroker({
 		requested: (r) => {
 			bridge.broadcast("approval:requested", r);
-			if (!bridge.isWindowFocused()) bridge.notify({ title: "Approval needed", body: r.title, dotId: r.dotId });
+			if (!bridge.isWindowFocused()) approvalNotifier.requested(r);
 			runtime?.get(r.dotId) && runtime.pushHealth(r.dotId);
 			emitStatus(r.dotId, { kind: "waiting-approval" });
 		},
-		resolved: (id, decision) => bridge.broadcast("approval:resolved", { id, decision }),
+		resolved: (id, decision, req, res) => {
+			bridge.broadcast("approval:resolved", { id, decision });
+			void approvalHistory
+				.record(req, res)
+				.then((item) => bridge.broadcast("approval:resolved", { id, decision, item }))
+				.catch((e) => log.warn("approval history failed", e));
+		},
 	});
 	const usage = new UsageTracker(store);
 	await usage.load();
@@ -301,6 +318,8 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 				nativeDefault: (t) => MAC_DEFAULT_DECISIONS[t],
 				allowedRoots,
 				audit: (kind, d, summary, data) => void store.audit({ kind, dotId: d.id, summary, data }),
+				recordRuleAllow: (d, tool, args) => void approvalHistory.recordRule(d.id, tool, args).catch(() => undefined),
+				restore: (t) => pii.restore(dot.id, t),
 				approvalTtlMs: () => (runtime.peek(dot.id)?.status.kind === "handling-events" ? 30 * 60_000 : 5 * 60_000),
 			}),
 			sectionsExtension({
@@ -504,6 +523,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		memory,
 		policy,
 		approvals,
+		approvalHistory,
 		pii,
 		connections,
 		dots,

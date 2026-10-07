@@ -1,10 +1,8 @@
-import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { cn } from "@/design-system/cn";
 import { Badge, IconButton } from "@/design-system/components";
 import { IconActivity, IconApprove, IconChats, IconConnections, IconLinks, IconSettings } from "@/design-system/icons";
 import { useApprovals } from "@/stores/approvals";
 import { useDots } from "@/stores/dots";
-import { ApprovalsTray } from "./ApprovalsTray";
 import { navigate, type Route } from "./router";
 
 export function BrandMark({ size = 24, className }: { size?: number; className?: string }) {
@@ -98,26 +96,13 @@ export function NavRail({ route }: { route: Route }) {
 			</div>
 			<div className="flex-1" />
 			<div className="flex w-full flex-col gap-1">
-				<PopoverPrimitive.Root>
-					<div className="od-no-drag relative flex h-10 w-full items-center justify-center">
-						<PopoverPrimitive.Trigger asChild>
-							<IconButton
-								size="lg"
-								label="Approvals"
-								className="text-fg-2 hover:text-fg data-[state=open]:bg-accent-subtle data-[state=open]:text-accent"
-								icon={<IconApprove size={20} strokeWidth={1.75} />}
-							/>
-						</PopoverPrimitive.Trigger>
-						{pending > 0 && (
-							<Badge
-								variant="unread"
-								count={pending}
-								className="pointer-events-none absolute right-2 top-0 h-4 min-w-4 px-1"
-							/>
-						)}
-					</div>
-					<ApprovalsTray />
-				</PopoverPrimitive.Root>
+				<NavItem
+					label="Approvals"
+					active={route.name === "approvals"}
+					icon={<IconApprove size={20} strokeWidth={1.75} />}
+					onClick={() => navigate("#/approvals")}
+					badge={pending}
+				/>
 				<NavItem
 					label="Settings"
 					active={route.name === "settings"}

@@ -548,12 +548,42 @@ export interface ApprovalRequest {
 	args?: unknown;
 	linkId?: LinkId;
 	peerDotId?: DotId;
+	/** The Dot's own explanation (what it said just before asking), when there is one. */
+	why?: string;
+	/** False when a persistent allow rule would have no effect (an explicit rule on the tool wins). Default true. */
+	alwaysAllowable?: boolean;
 	createdAt: ISODate;
 	expiresAt: ISODate;
 }
 
 export type ApprovalDecision = "allow-once" | "allow-always" | "deny";
-export type ApprovalResponse = { id: ApprovalId; decision: ApprovalDecision };
+export type ApprovalResponse = {
+	id: ApprovalId;
+	decision: ApprovalDecision;
+	/** Deny only: why, passed back to the Dot so it can adapt. */
+	reason?: string;
+	/** Allow only: the tool runs with these arguments instead of the Dot's. */
+	editedArgs?: Record<string, unknown>;
+};
+
+export type ApprovalHistoryOutcome = "allowed" | "denied" | "edited" | "expired";
+
+/** A decided approval, as shown in the inbox History tab. Summaries never hold message contents and are PII-masked. */
+export interface ApprovalHistoryItem {
+	id: string;
+	approvalId?: string;
+	at: ISODate;
+	dotId?: DotId;
+	outcome: ApprovalHistoryOutcome;
+	/** you: answered in the inbox. rule: an Always allow rule. timeout: nobody answered. stopped: the Dot's run was stopped. */
+	by: "you" | "rule" | "timeout" | "stopped";
+	/** Allowed and remembered as an Always allow rule. */
+	always?: boolean;
+	hasReason?: boolean;
+	kind: "tool" | "link";
+	toolName?: string;
+	summary: string;
+}
 
 // ───────────────────────── PII ─────────────────────────
 export interface PiiSettings {

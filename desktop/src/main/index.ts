@@ -95,12 +95,13 @@ async function main(): Promise<void> {
 				for (const w of windows()) if (!w.isDestroyed()) w.webContents.send(event, payload);
 			},
 			isWindowFocused: () => !!win && !win.isDestroyed() && win.isVisible() && win.isFocused(),
-			notify: ({ title, body, silent, dotId }) => {
+			notify: ({ title, body, silent, dotId, hash }) => {
 				if (!Notification.isSupported()) return;
 				const n = new Notification({ title, body, silent });
 				n.on("click", () => {
 					showWindow();
-					if (dotId) win?.webContents.send("app:focus-dot", { dotId });
+					if (hash) win?.webContents.send("app:navigate", { hash });
+					else if (dotId) win?.webContents.send("app:focus-dot", { dotId });
 				});
 				n.show();
 			},
