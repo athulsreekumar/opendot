@@ -96,7 +96,7 @@ with **Run in the background** on, closing the window is fine).
 ## Organisation: your team of Dots
 
 An organisation is a team of Dots, one per department (Engineering, Security, HR, Finance and so on), with SuperDot as the project
-manager. Open **Organisation → Team** and pick a template: Startup, Software team, Small business or Full. OpenDot creates one Dot per
+manager. Open **Organisation** and pick a template: Startup, Software team, Small business or Full. OpenDot creates one Dot per
 department, each with a short role description, a few skills, and access to files in its own workspace. Engineering, IT and Data can
 also run shell commands on your computer, and every command still waits for your approval. All other connections stay off until you
 turn them on for a Dot. Running setup again never makes duplicates, and removing a member keeps the Dot.

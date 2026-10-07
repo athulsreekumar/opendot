@@ -25,6 +25,7 @@ export function NewProjectDialog({ open, onOpenChange }: { open: boolean; onOpen
 				...(budgetNum !== undefined ? { budgetUsd: budgetNum } : {}),
 			});
 			useOrganisation.getState().setProject(p);
+			useOrganisation.getState().setWelcome(false);
 			setTitle("");
 			setBrief("");
 			setBudget("");
