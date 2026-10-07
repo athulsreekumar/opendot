@@ -40,7 +40,7 @@ function TemplateCard({
 			aria-pressed={selected}
 			onClick={onSelect}
 			className={cn(
-				"flex flex-col gap-3 rounded-lg border bg-elevated p-4 text-left transition-colors hover:bg-hover",
+				"flex h-full w-full flex-col gap-3 rounded-lg border bg-elevated p-4 text-left transition-colors hover:bg-hover",
 				selected ? "border-accent ring-2 ring-accent" : "border-border-subtle",
 			)}
 		>

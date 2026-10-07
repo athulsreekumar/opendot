@@ -5,6 +5,7 @@ import { IconChevronDown, IconChevronUp, IconPlus, IconTrash } from "@/design-sy
 import { api, errorText } from "@/lib/api";
 import { useOrganisation } from "@/stores/organisation";
 import { useMemberLookup, useMembers } from "./members";
+import { friendlyProblem } from "./plan-problems";
 import { Callout, CheckRow, Field } from "./shared-ui";
 
 const NO_REVIEWER = "__none";
@@ -45,10 +46,18 @@ interface RowProps {
 function TaskRow({ task, index, count, all, problems, onChange, onMove, onRemove }: RowProps) {
 	const members = useMembers();
 	const lookup = useMemberLookup();
+	const domains = useOrganisation((s) => s.domains);
 	const people: SelectGroup[] = [
 		{
 			items: [
-				...members.map((m) => ({ value: m.dotId as string, label: `${lookup(m.dotId).name} (${m.domain})` })),
+				...members.map((m) => {
+					const name = lookup(m.dotId).name;
+					const dom = domains.find((d) => d.id === m.domain)?.name ?? m.domain;
+					return {
+						value: m.dotId as string,
+						label: dom.toLowerCase() === name.toLowerCase() ? name : `${name} (${dom})`,
+					};
+				}),
 				{ value: "human", label: "Me" },
 			],
 		},
@@ -143,7 +152,7 @@ function TaskRow({ task, index, count, all, problems, onChange, onMove, onRemove
 			{problems.length > 0 && (
 				<ul className="flex flex-col gap-0.5 text-xs text-danger" aria-label="Problems with this task">
 					{problems.map((p) => (
-						<li key={p.message}>{p.message}</li>
+						<li key={p.message}>{friendlyProblem(p.message, all)}</li>
 					))}
 				</ul>
 			)}
@@ -224,7 +233,7 @@ export function PlanEditor({ project }: { project: OrgProject }) {
 				<Callout tone="danger" title="This plan needs a fix">
 					<ul className="list-disc pl-4">
 						{general.map((p) => (
-							<li key={p.message}>{p.message}</li>
+							<li key={p.message}>{friendlyProblem(p.message, draft)}</li>
 						))}
 					</ul>
 				</Callout>

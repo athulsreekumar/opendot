@@ -13,6 +13,8 @@ type Step = Parameters<Faux["setResponses"]>[0][number];
 type FauxContent = Parameters<typeof fauxAssistantMessage>[0];
 
 interface ScriptStep {
+	/** Wait this long before replying (any kind of step may carry it). */
+	delayMs?: number;
 	content?: FauxContent;
 	stopReason?: AssistantMessage["stopReason"];
 	errorMessage?: string;
@@ -30,7 +32,15 @@ interface DeliverStep {
 }
 /** In a script, replaced by the `prj_...` id found in the latest prompt (see ProjectService planner prompt). */
 const PROJECT_ID_TOKEN = "$PROJECT_ID";
-type ScriptEntry = ScriptStep | ByDotStep | DeliverStep | "$capture" | "$echo" | "$long" | "$toolresult";
+/**
+ * One step that answers EVERY later call, choosing the reply from a per-Dot queue (the Dot that is asking is matched on
+ * the system prompt; "*" is the fallback queue). Each queue is consumed in order and then falls back to the echo reply.
+ * Lets parallel Organisation tasks be scripted without caring which Dot is called first.
+ */
+interface PerDotStep {
+	perDot: Record<string, ScriptEntry[]>;
+}
+type ScriptEntry = ScriptStep | ByDotStep | DeliverStep | PerDotStep | "$capture" | "$echo" | "$long" | "$toolresult";
 
 /** The Dot's name from its system prompt ("You are Inbox, one of …"). */
 export function dotNameFromSystemPrompt(systemPrompt: unknown): string | undefined {
@@ -50,6 +60,12 @@ export function systemTextOf(context: unknown): string {
 	return parts.filter((p): p is string => typeof p === "string").join("\n");
 }
 
+/** SuperDot's turns carry no "You are <Name>," text in the context; its Organisation tools identify it. */
+function isSuperContext(context: unknown): boolean {
+	const msgs = (context as { messages?: Array<{ toolsAdded?: Array<{ name?: string }> }> }).messages ?? [];
+	return msgs.some((m) => m.toolsAdded?.some((t) => t.name === "propose_plan"));
+}
+
 export function pickByDot(byDot: Record<string, string>, systemPrompt: unknown): string {
 	const name = dotNameFromSystemPrompt(systemPrompt);
 	return (name && byDot[name]) || byDot["*"] || "";
@@ -59,6 +75,7 @@ export class FakeProvider {
 	readonly faux: Faux;
 	readonly captured: string[] = [];
 	private scriptsDir: string;
+	private perDotSteps: Step[] = [];
 
 	constructor(runtime: ModelRuntime, scriptsDir: string) {
 		this.scriptsDir = scriptsDir;
@@ -73,12 +90,17 @@ export class FakeProvider {
 
 	/** Replace pending responses with the named script; an endless echo follows it. */
 	setScript(name: string): void {
-		this.faux.setResponses([...this.load(name), this.echoForever()]);
+		this.faux.setResponses(this.withTail(this.load(name)));
 	}
 
 	/** Queue a script after what's pending (before the trailing echo). */
 	appendScript(name: string): void {
-		this.faux.setResponses([...this.load(name), this.echoForever()]);
+		this.faux.setResponses(this.withTail(this.load(name)));
+	}
+
+	/** The endless echo after a script. Not after a "perDot" step: it answers every call itself, and a tail would steal turns. */
+	private withTail(steps: Step[]): Step[] {
+		return this.perDotSteps.some((s) => steps.includes(s)) ? steps : [...steps, this.echoForever()];
 	}
 
 	reset(): void {
@@ -94,6 +116,17 @@ export class FakeProvider {
 	}
 
 	private toStep(s: ScriptEntry): Step {
+		const step = this.toStepNow(s);
+		const delayMs = typeof s === "object" ? (s as { delayMs?: number }).delayMs : undefined;
+		if (!delayMs) return step;
+		// `delayMs` on any step: the reply arrives that much later (lets e2e tests see a "working" state).
+		return async (...args) => {
+			await new Promise((resolve) => setTimeout(resolve, delayMs));
+			return typeof step === "function" ? step(...args) : step;
+		};
+	}
+
+	private toStepNow(s: ScriptEntry): Step {
 		if (s === "$capture") {
 			return (context) => {
 				this.captured.push(JSON.stringify(context));
@@ -103,6 +136,21 @@ export class FakeProvider {
 		if (s === "$echo") return (context) => fauxAssistantMessage(`You said: ${lastUserText(context)}`);
 		if (s === "$toolresult") return (context) => fauxAssistantMessage(`The tool said: ${lastToolResultText(context)}`);
 		if (s === "$long") return fauxAssistantMessage(longMarkdown());
+		if ("perDot" in s) {
+			const queues = new Map(Object.entries(s.perDot).map(([k, list]) => [k, list.map((e) => this.toStep(e))]));
+			const step: Step = (context, ...rest) => {
+				this.faux.appendResponses([step]);
+				const name =
+					dotNameFromSystemPrompt(systemTextOf(context)) ?? (isSuperContext(context) ? "SuperDot" : undefined);
+				const queue = (name ? queues.get(name) : undefined) ?? queues.get("*");
+				const next = queue?.shift();
+				if (!next) return this.echoReply(context);
+				// A prebuilt message carries the time the script was loaded; stamp it now so the chat keeps its order.
+				return typeof next === "function" ? next(context, ...rest) : { ...next, timestamp: Date.now() };
+			};
+			this.perDotSteps.push(step);
+			return step;
+		}
 		if ("deliver" in s) {
 			const d = s.deliver;
 			return (context) => {
@@ -134,14 +182,18 @@ export class FakeProvider {
 	private echoForever(): Step {
 		return (context) => {
 			this.faux.appendResponses([this.echoForever()]);
-			const text = parseAttachmentBlocks(lastUserText(context)).text;
-			const seen = lastUserImageCount(context);
-			return fauxAssistantMessage(
-				text.startsWith("[OpenDot")
-					? "[UPDATE] Got your events (fake model)."
-					: `You said: ${text}\n\nI'm the **fake test model**, so I just echo. Add a real model in Settings → Models.${seen ? `\n\n(Fake model received ${seen} image${seen === 1 ? "" : "s"}.)` : ""}`,
-			);
+			return this.echoReply(context);
 		};
+	}
+
+	private echoReply(context: unknown): AssistantMessage {
+		const text = parseAttachmentBlocks(lastUserText(context)).text;
+		const seen = lastUserImageCount(context);
+		return fauxAssistantMessage(
+			text.startsWith("[OpenDot")
+				? "[UPDATE] Got your events (fake model)."
+				: `You said: ${text}\n\nI'm the **fake test model**, so I just echo. Add a real model in Settings → Models.${seen ? `\n\n(Fake model received ${seen} image${seen === 1 ? "" : "s"}.)` : ""}`,
+		);
 	}
 }
 

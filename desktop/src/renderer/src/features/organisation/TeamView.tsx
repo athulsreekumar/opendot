@@ -23,13 +23,15 @@ function MemberCard({ m, onSkills, onRemove }: { m: OrgMember; onSkills: () => v
 	return (
 		<article
 			aria-label={info.name}
-			className="flex flex-col gap-3 rounded-lg border border-border-subtle bg-elevated p-4"
+			className="flex h-full flex-col gap-3 rounded-lg border border-border-subtle bg-elevated p-4"
 		>
 			<div className="flex items-center gap-3">
 				<Avatar size="md" name={info.name} emoji={info.emoji} color={info.color} />
 				<div className="min-w-0">
 					<h3 className="truncate text-md font-semibold text-fg">{info.name}</h3>
-					<p className="text-xs text-fg-3">{domainName(domains, m.domain)}</p>
+					<p className="truncate text-xs text-fg-3">
+						{domains.find((d) => d.id === m.domain)?.tagline ?? domainName(domains, m.domain)}
+					</p>
 				</div>
 			</div>
 			<div className="flex flex-wrap gap-1.5">
@@ -41,7 +43,7 @@ function MemberCard({ m, onSkills, onRemove }: { m: OrgMember; onSkills: () => v
 				))}
 				{names.length > SHOW_SKILLS && <Badge variant="outline">+{names.length - SHOW_SKILLS}</Badge>}
 			</div>
-			<div className="flex flex-wrap gap-2">
+			<div className="mt-auto flex flex-wrap gap-2">
 				<Button size="sm" variant="secondary" onClick={() => navigate(`#/chats/${m.dotId}`)}>
 					Open chat
 				</Button>
@@ -243,7 +245,7 @@ export function TeamView() {
 			{members.length === 0 ? (
 				<p className="py-8 text-center text-sm text-fg-2">Nobody is on the team yet.</p>
 			) : (
-				<ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+				<ul className="grid gap-3 sm:grid-cols-2">
 					{members.map((m) => (
 						<li key={m.dotId}>
 							<MemberCard m={m} onSkills={() => setEditing(m)} onRemove={() => setRemoving(m)} />

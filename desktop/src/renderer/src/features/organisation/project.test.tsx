@@ -152,18 +152,18 @@ describe("plan editor", () => {
 	it("shows live validation messages and blocks approval", () => {
 		show(plan());
 		fireEvent.change(document.querySelector("#pt-title-t1") as HTMLInputElement, { target: { value: "" } });
-		expect(screen.getByText("Task t1 has no title.")).toBeTruthy();
+		expect(screen.getByText("Task 1 has no title.")).toBeTruthy();
 		expect((screen.getByRole("button", { name: "Approve and start" }) as HTMLButtonElement).disabled).toBe(true);
 		expect(screen.getByText("Fix 1 problem to continue.")).toBeTruthy();
 		fireEvent.change(document.querySelector("#pt-title-t1") as HTMLInputElement, { target: { value: "Back" } });
-		expect(screen.queryByText("Task t1 has no title.")).toBeNull();
+		expect(screen.queryByText("Task 1 has no title.")).toBeNull();
 		expect((screen.getByRole("button", { name: "Approve and start" }) as HTMLButtonElement).disabled).toBe(false);
 	});
 
 	it("flags an empty plan and a reviewer who is also the assignee", async () => {
 		show(plan());
 		await choose("Reviewer for task 2", "Engineering");
-		expect(screen.getByText("Task t2: a task can't be reviewed by its own assignee.")).toBeTruthy();
+		expect(screen.getByText("Task 2: a task can't be reviewed by its own assignee.")).toBeTruthy();
 		for (const b of screen.getAllByRole("button", { name: "Remove task" })) fireEvent.click(b);
 		expect(screen.getByText("The plan has no tasks.")).toBeTruthy();
 	});
