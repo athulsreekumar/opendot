@@ -92,6 +92,19 @@ with **Run in the background** on, closing the window is fine).
 - Settings → Quick ask turns it off or switches to **Ctrl+Shift+Space** or **Cmd/Ctrl+Shift+O**. If another app already owns
   the shortcut, Settings says so and you can pick a different one.
 
+## Organisation: your team of Dots
+
+An organisation is a team of Dots, one per department (Engineering, Security, HR, Finance and so on), with SuperDot as the project
+manager. Open **Organisation → Team** and pick a template: Startup, Software team, Small business or Full. OpenDot creates one Dot per
+department, each with a short role description, a few skills, and access to files in its own workspace. Engineering, IT and Data can
+also run shell commands on your computer, and every command still waits for your approval. All other connections stay off until you
+turn them on for a Dot. Running setup again never makes duplicates, and removing a member keeps the Dot.
+
+**Skills** are playbooks in plain text, such as "ship a change" or "review a contract". Each domain starts with built-in skills that
+you can read but not change. Press Duplicate to make your own copy, or write a new skill in **Organisation → Skills**. Your skills are
+markdown files in `~/.opendot/organisation/skills/`. Each member Dot sees a short list of its skills and opens one with the
+`use_skill` tool when it needs it.
+
 ## Where your data lives
 
 Everything is on your computer in `~/.opendot/` (`%USERPROFILE%\.opendot\` on Windows): plain JSON you can read:
