@@ -6,6 +6,7 @@ export const SETTINGS_SECTIONS = [
 	{ id: "general", label: "General" },
 	{ id: "privacy", label: "Privacy" },
 	{ id: "about-me", label: "About me" },
+	{ id: "briefing", label: "Daily briefing" },
 	{ id: "background", label: "Background" },
 	{ id: "notifications", label: "Notifications" },
 	{ id: "audit", label: "Audit log" },

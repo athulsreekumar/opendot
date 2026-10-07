@@ -38,7 +38,12 @@ export function App() {
 
 	useEffect(() => {
 		const offs = [
-			api.on("app:focus-dot", ({ dotId }) => navigate(`#/chats/${dotId}`)),
+			api.on("app:focus-dot", ({ dotId, scrollTo }) => {
+				navigate(`#/chats/${dotId}`);
+				// A briefing notification opens SuperDot's chat scrolled to the briefing card.
+				if (scrollTo === "briefing")
+					setTimeout(() => window.dispatchEvent(new CustomEvent("od:scroll-briefing", { detail: { dotId } })), 400);
+			}),
 			api.on("app:navigate", ({ hash }) => navigate(hash)),
 		];
 		const onFocus = () => useUi.getState().setFocused(true);

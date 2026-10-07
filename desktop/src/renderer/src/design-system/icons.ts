@@ -40,6 +40,7 @@ export {
 	Sparkles as IconSparkles,
 	Square as IconStop,
 	SquarePen as IconNewDot,
+	Sunrise as IconSunrise,
 	Terminal as IconTerminal,
 	Trash as IconTrash,
 	TriangleAlert as IconWarning,

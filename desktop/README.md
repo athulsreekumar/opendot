@@ -15,6 +15,7 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
   and a local webhook. Dots reply with `[URGENT]`, `[UPDATE]` or stay quiet, within budgets you set.
 - **SuperDot**: ask anything; it fans out to the right Dots in parallel, streams their answers live, then streams one answer
   with `[Inbox]`-style citations. `@Inbox …` asks one Dot directly.
+- **Daily briefing**: once a day SuperDot asks your Dots what matters and sends one briefing and one notification (see below).
 - **Dot Links (RBAC)**: decide which Dots (or roles) can message which, when (schedules), how often, and whether you approve each message.
 - **Private by default**: everything is stored in `~/.opendot` (`%USERPROFILE%\.opendot` on Windows) on your computer. Personal details (emails, phones, cards, keys…) are
   masked before they reach cloud models and restored locally. Tools that change things ask first.
@@ -51,6 +52,23 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
 On Windows the built-in connection is called **This PC** and offers files, shell, screenshots, clipboard, notifications and
 opening apps and links. Calendar, Reminders, Contacts and Notes are macOS only; use Google Workspace or Microsoft 365 for those.
 Your data lives in `%USERPROFILE%\.opendot` (see below).
+
+## Daily briefing
+
+Off by default. Turn it on in **Settings → Daily briefing**, from SuperDot's info panel, from the "Get a daily briefing at 8:00"
+chip in SuperDot's empty chat, or on the last onboarding step.
+
+- Pick the time (default 08:00, your local time), weekdays or every day, which Dots contribute (default: every Dot with a
+  calendar, email or similar connection; untick any), and optional extra instructions.
+- At that time SuperDot asks the chosen Dots in parallel, skips the ones with nothing important, and streams one briefing with
+  `[Calendar]`-style citations into its chat as a "Briefing · Tue 7 Oct" card. You get one notification, "Your briefing is
+  ready"; clicking it opens SuperDot's chat at the card.
+- If OpenDot was closed or the computer asleep at that time, the briefing runs when OpenDot next runs the same day before 18:00.
+  It never runs twice in a day. The last run date is kept in `~/.opendot/briefing.json`.
+- **Run briefing now** in Settings, or type `/briefing` in SuperDot's composer. A manual run counts as today's briefing.
+- It respects your budgets: if the daily spending cap is used up (or Dots are paused) it skips with a short note. With no
+  connected Dots it says so and suggests connecting Google or Microsoft. If one Dot fails, the briefing notes it ("Calendar
+  didn't answer") and carries on.
 
 ## Where your data lives
 

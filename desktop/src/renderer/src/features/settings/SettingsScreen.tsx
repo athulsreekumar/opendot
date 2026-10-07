@@ -4,6 +4,7 @@ import { AboutSettings } from "./AboutSettings";
 import { AdvancedSettings } from "./AdvancedSettings";
 import { AuditLog } from "./AuditLog";
 import { BackgroundSettings } from "./BackgroundSettings";
+import { BriefingSettings } from "./BriefingSettings";
 import { GeneralSettings } from "./GeneralSettings";
 import { ModelsSettings } from "./ModelsSettings";
 import { NotificationSettings } from "./NotificationSettings";
@@ -14,6 +15,7 @@ const SECTIONS: Record<string, { title: string; render: () => ReactNode }> = {
 	general: { title: "General", render: () => <GeneralSettings /> },
 	privacy: { title: "Privacy", render: () => <PrivacySettings /> },
 	"about-me": { title: "About me", render: () => <AboutMeSettings /> },
+	briefing: { title: "Daily briefing", render: () => <BriefingSettings /> },
 	background: { title: "Background", render: () => <BackgroundSettings /> },
 	notifications: { title: "Notifications", render: () => <NotificationSettings /> },
 	audit: { title: "Audit log", render: () => <AuditLog /> },

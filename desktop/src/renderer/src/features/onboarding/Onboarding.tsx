@@ -1,3 +1,4 @@
+import { resolveBriefing } from "@shared/defaults";
 import type { DotTemplate, ProviderSettings } from "@shared/types";
 import { type ReactNode, useEffect, useState } from "react";
 import { navigate } from "@/app/router";
@@ -53,6 +54,7 @@ export function Onboarding() {
 	const [runBg, setRunBg] = useState(true);
 	const [login, setLogin] = useState(true);
 	const [finishing, setFinishing] = useState(false);
+	const [briefingOn, setBriefingOn] = useState(false);
 
 	useEffect(() => {
 		if (step !== 2 || templates) return;
@@ -107,7 +109,10 @@ export function Onboarding() {
 	const finish = async () => {
 		setFinishing(true);
 		try {
-			await update({ onboardingDone: true });
+			await update({
+				onboardingDone: true,
+				...(briefingOn ? { briefing: { ...resolveBriefing(settings), enabled: true, time: "08:00" } } : {}),
+			});
 			const sup = useDots.getState().superDot();
 			navigate(sup ? `#/chats/${sup.id}` : "#/chats");
 		} catch (e) {
@@ -252,6 +257,12 @@ export function Onboarding() {
 								<li>Personal details are masked before they reach cloud models.</li>
 								<li>Dots can't use tools or talk to each other unless you allow it.</li>
 							</ul>
+							<Switch
+								label="Get a daily briefing at 8:00"
+								description="SuperDot asks your Dots what matters and sends you one summary each weekday morning. You can change this in Settings."
+								checked={briefingOn}
+								onCheckedChange={setBriefingOn}
+							/>
 							<div className="flex justify-end">
 								<Button size="lg" loading={finishing} onClick={() => void finish()}>
 									Start chatting

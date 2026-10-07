@@ -499,6 +499,8 @@ export interface ChatMessageView {
 	peerStreams?: Record<string, Record<string, PeerStreamView>>;
 	/** For link-in/link-out exchanges. */
 	exchangeId?: string;
+	/** Set on SuperDot's daily briefing messages (rendered as a briefing card). */
+	briefing?: { date: string; label: string };
 }
 
 export type DotStatus =
@@ -605,6 +607,37 @@ export interface AppSettings {
 	localWebhook: { enabled: boolean; port: number };
 	onboardingDone: boolean;
 	telemetry: false;
+	/** Daily briefing by SuperDot. Optional so older settings files still load; read it with `resolveBriefing`. */
+	briefing?: BriefingSettings;
+}
+
+/** Daily briefing settings (docs/spec/13-superbot.md §6). */
+export interface BriefingSettings {
+	enabled: boolean;
+	/** Local time of day, "HH:MM" (24 h). */
+	time: string;
+	days: "weekdays" | "daily";
+	/** Per-Dot overrides. A Dot not listed contributes when it has a relevant connection. */
+	dots: Record<string, boolean>;
+	/** Extra instructions appended to the briefing prompt. */
+	instructions: string;
+}
+
+export interface BriefingCandidate {
+	dotId: DotId;
+	name: string;
+	/** The Dot has a connection a briefing can use (calendar, mail, ...). */
+	relevant: boolean;
+	/** Whether it contributes, after the user's overrides. */
+	included: boolean;
+}
+
+export interface BriefingStatus {
+	/** Local date (YYYY-MM-DD) of the last briefing, manual or scheduled. */
+	lastRunDate?: string;
+	nextRunAt?: ISODate;
+	running: boolean;
+	candidates: BriefingCandidate[];
 }
 
 export interface UiState {

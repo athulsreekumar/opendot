@@ -1,10 +1,12 @@
 // Composition root: builds every service in dependency order (spec 01 §6, PLAN §3).
 // Electron APIs come in through `ElectronBridge` so this file also runs in tests.
 import { join } from "node:path";
+import { z } from "zod";
 import { OpenDotError } from "../shared/errors";
 import type { EventMap } from "../shared/ipc";
 import { builtinComputerLabel, MAC_ONLY_WATCHERS, platformFeatures } from "../shared/platform";
 import type { AppSettings, Connection, Dot, DotId, LinkExchange, MacPermissionStatus } from "../shared/types";
+import { BriefingService, type BriefingState } from "./briefing/service";
 import { ConnectionService } from "./connections/connection-service";
 import { MAC_DEFAULT_DECISIONS } from "./connections/mac";
 import { runJxaReal } from "./connections/mac/jxa";
@@ -27,11 +29,12 @@ import { policyExtension } from "./runtime/extensions/policy";
 import { sectionsExtension } from "./runtime/extensions/sections";
 import { superbotExtension } from "./runtime/extensions/superbot";
 import { type InlineExtension, McpClient, StdioTransport, StreamableHttpTransport } from "./runtime/pi-adapter";
-import { blocksText } from "./runtime/views";
+import { blocksText, previewLine } from "./runtime/views";
 import { ApprovalBroker } from "./security/approval-broker";
 import { PolicyEngine } from "./security/policy-engine";
 import { type SafeStorageLike, SecretStore } from "./security/secret-store";
 import { SettingsService } from "./settings-service";
+import { JsonFile } from "./store/json-file";
 import { Store } from "./store/store";
 import { buildDirectory, ProfileService } from "./superbot/profile-service";
 import { EventRouter, view } from "./watchers/event-router";
@@ -45,7 +48,7 @@ export interface ElectronBridge {
 	openExternal(url: string): Promise<void>;
 	broadcast<E extends keyof EventMap>(event: E, payload: EventMap[E]): void;
 	isWindowFocused(): boolean;
-	notify(opts: { title: string; body: string; silent?: boolean; dotId?: DotId }): void;
+	notify(opts: { title: string; body: string; silent?: boolean; dotId?: DotId; scrollTo?: "briefing" }): void;
 	clipboardRead(): string | Promise<string>;
 	clipboardWrite(t: string): void;
 	screenshot(): Promise<{ base64Png: string; width: number; height: number }>;
@@ -410,7 +413,25 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		() => settingsCache?.runtime.maxConcurrentRuns ?? 4,
 	);
 
+	// One OS notification per briefing: "Your briefing is ready" + the first line.
+	let briefingNotified = false;
+	const notifyBriefing = async (dot: Dot, text: string) => {
+		if (briefingNotified) return;
+		briefingNotified = true;
+		const s = await settings.get();
+		if (!s.notifications.enabled || dot.muted || isFocused(dot.id)) return;
+		const first = text.split("\n").find((l) => l.trim()) ?? "";
+		bridge.notify({
+			title: "Your briefing is ready",
+			body: s.notifications.showPreview ? previewLine(first, 140) : "Open SuperDot to read it.",
+			silent: !s.notifications.sound,
+			dotId: dot.id,
+			scrollTo: "briefing",
+		});
+	};
+
 	const maybeNotify = async (dot: Dot, text: string, importance: string | undefined, runKind: string) => {
+		if (runKind === "briefing") return notifyBriefing(dot, text);
 		const s = await settings.get();
 		if (!s.notifications.enabled || dot.muted) return;
 		const background = runKind === "events";
@@ -483,6 +504,33 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 
 	settings.onChange(() => runtime.clearConfigErrors());
 
+	// ── Daily briefing ──
+	const briefing = new BriefingService({
+		settings: () => settings.get(),
+		state: new JsonFile<BriefingState>({
+			path: paths.briefing,
+			schema: z.object({ lastRunDate: z.string().optional() }),
+			defaults: () => ({}),
+			version: 1,
+		}),
+		listDots: () => store.dots.list(),
+		connections: () => connections.list(),
+		superDot: () => dots.ensureSuperBot(),
+		budgetBlock: async (sup) => {
+			const st = await settings.get();
+			if (st.background.paused) return "all Dots are paused";
+			if (!(await models.isLocal(sup.model)) && usage.costTodayAll() >= st.background.maxCostUsdPerDay)
+				return "today's budget is used up";
+			return undefined;
+		},
+		start: async (sup, req) => {
+			briefingNotified = false;
+			usage.recordTurn(sup.id);
+			await runtime.get(sup.id).deliverBriefing(req);
+		},
+		note: (sup, req) => runtime.get(sup.id).postBriefingNote(req),
+	});
+
 	// ── Start ──
 	await dots.ensureSuperBot();
 	const st = await settings.get();
@@ -494,6 +542,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 	await watchers.start();
 	runtime.start();
 	profiles.start(runtime);
+	briefing.start();
 
 	return {
 		paths,
@@ -509,6 +558,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		dots,
 		linkBus,
 		profiles,
+		briefing,
 		watchers,
 		router,
 		usage,
@@ -542,6 +592,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 			await watchers.stop();
 			router.stop();
 			profiles.stop();
+			briefing.stop();
 			await runtime.disposeAll();
 			await usage.save();
 			await pii.flushAll();

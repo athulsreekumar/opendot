@@ -2,7 +2,15 @@ import type { ChatMessageView } from "@shared/types";
 import { memo, useState } from "react";
 import { cn } from "../../design-system/cn";
 import { toast } from "../../design-system/components";
-import { IconCheck, IconChevronRight, IconClock, IconCopy, IconRetry, IconShield } from "../../design-system/icons";
+import {
+	IconCheck,
+	IconChevronRight,
+	IconClock,
+	IconCopy,
+	IconRetry,
+	IconShield,
+	IconSunrise,
+} from "../../design-system/icons";
 import { bubbleTime } from "../../lib/format";
 import { useChat } from "../../stores/chat";
 import { useDots } from "../../stores/dots";
@@ -20,6 +28,8 @@ export interface BubbleMeta {
 	/** A visible assistant message follows. */
 	followedByAssistant: boolean;
 	isLastAssistant: boolean;
+	/** First message of a briefing card (shows the "Briefing · Tue 7 Oct" header). */
+	briefingFirst?: boolean;
 	/** Text of the user message to resend on Retry. */
 	retryText?: string;
 }
@@ -60,6 +70,7 @@ function sameProps(a: { meta: BubbleMeta; dotId: string }, b: { meta: BubbleMeta
 		a.meta.grouped === b.meta.grouped &&
 		a.meta.followedByAssistant === b.meta.followedByAssistant &&
 		a.meta.isLastAssistant === b.meta.isLastAssistant &&
+		a.meta.briefingFirst === b.meta.briefingFirst &&
 		a.meta.retryText === b.meta.retryText
 	);
 }
@@ -115,14 +126,22 @@ function Bubble({ m, meta, dotName }: { m: ChatMessageView; meta: BubbleMeta; do
 	return (
 		<article
 			aria-label={`${out ? "You" : dotName}, ${time}`}
+			data-briefing={m.briefing ? "" : undefined}
 			className={cn(
 				"group relative max-w-[min(72%,640px)] rounded-bubble px-2.5 pb-1.5 pt-2 shadow-bubble",
 				out ? "bg-bubble-out text-bubble-out-fg" : "bg-bubble-in text-bubble-in-fg",
+				m.briefing && "w-full border-l-4 border-accent",
 				!meta.grouped && (out ? "rounded-tr-[4px]" : "rounded-tl-[4px]"),
 				m.queued && "opacity-60",
 				(fanTools.length > 0 || linkTools.length > 0) && "w-full",
 			)}
 		>
+			{m.briefing && meta.briefingFirst && (
+				<div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent">
+					<IconSunrise size={14} />
+					<span>{m.briefing.label}</span>
+				</div>
+			)}
 			{m.importance === "urgent" && (
 				<span className="mb-1 inline-flex h-5 items-center rounded-sm bg-danger-subtle px-1.5 text-2xs font-medium text-danger">
 					Urgent

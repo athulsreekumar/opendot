@@ -18,6 +18,7 @@ export interface Paths {
 	usage: string;
 	userMemory: string;
 	uiState: string;
+	briefing: string;
 	exchanges: string;
 	secrets: string;
 	dotsDir: string;
@@ -54,6 +55,7 @@ export function createPaths(root = resolveRoot()): Paths {
 		usage: join(root, "usage.json"),
 		userMemory: join(root, "memory.json"),
 		uiState: join(root, "ui-state.json"),
+		briefing: join(root, "briefing.json"),
 		exchanges: join(root, "link-exchanges.jsonl"),
 		secrets: join(root, "secrets.bin"),
 		dotsDir,

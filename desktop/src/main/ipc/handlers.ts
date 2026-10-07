@@ -266,6 +266,9 @@ export function buildHandlers(s: Services, app: AppActions, info: { version: str
 				.map((r) => ({ dotId: r.dot.id, name: r.dot.name, card: card(r.dot, false) }));
 		},
 		"superbot.refreshProfiles": () => s.profiles.refreshAll(),
+		// ── briefing ──
+		"briefing.run": () => s.briefing.run({ manual: true }),
+		"briefing.status": () => s.briefing.status(),
 		// ── memory ──
 		"memory.get": (scope) => s.memory.list(scope),
 		"memory.upsert": (scope, item) => s.memory.upsert(scope, item, "user"),
