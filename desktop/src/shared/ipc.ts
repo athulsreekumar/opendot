@@ -4,6 +4,7 @@ import type {
 	ApprovalRequest,
 	ApprovalResponse,
 	AppSettings,
+	AttachmentStageResult,
 	AuditEntry,
 	AuditKind,
 	CatalogEntry,
@@ -114,7 +115,14 @@ export interface OpenDotApi {
 		send(
 			dotId: DotId,
 			text: string,
-			opts?: { mode?: "auto" | "steer" | "followUp"; clientNonce?: string },
+			opts?: {
+				mode?: "auto" | "steer" | "followUp";
+				clientNonce?: string;
+				/** Ids returned by attachments.pick / attachments.stage. */
+				attachments?: string[];
+				/** Send images as workspace file references only (for models that can't see images). */
+				imagesAsFiles?: boolean;
+			},
 		): Promise<{ accepted: true; queued?: "steer" | "followUp" }>;
 		abort(dotId: DotId): Promise<void>;
 		clear(dotId: DotId): Promise<void>;
@@ -207,6 +215,15 @@ export interface OpenDotApi {
 		get(scope: MemoryScope): Promise<MemoryItem[]>;
 		upsert(scope: MemoryScope, item: { id?: string; text: string; pinned?: boolean }): Promise<MemoryItem>;
 		remove(scope: MemoryScope, id: string): Promise<void>;
+	};
+	attachments: {
+		/** Native file picker. Returns one result per chosen file; `existing` is how many are already in the composer. */
+		pick(opts?: { existing?: number }): Promise<AttachmentStageResult[]>;
+		/** Stage a dropped or pasted file (bytes, not a path). */
+		stage(input: { name: string; mime?: string; data: Uint8Array; existing?: number }): Promise<AttachmentStageResult>;
+		discard(id: string): Promise<void>;
+		/** Open (or reveal) a file the Dot has in its workspace attachments folder. */
+		open(dotId: DotId, path: string, reveal?: boolean): Promise<void>;
 	};
 	on<E extends keyof EventMap>(event: E, listener: (payload: EventMap[E]) => void): () => void;
 }
@@ -311,6 +328,10 @@ export const INVOKE_CHANNELS = [
 	"memory.get",
 	"memory.upsert",
 	"memory.remove",
+	"attachments.pick",
+	"attachments.stage",
+	"attachments.discard",
+	"attachments.open",
 ] as const;
 
 export type InvokeChannel = (typeof INVOKE_CHANNELS)[number];
@@ -353,4 +374,6 @@ export interface OpenDotTestApi {
 	reportPaint(messageId: string, at: number): Promise<void>;
 	getPaints(): Promise<Array<{ messageId: string; firstTokenAt?: number; paintAt: number }>>;
 	emitEvent(dotId: string, title: string, body: string, importance?: "low" | "normal" | "high"): Promise<void>;
+	/** Make the next native file picker return these paths. */
+	setNextPick(paths: string[]): Promise<void>;
 }

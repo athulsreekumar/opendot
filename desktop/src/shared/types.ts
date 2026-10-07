@@ -499,6 +499,8 @@ export interface ChatMessageView {
 	peerStreams?: Record<string, Record<string, PeerStreamView>>;
 	/** For link-in/link-out exchanges. */
 	exchangeId?: string;
+	/** Files and images the user attached to this message. */
+	attachments?: AttachmentView[];
 }
 
 export type DotStatus =
@@ -766,3 +768,36 @@ export interface OpenDotErrorShape {
 	code: string;
 	message: string;
 }
+
+// ───────────────────────── Attachments ─────────────────────────
+export type AttachmentKind = "image" | "text" | "file";
+
+/** A file waiting in the composer (staged in the main process, referenced by id). */
+export interface AttachmentDraft {
+	id: string;
+	name: string;
+	kind: AttachmentKind;
+	mime: string;
+	size: number;
+	/** Thumbnail URL for images (opendot-media protocol). */
+	previewUrl?: string;
+}
+
+/** An attachment on a sent message, as shown in the chat. */
+export interface AttachmentView {
+	name: string;
+	kind: AttachmentKind;
+	mime?: string;
+	size?: number;
+	/** Workspace-relative path of the copy the Dot can read. */
+	path?: string;
+	/** Image URL (opendot-media protocol). */
+	url?: string;
+	truncated?: boolean;
+	/** Image sent as a file reference only. */
+	asReference?: boolean;
+}
+
+export type AttachmentStageResult =
+	| { ok: true; attachment: AttachmentDraft }
+	| { ok: false; name: string; error: string };

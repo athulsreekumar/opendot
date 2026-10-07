@@ -10,6 +10,9 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Windows 10 and 11 (x64) support: an installer and a portable zip, a **This PC** connection (files, shell through
   Git for Windows, screenshots, clipboard, notifications, opening apps and links), keys encrypted with Windows DPAPI,
   and Windows builds and tests in CI.
+- Files and images in chat: drag and drop, paste or attach with the paperclip. Images go to the model as image content,
+  text files are inlined (and masked like typed text), other files are copied to the Dot's workspace. SuperDot forwards
+  them to the Dots it asks.
 
 ### Fixed
 

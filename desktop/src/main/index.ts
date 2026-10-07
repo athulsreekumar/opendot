@@ -18,6 +18,7 @@ const {
 	dialog,
 	ipcMain,
 	Notification,
+	protocol,
 	safeStorage,
 	session,
 	shell,
@@ -26,6 +27,8 @@ const {
 } = await import("electron");
 
 const E2E = process.env.OPENDOT_E2E === "1";
+// Chat images (attachment thumbnails) are served by main from the data dir only; must be declared before ready.
+protocol.registerSchemesAsPrivileged([{ scheme: "opendot-media", privileges: { standard: true, secure: true } }]);
 // Windows groups taskbar entries and shows toast notifications under this id (must match appId in electron-builder.yml).
 if (process.platform === "win32") app.setAppUserModelId("dev.opendot.app");
 if (E2E && process.env.OPENDOT_E2E_USERDATA) app.setPath("userData", process.env.OPENDOT_E2E_USERDATA);
@@ -221,6 +224,26 @@ async function main(): Promise<void> {
 		win.focus();
 	};
 
+	protocol.handle("opendot-media", async (req) => {
+		try {
+			const hit = await s.attachments.resolveMedia(
+				req.url,
+				async (id) => (await s.store.dots.get(id as never))?.workspaceDir,
+			);
+			if (!hit) return new Response("Not found", { status: 404 });
+			const { readFile } = await import("node:fs/promises");
+			return new Response(new Uint8Array(await readFile(hit.file)), {
+				headers: {
+					"Content-Type": hit.mime,
+					"Cache-Control": "private, max-age=3600",
+					"X-Content-Type-Options": "nosniff",
+				},
+			});
+		} catch {
+			return new Response("Not found", { status: 404 });
+		}
+	});
+
 	// CSP via headers (dev server needs ws + inline for HMR).
 	const dev = !!process.env.ELECTRON_RENDERER_URL;
 	session.defaultSession.webRequest.onHeadersReceived((details, cb) => {
@@ -229,8 +252,8 @@ async function main(): Promise<void> {
 				...details.responseHeaders,
 				"Content-Security-Policy": [
 					dev
-						? "default-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* ws://localhost:*; img-src 'self' data: blob:"
-						: "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; connect-src 'self'",
+						? "default-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* ws://localhost:*; img-src 'self' data: blob: opendot-media:"
+						: "default-src 'self'; img-src 'self' data: blob: opendot-media:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; connect-src 'self'",
 				],
 			},
 		});
@@ -244,6 +267,13 @@ async function main(): Promise<void> {
 					if (/^(https:|mailto:|x-apple\.systempreferences:)/.test(url)) await shell.openExternal(url);
 				},
 				revealPath: async (p) => shell.showItemInFolder(p),
+				openPath: async (p) => {
+					await shell.openPath(p);
+				},
+				pickFiles: async () => {
+					const r = await dialog.showOpenDialog({ title: "Attach files", properties: ["openFile", "multiSelections"] });
+					return r.canceled ? [] : r.filePaths;
+				},
 				pickFolder: async (title) => {
 					const r = await dialog.showOpenDialog({
 						title: title ?? "Choose a folder",
