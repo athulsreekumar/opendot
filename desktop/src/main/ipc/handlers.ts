@@ -12,6 +12,8 @@ import type { AttachmentStageResult, Dot, DotId, LinkId } from "../../shared/typ
 import { shellAvailable } from "../connections/shell-support";
 import { draftFromDescription } from "../dots/dot-architect";
 import { detectLocalServers } from "../models/discovery";
+import { projectHandlers } from "../organisation/project-handlers";
+import { teamHandlers } from "../organisation/team-handlers";
 import { PI_VERSION } from "../runtime/pi-adapter";
 import type { ElectronBridge, Services } from "../services";
 import { watcherAvailability } from "../services";
@@ -322,6 +324,9 @@ export function buildHandlers(s: Services, app: AppActions, info: { version: str
 				.map((r) => ({ dotId: r.dot.id, name: r.dot.name, card: card(r.dot, false) }));
 		},
 		"superbot.refreshProfiles": () => s.profiles.refreshAll(),
+		// ── organisation ──
+		...teamHandlers(s),
+		...projectHandlers(s),
 		// ── briefing ──
 		"briefing.run": () => s.briefing.run({ manual: true }),
 		"briefing.status": () => s.briefing.status(),

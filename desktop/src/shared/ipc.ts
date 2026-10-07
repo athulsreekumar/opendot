@@ -1,5 +1,18 @@
 // The renderer ⇄ main contract. Spec: docs/spec/02-data-and-ipc.md §3
 
+import type {
+	OrgCreateProjectInput,
+	OrgDomain,
+	OrgMember,
+	OrgProject,
+	OrgProjectSummary,
+	OrgState,
+	OrgTaskInput,
+	OrgTemplate,
+	Skill,
+	SkillInput,
+	SkillSummary,
+} from "./organisation";
 import type { QuickAskStatus } from "./quickask";
 import type {
 	AddProviderInput,
@@ -225,6 +238,46 @@ export interface OpenDotApi {
 		run(): Promise<{ started: boolean; reason?: string }>;
 		status(): Promise<BriefingStatus>;
 	};
+	org: {
+		state(): Promise<OrgState>;
+		/** The catalog the setup screen and "Add a domain" offer. */
+		catalog(): Promise<{ templates: OrgTemplate[]; domains: OrgDomain[] }>;
+		/** Creates one Dot per domain of the template (or of `domains` when given), with skills and link rules. */
+		setup(input: { templateId: string; name?: string; domains?: string[] }): Promise<OrgState>;
+		/** Adds one more domain Dot to the organisation. Creates it, or adopts `dotId` if given. */
+		addMember(input: { domain: string; dotId?: DotId }): Promise<OrgMember>;
+		/** Takes a Dot out of the organisation (the Dot itself is kept). */
+		removeMember(dotId: DotId): Promise<void>;
+		setMemberSkills(dotId: DotId, skillIds: string[]): Promise<void>;
+		skills(): Promise<SkillSummary[]>;
+		skill(id: string): Promise<Skill>;
+		saveSkill(input: SkillInput): Promise<Skill>;
+		deleteSkill(id: string): Promise<void>;
+		projects(): Promise<OrgProjectSummary[]>;
+		project(id: string): Promise<OrgProject>;
+		/** Creates the project and asks SuperDot to plan it. Returns it in status "planning". */
+		createProject(input: OrgCreateProjectInput): Promise<OrgProject>;
+		/** Ask SuperDot for a new plan (optionally with the user's feedback). Only while awaiting approval. */
+		replan(id: string, feedback?: string): Promise<void>;
+		/** The user's edits to the plan while it awaits approval. Validated; throws with the problems in plain words. */
+		savePlan(id: string, tasks: OrgTaskInput[]): Promise<OrgProject>;
+		/** Approve the plan and start the work. */
+		approve(id: string): Promise<void>;
+		pause(id: string): Promise<void>;
+		resume(id: string): Promise<void>;
+		cancel(id: string): Promise<void>;
+		deleteProject(id: string): Promise<void>;
+		/** The user's review of a task whose reviewer is "human" (or who must decide after too many rounds). */
+		reviewTask(id: string, taskId: string, verdict: "approved" | "changes", note?: string): Promise<void>;
+		/** The user marks a "human" task done. */
+		completeTask(id: string, taskId: string, note?: string): Promise<void>;
+		/** The user answers a Dot's question; the task continues. */
+		answerTask(id: string, taskId: string, answer: string): Promise<void>;
+		retryTask(id: string, taskId: string): Promise<void>;
+		skipTask(id: string, taskId: string): Promise<void>;
+		/** Open a file deliverable (or reveal it when it isn't a safe document type). */
+		openDeliverable(id: string, taskId: string, index: number): Promise<void>;
+	};
 	memory: {
 		get(scope: MemoryScope): Promise<MemoryItem[]>;
 		upsert(scope: MemoryScope, item: { id?: string; text: string; pinned?: boolean }): Promise<MemoryItem>;
@@ -283,6 +336,9 @@ export interface EventMap {
 	"quickask:shown": Record<string, never>;
 	"quickask:hidden": Record<string, never>;
 	"knowledge:changed": KnowledgeState;
+	"org:state": OrgState;
+	"org:project": OrgProject;
+	"org:skills": SkillSummary[];
 }
 
 export const INVOKE_CHANNELS = [
@@ -384,6 +440,32 @@ export const INVOKE_CHANNELS = [
 	"knowledge.reindex",
 	"knowledge.open",
 	"knowledge.reveal",
+	"org.state",
+	"org.catalog",
+	"org.setup",
+	"org.addMember",
+	"org.removeMember",
+	"org.setMemberSkills",
+	"org.skills",
+	"org.skill",
+	"org.saveSkill",
+	"org.deleteSkill",
+	"org.projects",
+	"org.project",
+	"org.createProject",
+	"org.replan",
+	"org.savePlan",
+	"org.approve",
+	"org.pause",
+	"org.resume",
+	"org.cancel",
+	"org.deleteProject",
+	"org.reviewTask",
+	"org.completeTask",
+	"org.answerTask",
+	"org.retryTask",
+	"org.skipTask",
+	"org.openDeliverable",
 	"attachments.pick",
 	"attachments.stage",
 	"attachments.discard",
@@ -409,6 +491,9 @@ export const EVENT_CHANNELS = [
 	"quickask:shown",
 	"quickask:hidden",
 	"knowledge:changed",
+	"org:state",
+	"org:project",
+	"org:skills",
 ] as const;
 
 /** Maps "ns.method" channel to the api function type. */
