@@ -1,11 +1,9 @@
-/* SuperBot. Default = stacked layout (mobile / reduced motion): static, fully lit diagram, then the screenshot.
-   Pinned layout only on desktop with motion allowed; its pre-JS default is the FINAL state (screenshot shown). */
-/* Clip on the (unpinned) section, not the pinned element: overflow on the GSAP-pinned element makes Chrome report a
-   ~1.0 layout shift when it flips to position: fixed (CLS). */
+/* SuperBot. Normal flow, final state: a static, fully lit capability tree (a compact version plus a list on phones),
+   then the combined-answer screenshot. */
 .sb-root {
 	overflow: clip;
 }
-.sb-pin {
+.sb-inner {
 	position: relative;
 	padding-block: clamp(5rem, 3rem + 8vw, 10rem);
 }
@@ -20,7 +18,6 @@
 	background: radial-gradient(closest-side, rgba(45, 212, 191, 0.34), rgba(14, 159, 138, 0.14) 45%, transparent 100%);
 	opacity: 0.8;
 	pointer-events: none;
-	will-change: transform, opacity;
 }
 .sb-bubble {
 	border-radius: 22px;
@@ -58,12 +55,7 @@
 	margin: 40px auto 0;
 	width: min(100%, 1000px);
 }
-.sb-ask,
-.sb-ans,
-.sb-pulse {
-	opacity: 0;
-}
-/* Static (no-motion) state of a leaf's highlight: a dimmed glow, like the end of the animation. */
+/* A leaf's highlight, resting as a dimmed glow. */
 .sb-leaf-hot {
 	opacity: 0.22;
 }
@@ -85,56 +77,5 @@
 		bottom: 0;
 		margin: 0;
 		transform: translateX(-50%);
-	}
-}
-
-@media (min-width: 900px) and (max-height: 780px) and (prefers-reduced-motion: no-preference) {
-	.sb-mascot {
-		scale: 0.72;
-		transform-origin: 50% 100%;
-	}
-}
-
-@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
-	.sb-pin {
-		display: flex;
-		flex-direction: column;
-		height: 100svh;
-		padding-block: clamp(72px, 9svh, 92px) clamp(16px, 3svh, 32px);
-		gap: clamp(12px, 2.2svh, 24px);
-	}
-	.sb-head {
-		max-width: none;
-		display: grid;
-		grid-template-columns: auto minmax(0, 1fr);
-		align-items: end;
-		gap: 0 clamp(32px, 5vw, 80px);
-		text-align: left;
-	}
-	.sb-head h2 {
-		font-size: clamp(2.5rem, 7svh, 4.5rem);
-	}
-	.sb-stage {
-		position: relative;
-		flex: 1 1 0;
-		min-height: 0;
-		container-type: size;
-	}
-	.sb-diagram {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		width: min(100cqw, 100cqh * 2.1754);
-		max-width: none;
-		translate: -50% -50%;
-		opacity: 0;
-	}
-	.sb-win {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		margin: 0;
-		width: min(100cqw, 100cqh * 1.6);
-		translate: -50% -50%;
 	}
 }

@@ -18,6 +18,8 @@ const BEAT_COUNT = org.beats.length;
 const STAGE_W = 1120;
 const STAGE_H = 600;
 const MAX_SCALE = 1.15;
+/** Pinned scroll distance, in viewport heights: 0.6 screen per beat. */
+const PIN_SCREENS = 3;
 
 /** The right-hand side of each beat: the real app screenshots. */
 function beatShots(id: string): ReactNode {
@@ -96,7 +98,7 @@ function Story() {
 					scrollTrigger: {
 						trigger: pinEl,
 						start: "top top",
-						end: () => `+=${window.innerHeight * 5.5}`,
+						end: () => `+=${window.innerHeight * PIN_SCREENS}`,
 						pin: pinEl,
 						anticipatePin: 1,
 						scrub: 0.8,

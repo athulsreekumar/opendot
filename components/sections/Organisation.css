@@ -370,25 +370,12 @@
 	height: 6px;
 	border-radius: 50%;
 	background: var(--fg-2);
-	animation: org-bounce 1s ease-in-out infinite;
 }
 .org-think span:nth-child(2) {
-	animation-delay: 0.15s;
+	opacity: 0.75;
 }
 .org-think span:nth-child(3) {
-	animation-delay: 0.3s;
-}
-@keyframes org-bounce {
-	0%,
-	60%,
-	100% {
-		transform: translateY(0);
-		opacity: 0.5;
-	}
-	30% {
-		transform: translateY(-4px);
-		opacity: 1;
-	}
+	opacity: 1;
 }
 .org-update {
 	display: flex;
@@ -658,12 +645,7 @@
 	border: 2.5px solid var(--accent);
 	border-top-color: transparent;
 	background: #101012;
-	animation: org-spin 0.9s linear infinite;
-}
-@keyframes org-spin {
-	to {
-		transform: rotate(360deg);
-	}
+	transform: rotate(-45deg);
 }
 /* Finished scene (default, and the stacked layout). GSAP overrides these with inline opacity while pinned. */
 .org-node:not([data-final="none"]) .org-node-lit {
@@ -853,16 +835,7 @@
 	height: 8px;
 	border-radius: 50%;
 	background: #f5a524;
-	animation: org-pulse 1.6s ease-in-out infinite;
-}
-@keyframes org-pulse {
-	50% {
-		box-shadow: 0 0 0 6px rgba(245, 165, 36, 0);
-		transform: scale(0.8);
-	}
-	0% {
-		box-shadow: 0 0 0 0 rgba(245, 165, 36, 0.55);
-	}
+	box-shadow: 0 0 0 4px rgba(245, 165, 36, 0.22);
 }
 .org-wait p {
 	display: flex;
