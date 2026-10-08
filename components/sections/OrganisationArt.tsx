@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import type { CSSProperties } from "react";
+import { DeptIcon } from "@/components/ui/DeptIcon";
+import { ClipboardList, FileText, Icon, Sparkles, User } from "@/components/ui/Icon";
 import { MacWindow } from "@/components/ui/MacWindow";
 import { Screenshot } from "@/components/ui/Screenshot";
 import { type OrgDept, organisation, orgDepartments } from "@/lib/copy";
@@ -11,12 +13,19 @@ import { type OrgDept, organisation, orgDepartments } from "@/lib/copy";
  */
 
 const dept = (name: string): OrgDept | undefined => orgDepartments.find((d) => d.name === name);
-const emojiOf = (name: string) => (name === "You" ? "👤" : (dept(name)?.emoji ?? "•"));
+/** Line icon for a department Dot, or the person icon for "You". */
+function DotGlyph({ name, size }: { name: string; size: number }) {
+	const d = dept(name);
+	if (name === "You") return <Icon as={User} size={size} />;
+	return d ? <DeptIcon name={d.icon} size={size} /> : <span>•</span>;
+}
 
 function Chip({ name, className }: { name: string; className?: string }) {
 	return (
 		<span className={clsx("org-chip", className)}>
-			<i aria-hidden="true">{emojiOf(name)}</i>
+			<i aria-hidden="true">
+				<DotGlyph name={name} size={12} />
+			</i>
 			{name}
 		</span>
 	);
@@ -55,7 +64,9 @@ export function AskArt() {
 	return (
 		<div className="org-art org-chat" aria-hidden="true">
 			<div className="org-chat-head">
-				<span className="org-av">✨</span>
+				<span className="org-av">
+					<Icon as={Sparkles} size={14} />
+				</span>
 				<span className="org-chat-name">{ask.to}</span>
 				<span className="org-chat-sub">Project manager</span>
 			</div>
@@ -76,7 +87,9 @@ export function AskArt() {
 				</div>
 			</div>
 			<div className="org-update">
-				<span className="org-update-ic">📋</span>
+				<span className="org-update-ic">
+					<Icon as={ClipboardList} size={18} />
+				</span>
 				<div className="org-update-text">
 					<b>{plan.title}</b>
 					<span>The plan is ready to review.</span>
@@ -245,7 +258,9 @@ export function SplitArt() {
 				<div className="org-core" style={{ left: `${CORE.x}%`, top: `${CORE.y}%` }}>
 					<div className="org-core-in">
 						<span className="org-core-disc">
-							<span className="org-core-ic">✨</span>
+							<span className="org-core-ic">
+								<Icon as={Sparkles} size={30} />
+							</span>
 						</span>
 						<span className="org-core-name">{split.center}</span>
 					</div>
@@ -266,7 +281,9 @@ export function SplitArt() {
 							<div className="org-node-in">
 								<span className="org-node-disc">
 									<span className="org-node-lit" />
-									<span className="org-node-emoji">{emojiOf(n.name)}</span>
+									<span className="org-node-emoji">
+										<DotGlyph name={n.name} size={26} />
+									</span>
 									<span className="org-badge org-badge-work" />
 									<span className="org-badge org-badge-review">●</span>
 									<span className="org-badge org-badge-done">✓</span>
@@ -418,7 +435,9 @@ export function DoneArt() {
 			</div>
 			<div className="org-report">
 				<header>
-					<span className="org-av">✨</span>
+					<span className="org-av">
+						<Icon as={Sparkles} size={14} />
+					</span>
 					{done.reportLabel}
 				</header>
 				<p>{done.report}</p>
@@ -426,7 +445,7 @@ export function DoneArt() {
 				<ul className="org-deliv">
 					{done.deliverables.map((d) => (
 						<li key={d}>
-							<span aria-hidden="true">📄</span>
+							<Icon as={FileText} size={12} />
 							{d}
 						</li>
 					))}

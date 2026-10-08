@@ -1,5 +1,4 @@
-/* Always on. Default = stacked layout (mobile / reduced motion). The pinned stage layout only applies on desktop
-   with motion allowed; its default (pre-JS) state is the FINAL state: update screenshot + badges visible. */
+/* Always on. Normal-flow layout, shown in its final state: event cards, the update screenshot, the badges. */
 .ao-card {
 	display: flex;
 	align-items: center;
@@ -21,15 +20,10 @@
 	gap: 12px;
 	margin-bottom: 28px;
 }
-.ao-pulse {
-	display: none;
-}
-/* Clip on the (unpinned) section, not the pinned element: overflow on the GSAP-pinned element makes Chrome report a
-   ~1.0 layout shift when it flips to position: fixed (CLS). */
 .ao-root {
 	overflow: clip;
 }
-.ao-pin {
+.ao-inner {
 	padding-block: clamp(5rem, 3rem + 8vw, 10rem);
 }
 .ao-body {
@@ -48,53 +42,10 @@
 	);
 }
 
-@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
-	.ao-pin {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		gap: clamp(20px, 3.5svh, 40px);
-		min-height: 100svh;
-		padding-block: clamp(72px, 9svh, 96px) clamp(20px, 4svh, 40px);
-	}
-	.ao-body {
-		margin-top: 0;
-	}
-	.ao-badges {
-		margin-top: 22px;
-	}
-	.ao-stage {
-		position: relative;
-		width: min(72vw, calc((100svh - 430px) * 1.6));
-		min-width: 480px;
-		margin-inline: auto;
-	}
+@media (min-width: 900px) {
 	.ao-cards {
-		position: absolute;
-		inset: 0;
-		z-index: 5;
-		display: block;
-		margin: 0;
-		pointer-events: none;
-	}
-	.ao-card {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		opacity: 0;
-	}
-	.ao-pulse {
-		display: block;
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		width: 28px;
-		height: 28px;
-		margin: -14px 0 0 -14px;
-		border-radius: 50%;
-		border: 2px solid var(--brand-glow);
-		box-shadow: 0 0 18px rgba(45, 212, 191, 0.7);
-		opacity: 0;
+		grid-template-columns: repeat(3, minmax(0, 340px));
+		justify-content: center;
+		gap: 20px;
 	}
 }

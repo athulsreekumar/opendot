@@ -75,22 +75,36 @@ export const superBot = {
 };
 
 /** A department Dot as shown in the Organisation section. Jobs are the one-liners the app uses. */
-export type OrgDept = { id: string; emoji: string; name: string; job: string };
+export type DeptIconName =
+	| "Wrench"
+	| "Compass"
+	| "Palette"
+	| "Shield"
+	| "Monitor"
+	| "ChartColumn"
+	| "Sprout"
+	| "FolderKanban"
+	| "Wallet"
+	| "Scale"
+	| "Megaphone"
+	| "Briefcase"
+	| "Headphones";
+export type OrgDept = { id: string; icon: DeptIconName; name: string; job: string };
 
 export const orgDepartments: OrgDept[] = [
-	{ id: "engineering", emoji: "🛠️", name: "Engineering", job: "Builds and fixes software" },
-	{ id: "product", emoji: "🧭", name: "Product", job: "Decides what to build and why" },
-	{ id: "design", emoji: "🎨", name: "Design", job: "Shapes how it looks and feels" },
-	{ id: "security", emoji: "🛡️", name: "Security", job: "Finds risks and keeps data safe" },
-	{ id: "it", emoji: "🖥️", name: "IT", job: "Keeps systems, accounts and devices running" },
-	{ id: "data", emoji: "📊", name: "Data", job: "Turns numbers into answers" },
-	{ id: "hr", emoji: "🌱", name: "HR", job: "Hires, onboards and looks after people" },
-	{ id: "admin", emoji: "🗂️", name: "Admin", job: "Keeps the office running smoothly" },
-	{ id: "finance", emoji: "💰", name: "Finance", job: "Watches budgets, invoices and costs" },
-	{ id: "legal", emoji: "⚖️", name: "Legal", job: "Reads contracts and spots legal risks" },
-	{ id: "marketing", emoji: "📣", name: "Marketing", job: "Tells people what you make" },
-	{ id: "sales", emoji: "💼", name: "Sales", job: "Finds and looks after customers" },
-	{ id: "support", emoji: "🎧", name: "Support", job: "Helps customers and answers questions" },
+	{ id: "engineering", icon: "Wrench", name: "Engineering", job: "Builds and fixes software" },
+	{ id: "product", icon: "Compass", name: "Product", job: "Decides what to build and why" },
+	{ id: "design", icon: "Palette", name: "Design", job: "Shapes how it looks and feels" },
+	{ id: "security", icon: "Shield", name: "Security", job: "Finds risks and keeps data safe" },
+	{ id: "it", icon: "Monitor", name: "IT", job: "Keeps systems, accounts and devices running" },
+	{ id: "data", icon: "ChartColumn", name: "Data", job: "Turns numbers into answers" },
+	{ id: "hr", icon: "Sprout", name: "HR", job: "Hires, onboards and looks after people" },
+	{ id: "admin", icon: "FolderKanban", name: "Admin", job: "Keeps the office running smoothly" },
+	{ id: "finance", icon: "Wallet", name: "Finance", job: "Watches budgets, invoices and costs" },
+	{ id: "legal", icon: "Scale", name: "Legal", job: "Reads contracts and spots legal risks" },
+	{ id: "marketing", icon: "Megaphone", name: "Marketing", job: "Tells people what you make" },
+	{ id: "sales", icon: "Briefcase", name: "Sales", job: "Finds and looks after customers" },
+	{ id: "support", icon: "Headphones", name: "Support", job: "Helps customers and answers questions" },
 ];
 
 export const organisation = {

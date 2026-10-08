@@ -87,48 +87,48 @@ Walkthrough: [Run a project with an AI team](https://opendot.live/guides/run-a-p
 <table>
   <tr>
     <td width="50%" valign="top">
-      <h3>✨ Describe it. It comes alive.</h3>
+      <h3>Describe it. It comes alive.</h3>
       Write one sentence about what a Dot should do and tick the tools it may use. OpenDot writes its name, emoji,
       colour and personality, live, as you watch.
     </td>
     <td width="50%" valign="top">
-      <h3>🌙 Works while you don't.</h3>
+      <h3>Works while you don't.</h3>
       Dots run 24/7 while OpenDot is open. New email, a moved meeting, a changed file or a webhook reaches the right Dot
       instantly. It replies <code>[URGENT]</code>, <code>[UPDATE]</code> or stays quiet, inside budgets you set.
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <h3>🪄 One question. Every Dot.</h3>
+      <h3>One question. Every Dot.</h3>
       SuperDot knows which Dot knows what. It asks them in parallel, streams their answers live and combines them into one
       reply with <code>[Inbox]</code>-style citations. With an organisation, it also manages projects.
     </td>
     <td width="50%" valign="top">
-      <h3>🔗 You decide who talks to whom.</h3>
+      <h3>You decide who talks to whom.</h3>
       Dot Links are permission rules between Dots: allow, ask or block, on a schedule, with rate limits and approvals.
       Every message is logged.
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <h3>🔒 Your data stays home.</h3>
+      <h3>Your data stays home.</h3>
       Everything is plain JSON in <code>~/.opendot</code>. Emails, phone numbers and card details are masked before a cloud
       model sees them. Keys are encrypted by your operating system (macOS Keychain or Windows DPAPI).
     </td>
     <td width="50%" valign="top">
-      <h3>🧠 Any model. Even the one on your Mac.</h3>
+      <h3>Any model. Even the one on your Mac.</h3>
       Claude, GPT, Gemini, Grok, Mistral, DeepSeek, OpenRouter, Groq, or fully local with Ollama, LM Studio, llama.cpp or
       any compatible URL. Pick a different model per Dot.
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <h3>🔌 Plugs into everything.</h3>
+      <h3>Plugs into everything.</h3>
       Google Workspace, Microsoft 365, your Mac's Calendar, Reminders, Contacts, Notes and files, plus unlimited MCP
       servers. Import your Claude Desktop or Cursor MCP config in one paste.
     </td>
     <td width="50%" valign="top">
-      <h3>⚡ Answers from the first word.</h3>
+      <h3>Answers from the first word.</h3>
       No spinners. Every reply streams in as it's written, including background replies and SuperDot fan-outs.
     </td>
   </tr>
@@ -361,5 +361,5 @@ npm run e2e   # drives the real app with a scripted model
 <br />
 <img src="public/mascot/odi-cheer.webp" alt="Odi cheering" width="110" />
 <br />
-<sub><b><a href="#build-it-yourself">Build it yourself</a></b> in a few minutes, and give the repo a ⭐ if you like it.</sub>
+<sub><b><a href="#build-it-yourself">Build it yourself</a></b> in a few minutes, and give the repo a star if you like it.</sub>
 </div>

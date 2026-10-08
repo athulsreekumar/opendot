@@ -86,7 +86,10 @@
 	color: var(--fg);
 }
 .org-cloud-chip i {
+	display: inline-grid;
+	place-items: center;
 	font-style: normal;
+	color: var(--accent);
 }
 
 /* ── Storyboard: stacked default ───────────────────────────────────────────────────────────────────────────────── */
@@ -246,8 +249,10 @@
 	color: var(--fg);
 }
 .org-chip i {
+	display: inline-grid;
+	place-items: center;
 	font-style: normal;
-	font-size: 12px;
+	color: var(--accent);
 }
 .org-btn {
 	display: inline-flex;
@@ -293,7 +298,7 @@
 	border: 1.5px solid var(--accent);
 	border-radius: 50%;
 	background: #06231f;
-	font-size: 13px;
+	color: var(--accent);
 }
 .org-card-head {
 	display: flex;
@@ -365,25 +370,12 @@
 	height: 6px;
 	border-radius: 50%;
 	background: var(--fg-2);
-	animation: org-bounce 1s ease-in-out infinite;
 }
 .org-think span:nth-child(2) {
-	animation-delay: 0.15s;
+	opacity: 0.75;
 }
 .org-think span:nth-child(3) {
-	animation-delay: 0.3s;
-}
-@keyframes org-bounce {
-	0%,
-	60%,
-	100% {
-		transform: translateY(0);
-		opacity: 0.5;
-	}
-	30% {
-		transform: translateY(-4px);
-		opacity: 1;
-	}
+	opacity: 1;
 }
 .org-update {
 	display: flex;
@@ -395,7 +387,9 @@
 	background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .org-update-ic {
-	font-size: 18px;
+	display: inline-grid;
+	place-items: center;
+	color: var(--accent);
 }
 .org-update-text {
 	display: flex;
@@ -577,7 +571,12 @@
 	font-size: 1em;
 }
 .org-core-ic {
-	font-size: 2.1em;
+	display: inline-grid;
+	color: var(--accent);
+}
+.org-core-ic svg {
+	width: 2.1em;
+	height: 2.1em;
 }
 .org-core-name {
 	font-size: 1.05em;
@@ -604,7 +603,12 @@
 }
 .org-node-emoji {
 	position: relative;
-	font-size: 1.9em;
+	display: inline-grid;
+	color: #f5f5f7;
+}
+.org-node-emoji svg {
+	width: 1.9em;
+	height: 1.9em;
 }
 .org-node-name {
 	font-size: 1.05em;
@@ -641,12 +645,7 @@
 	border: 2.5px solid var(--accent);
 	border-top-color: transparent;
 	background: #101012;
-	animation: org-spin 0.9s linear infinite;
-}
-@keyframes org-spin {
-	to {
-		transform: rotate(360deg);
-	}
+	transform: rotate(-45deg);
 }
 /* Finished scene (default, and the stacked layout). GSAP overrides these with inline opacity while pinned. */
 .org-node:not([data-final="none"]) .org-node-lit {
@@ -836,16 +835,7 @@
 	height: 8px;
 	border-radius: 50%;
 	background: #f5a524;
-	animation: org-pulse 1.6s ease-in-out infinite;
-}
-@keyframes org-pulse {
-	50% {
-		box-shadow: 0 0 0 6px rgba(245, 165, 36, 0);
-		transform: scale(0.8);
-	}
-	0% {
-		box-shadow: 0 0 0 0 rgba(245, 165, 36, 0.55);
-	}
+	box-shadow: 0 0 0 4px rgba(245, 165, 36, 0.22);
 }
 .org-wait p {
 	display: flex;
@@ -954,6 +944,10 @@
 	background: rgba(255, 255, 255, 0.06);
 	font-family: var(--font-mono);
 	font-size: 11px;
+}
+.org-deliv li svg {
+	flex: none;
+	color: var(--accent);
 }
 @container (max-width: 439px) {
 	.org-board {
@@ -1172,7 +1166,7 @@
 	height: 46px;
 	border-radius: 13px;
 	background: color-mix(in srgb, var(--accent) 12%, transparent);
-	font-size: 22px;
+	color: var(--accent);
 }
 .org-tile-text b {
 	display: block;

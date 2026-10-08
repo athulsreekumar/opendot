@@ -30,9 +30,7 @@ describe("Organisation copy", () => {
 	});
 
 	it("names the same departments, templates and skill count as the app", () => {
-		expect(orgDepartments.map((d) => [d.id, d.name, d.emoji, d.job])).toEqual(
-			ORG_DOMAINS.map((d) => [d.id, d.name, d.emoji, d.tagline]),
-		);
+		expect(orgDepartments.map((d) => [d.id, d.name, d.job])).toEqual(ORG_DOMAINS.map((d) => [d.id, d.name, d.tagline]));
 		expect(orgDepartments).toHaveLength(13);
 		expect(BUILTIN_SKILLS).toHaveLength(28);
 		expect(org.stats).toEqual([

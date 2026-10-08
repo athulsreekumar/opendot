@@ -246,7 +246,7 @@ wrong. Please try again in a minute.* Consent note: *We'll only email you about 
 
 All scroll animation uses GSAP ScrollTrigger inside `useGSAP` (auto-cleanup) and animates only `transform`,
 `opacity`, `clip-path`, `filter: blur` (small). `scrub` uses `0.6–1` for smooth catch-up. Pins use
-`anticipatePin: 1`. Every pinned length is listed so the page height is predictable.
+`anticipatePin: 1`. Only the Organisation storyboard is pinned (3 screens); every other section is normal flow.
 
 ### 6.1 Global
 - `SmoothScroll` (Lenis, `lerp 0.1`) mounted in layout; disabled when reduced motion or when a dialog is open.
@@ -260,22 +260,19 @@ All scroll animation uses GSAP ScrollTrigger inside `useGSAP` (auto-cleanup) and
    video window scales 0.86 → 1.0, radius 20 → 12px, H1 drifts up 60px and fades to 0.2. "Watch the film" opens
    `FilmDialog` (full film with sound toggle, captions, Esc to close, focus trapped).
    *Fallback*: if `saveData` or reduced motion → poster image + play button, no autoplay.
-2. **Statement** (pinned +150vh, dark). `ScrubText`: words start at 15% opacity and light up to 100% in sequence with scroll.
-3. **Create a Dot** (pinned +300vh). Left: the three steps; active step highlighted. Right: `MacWindow` crossfading
-   `new-dot-describe` → `new-dot-review` → `new-dot-created`. **Odi (thinking pose)** peeks from the window's
-   corner at step 2, pops to **Odi (cheer)** at step 3. Mobile: no pin — steps stack with their screenshot.
-4. **Always on** (pinned +250vh, dark). Notification cards (Gmail "Invoice overdue — Northwind", Calendar "Board
-   sync moved to 9:30", Drive "Q3 deck edited") slide in from the right one by one; each lands on a Dot in the
-   sidebar screenshot and that Dot's row pulses; finally the `always-on-update` screenshot fades in with the
-   `[URGENT]` reply. Odi (night/sleepy-but-awake pose) in the corner with a moon.
-5. **SuperBot** (pinned +300vh, dark with radial accent glow). Centre: SuperBot node; around it 5 Dot nodes
-   (Inbox, Calendar, Research, Money, Travel). Scroll draws SVG connection paths (`stroke-dashoffset`), small
-   "asking…" chips travel along them, each Dot node lights up, then answers flow back and the screen transitions to
-   the `superbot-answer` screenshot. Odi (conductor pose).
+2. **Statement** (not pinned, dark). One large sentence, fully visible, with the accent words tinted.
+3. **Create a Dot** (not pinned). The three steps, each next to its `MacWindow` screenshot (`new-dot-describe`,
+   `new-dot-review`, `new-dot-created`); sides alternate on desktop, stacked on phones. **Odi (cheer)** at step 3.
+4. **Always on** (not pinned, dark). The three notification cards (Gmail "Invoice overdue — Northwind", Calendar
+   "Board sync moved to 9:30", Drive "Q3 deck edited") above the `always-on-update` screenshot with the `[URGENT]`
+   reply, then the badges. Odi (night/sleepy-but-awake pose) in the corner with a moon.
+5. **SuperBot** (not pinned, dark with radial accent glow). The question, then the full static capability tree:
+   SuperBot node in the centre, 5 Dot nodes (Inbox, Calendar, Research, Money, Travel) with their answer chips and
+   capability leaves, then the `superbot-answer` screenshot. Odi (conductor pose).
 6. **Dot Links** (not pinned). Matrix diagram of Dots × Dots with allow/deny/ask chips that flip in on reveal;
    `links-screen` screenshot beside it.
-7. **Privacy** (pinned +200vh, dark). Large text "maya.chen@example.com" morphs character-by-character into
-   `⟦EMAIL_1⟧` (mono, accent), then a `~/.opendot` file tree draws in line by line; Odi (shield pose).
+7. **Privacy** (not pinned, dark). The masked value `⟦EMAIL_1⟧` (mono, accent) beside what the screen shows
+   ("maya.chen@example.com"), the privacy points, and the `~/.opendot` file tree; Odi (shield pose).
 8. **Any model** (not pinned). Two rows of wordmarks marquee in opposite directions (CSS animation; paused on hover
    and for reduced motion). Short "Cloud · On your Mac · Any URL" trio below.
 9. **Connections** (not pinned). Bento grid of 6 tiles (Google, Microsoft, Mac, MCP "unlimited", Webhooks, Files),
@@ -334,15 +331,15 @@ Captured by `capture/shots.ts` from the real app built from `claude-code-remote/
 ### 7.2 Dummy data (`capture/seed/`)
 All people, companies and addresses are fictional; emails use `@example.com`, phones use 555 numbers.
 
-| Dot | Emoji | Tagline | Connectors |
+| Dot | Icon (lucide) | Tagline | Connectors |
 |---|---|---|---|
-| SuperBot | ✨ | Asks the right Dots for you | — |
-| Inbox | 📬 | Reads everything, flags what needs you | Gmail |
-| Calendar | 📅 | Guards your time | Google Calendar |
-| Research | 🔎 | Reads the web so you don't have to | Fetch (MCP) |
-| Money | 💸 | Watches receipts and subscriptions | Gmail, Files |
-| Travel | ✈️ | Plans trips, tracks flights | Calendar, Fetch |
-| Code Buddy | 🧑‍💻 | Reviews your pull requests | GitHub (MCP) |
+| SuperBot | Sparkles | Asks the right Dots for you | — |
+| Inbox | Inbox | Reads everything, flags what needs you | Gmail |
+| Calendar | CalendarDays | Guards your time | Google Calendar |
+| Research | Search | Reads the web so you don't have to | Fetch (MCP) |
+| Money | Wallet | Watches receipts and subscriptions | Gmail, Files |
+| Travel | Plane | Plans trips, tracks flights | Calendar, Fetch |
+| Code Buddy | Code | Reviews your pull requests | GitHub (MCP) |
 
 Cast: Maya Chen (Northwind Labs), Leo Park (designer), Sam Rivera (investor), "Acme Cloud" (a vendor).
 Scripts (fake-model JSON, same format as the app's `test/fixtures/fake-scripts`): `create-inbox`, `inbox-urgent`,

@@ -219,8 +219,8 @@ OpenDot Organisation (a team of Dots, one per department, run by SuperDot) is th
 **Homepage section** `components/sections/Organisation.tsx` (+ `Organisation.css`, art in `OrganisationArt.tsx`), id
 `organisation`, placed right after "Create a Dot". All text lives in `lib/copy.ts` (`organisation`, `orgDepartments`).
 
-- **Storyboard**: a pinned, scroll-driven walk through five beats (Ask, Plan, Split, Review, Delivered) built with GSAP
-  ScrollTrigger like SuperDot. The illustrations are HTML/CSS/SVG and say "Illustrated example" next to them; the real app
+- **Storyboard**: the only pinned section on the homepage (about 3 screens of scroll). A scroll-driven walk through five
+  beats (Ask, Plan, Split, Review, Delivered) built with GSAP ScrollTrigger. The illustrations are HTML/CSS/SVG and say "Illustrated example" next to them; the real app
   screenshots sit beside them.
 - **Phones (under 900px) and reduced motion**: no pin. Each beat is a stacked card showing its finished scene, with real
   text for every beat. Decorative art is `aria-hidden`, and each beat carries an `sr-only` description.
