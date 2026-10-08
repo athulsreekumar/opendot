@@ -49,7 +49,7 @@ Window 1440x900 CSS px at device scale 2 = 2880x1800. Output per name and theme:
 |---|---|
 | `sidebar-full` | 7 Dots, unread badges, SuperDot pinned on top |
 | `new-dot-describe` | New Dot sheet, prompt typed, Gmail + Google Calendar ticked |
-| `new-dot-review` | Identity streaming in (name, emoji, tagline, personality) |
+| `new-dot-review` | Identity streaming in (name, icon, tagline, personality) |
 | `new-dot-edit` | Extra: the review form after generation |
 | `new-dot-created` | The new Dot's first chat, "Inbox is ready" toast |
 | `chat-streaming` | Mid-stream reply (table + list), Research Dot |
@@ -109,7 +109,7 @@ Typing uses 35 to 70 ms per character (longer after punctuation); key states are
   `lib/main-wrapper.cjs`, which installs `seed/mock-google.cjs` and then starts the real app.
 * `seed/`: the dummy world.
   * `dots.json`: SuperDot (the built-in Dot, renamed) plus Inbox, Calendar, Research, Money, Travel, Code Buddy with
-    personalities, taglines, emojis, colours, connectors and tool rules; the shared "About me" memory.
+    personalities, taglines, icon keys, colours, connectors and tool rules; the shared "About me" memory.
   * `histories.json` + `scripts/history-*.json`: earlier chats, played through the real app so sidebar previews,
     tool chips and link cards are genuine. Timestamps are then moved onto a believable timeline (yesterday, this morning,
     minutes ago) and unread badges are set.

@@ -3,7 +3,7 @@
 		"name": "SuperDot",
 		"tagline": "Asks the right Dots for you",
 		"appearance": {
-			"emoji": "✨",
+			"icon": "sparkles",
 			"color": "teal"
 		}
 	},
@@ -12,7 +12,7 @@
 			"name": "Inbox",
 			"tagline": "Reads everything, flags what needs you",
 			"appearance": {
-				"emoji": "📬",
+				"icon": "inbox",
 				"color": "blue"
 			},
 			"roles": [
@@ -76,7 +76,7 @@
 			"name": "Calendar",
 			"tagline": "Guards your time",
 			"appearance": {
-				"emoji": "📅",
+				"icon": "calendar",
 				"color": "orange"
 			},
 			"roles": [
@@ -108,7 +108,7 @@
 					"Create or move events without asking",
 					"Fill the user's focus blocks"
 				],
-				"greeting": "Hi, I'm Calendar 📅 I keep an eye on your day and tell you when something doesn't add up."
+				"greeting": "Hi, I'm Calendar. I keep an eye on your day and tell you when something doesn't add up."
 			},
 			"alwaysOn": {
 				"enabled": true,
@@ -135,7 +135,7 @@
 			"name": "Research",
 			"tagline": "Reads the web so you don't have to",
 			"appearance": {
-				"emoji": "🔎",
+				"icon": "telescope",
 				"color": "violet"
 			},
 			"roles": [
@@ -170,7 +170,7 @@
 			"name": "Money",
 			"tagline": "Watches receipts and subscriptions",
 			"appearance": {
-				"emoji": "💸",
+				"icon": "wallet",
 				"color": "green"
 			},
 			"roles": [
@@ -209,7 +209,7 @@
 			"name": "Travel",
 			"tagline": "Plans trips, tracks flights",
 			"appearance": {
-				"emoji": "✈️",
+				"icon": "plane",
 				"color": "sky"
 			},
 			"roles": [
@@ -240,14 +240,14 @@
 					"Book or pay for anything",
 					"Recommend places you haven't checked"
 				],
-				"greeting": "Hi, I'm Travel ✈️ Tell me where you're headed and I'll keep every flight, hotel and deadline in order."
+				"greeting": "Hi, I'm Travel. Tell me where you're headed and I'll keep every flight, hotel and deadline in order."
 			}
 		},
 		{
 			"name": "Code Buddy",
 			"tagline": "Reviews your pull requests",
 			"appearance": {
-				"emoji": "🧑‍💻",
+				"icon": "code",
 				"color": "indigo"
 			},
 			"roles": [
@@ -284,7 +284,7 @@
 					"Merge or approve on your own",
 					"Nitpick formatting that a linter handles"
 				],
-				"greeting": "Hey, I'm Code Buddy 🧑‍💻 Point me at a pull request and I'll tell you if it's safe to ship."
+				"greeting": "Hey, I'm Code Buddy. Point me at a pull request and I'll tell you if it's safe to ship."
 			}
 		}
 	],

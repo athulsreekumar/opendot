@@ -19,11 +19,11 @@ const save = (name, steps) => writeFileSync(join(out, `${name}.json`), `${JSON.s
 
 // ───────────── New Dot: identity generation (the app's "architect" call) ─────────────
 save("create-inbox", [
-	// Compact JSON with the visible fields first (name, emoji, colour, tagline, role) keeps the stream short.
+	// Compact JSON with the visible fields first (name, icon, colour, tagline, role) keeps the stream short.
 	text(
 		JSON.stringify({
 			name: "Inbox",
-			emoji: "📬",
+			icon: "inbox",
 			color: "blue",
 			tagline: "Reads everything, flags what needs you",
 			role: "You are Inbox, the user's email chief of staff. You watch Gmail, ignore the noise and surface only what needs a human decision. You check Calendar for deadlines and draft replies, but never send without a yes.",
@@ -290,7 +290,7 @@ save("history-money-2", [
 save("history-travel-1", [
 	text(
 		[
-			"Here's Lisbon so far ✈️",
+			"Here's Lisbon so far:",
 			"",
 			"- **Nov 12** LX 2089, depart 07:55, arrive 10:20 local",
 			"- **Nov 12–15** Hotel Alfama Terrace, confirmed",
@@ -304,7 +304,7 @@ save("history-travel-1", [
 ]);
 save("history-travel-2", [
 	text(
-		"Yes. Your passport is valid until 2029, well past the six-month minimum, so you're set for Lisbon ✈️\n\n**Next step:** nothing until check-in opens on Nov 11.",
+		"Yes. Your passport is valid until 2029, well past the six-month minimum, so you're set for Lisbon.\n\n**Next step:** nothing until check-in opens on Nov 11.",
 	),
 ]);
 save("history-codebuddy-1", [
@@ -319,7 +319,7 @@ save("history-codebuddy-1", [
 			"**Nice to have**",
 			"- Add a test for the empty-query case.",
 			"",
-			"The rest reads cleanly. Nice work on the naming 🙌",
+			"The rest reads cleanly. Nice work on the naming",
 		].join("\n"),
 	),
 ]);

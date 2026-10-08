@@ -56,7 +56,7 @@ async function newDotFlow(theme: Theme): Promise<void> {
 
 		await page.evaluate(() => window.opendotTest!.setFakeScript("create-inbox"));
 		await page.getByRole("button", { name: /create personality/i }).click();
-		// Mid-stream: name, emoji and tagline are in, the personality text is still arriving.
+		// Mid-stream: name, icon and tagline are in, the personality text is still arriving.
 		await page.waitForFunction(
 			() => {
 				const card = document.querySelector('[aria-live="polite"]') as HTMLElement | null;
