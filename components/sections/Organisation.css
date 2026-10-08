@@ -86,7 +86,10 @@
 	color: var(--fg);
 }
 .org-cloud-chip i {
+	display: inline-grid;
+	place-items: center;
 	font-style: normal;
+	color: var(--accent);
 }
 
 /* ── Storyboard: stacked default ───────────────────────────────────────────────────────────────────────────────── */
@@ -246,8 +249,10 @@
 	color: var(--fg);
 }
 .org-chip i {
+	display: inline-grid;
+	place-items: center;
 	font-style: normal;
-	font-size: 12px;
+	color: var(--accent);
 }
 .org-btn {
 	display: inline-flex;
@@ -293,7 +298,7 @@
 	border: 1.5px solid var(--accent);
 	border-radius: 50%;
 	background: #06231f;
-	font-size: 13px;
+	color: var(--accent);
 }
 .org-card-head {
 	display: flex;
@@ -395,7 +400,9 @@
 	background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .org-update-ic {
-	font-size: 18px;
+	display: inline-grid;
+	place-items: center;
+	color: var(--accent);
 }
 .org-update-text {
 	display: flex;
@@ -577,7 +584,12 @@
 	font-size: 1em;
 }
 .org-core-ic {
-	font-size: 2.1em;
+	display: inline-grid;
+	color: var(--accent);
+}
+.org-core-ic svg {
+	width: 2.1em;
+	height: 2.1em;
 }
 .org-core-name {
 	font-size: 1.05em;
@@ -604,7 +616,12 @@
 }
 .org-node-emoji {
 	position: relative;
-	font-size: 1.9em;
+	display: inline-grid;
+	color: #f5f5f7;
+}
+.org-node-emoji svg {
+	width: 1.9em;
+	height: 1.9em;
 }
 .org-node-name {
 	font-size: 1.05em;
@@ -955,6 +972,10 @@
 	font-family: var(--font-mono);
 	font-size: 11px;
 }
+.org-deliv li svg {
+	flex: none;
+	color: var(--accent);
+}
 @container (max-width: 439px) {
 	.org-board {
 		grid-template-columns: 1fr;
@@ -1172,7 +1193,7 @@
 	height: 46px;
 	border-radius: 13px;
 	background: color-mix(in srgb, var(--accent) 12%, transparent);
-	font-size: 22px;
+	color: var(--accent);
 }
 .org-tile-text b {
 	display: block;

@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
+import { Icon, Inbox } from "@/components/ui/Icon";
 import { streaming as copy } from "@/lib/copy";
 import { LearnMore } from "./LearnMore";
 
@@ -147,9 +148,9 @@ export function Streaming() {
 							<div className="flex items-start gap-3">
 								<span
 									aria-hidden
-									className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-base shadow-card"
+									className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-accent shadow-card"
 								>
-									📬
+									<Icon as={Inbox} size={16} />
 								</span>
 								<div className="relative min-w-0 rounded-2xl rounded-tl-md bg-white px-4 py-3 text-[15px] leading-relaxed shadow-card">
 									<span className="sr-only">{copy.demoAnswer}</span>

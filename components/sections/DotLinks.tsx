@@ -1,11 +1,11 @@
 "use client";
 
 import clsx from "clsx";
-import { Clock } from "lucide-react";
+import { Clock, type LucideIcon } from "lucide-react";
 import { Fragment, useRef } from "react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion/gsap";
 import { Reveal } from "@/components/motion/Reveal";
-import { Icon } from "@/components/ui/Icon";
+import { CalendarDays, Icon, Inbox, Plane, Wallet } from "@/components/ui/Icon";
 import { MacWindow } from "@/components/ui/MacWindow";
 import { Screenshot } from "@/components/ui/Screenshot";
 import { dotLinks } from "@/lib/copy";
@@ -13,12 +13,12 @@ import { LearnMore } from "./LearnMore";
 
 type Perm = "allow" | "ask" | "block" | "self";
 
-const DOTS = [
-	{ id: "inbox", emoji: "📬", name: "Inbox" },
-	{ id: "calendar", emoji: "📅", name: "Calendar" },
-	{ id: "travel", emoji: "✈️", name: "Travel" },
-	{ id: "money", emoji: "💸", name: "Money" },
-] as const;
+const DOTS: readonly { id: string; icon: LucideIcon; name: string }[] = [
+	{ id: "inbox", icon: Inbox, name: "Inbox" },
+	{ id: "calendar", icon: CalendarDays, name: "Calendar" },
+	{ id: "travel", icon: Plane, name: "Travel" },
+	{ id: "money", icon: Wallet, name: "Money" },
+];
 
 // rows = the Dot that asks, columns = the Dot that is asked.
 const MATRIX: Perm[][] = [
@@ -105,8 +105,8 @@ export function DotLinks() {
 							</div>
 							{DOTS.map((d) => (
 								<div key={d.id} className="text-center">
-									<div className="text-xl sm:text-2xl" aria-hidden="true">
-										{d.emoji}
+									<div className="flex justify-center text-accent" aria-hidden="true">
+										<Icon as={d.icon} size={24} />
 									</div>
 									<div className="mt-0.5 truncate text-[10px] font-medium text-fg-2 sm:text-xs">{d.name}</div>
 								</div>
@@ -114,8 +114,8 @@ export function DotLinks() {
 							{DOTS.map((rowDot, r) => (
 								<Fragment key={rowDot.id}>
 									<div className="flex items-center gap-1 sm:gap-2">
-										<span className="text-lg sm:text-xl" aria-hidden="true">
-											{rowDot.emoji}
+										<span className="shrink-0 text-accent" aria-hidden="true">
+											<Icon as={rowDot.icon} size={20} />
 										</span>
 										<span className="sr-only sm:not-sr-only sm:truncate sm:text-xs sm:font-medium sm:text-fg-2">
 											{rowDot.name}
@@ -153,7 +153,10 @@ export function DotLinks() {
 									<Icon as={Clock} size={18} />
 								</span>
 								<div className="min-w-0">
-									<p className="text-sm font-semibold">✈️ Travel → 📅 Calendar</p>
+									<p className="flex items-center gap-1.5 text-sm font-semibold">
+										<Icon as={Plane} size={15} className="shrink-0 text-[#a15c00]" /> Travel →{" "}
+										<Icon as={CalendarDays} size={15} className="shrink-0 text-[#a15c00]" /> Calendar
+									</p>
 									<p className="text-[13px] text-[#6e6e73]">Ask · weekdays · 5/hour</p>
 								</div>
 							</div>

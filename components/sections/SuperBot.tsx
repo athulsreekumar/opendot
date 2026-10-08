@@ -1,8 +1,10 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
 import { type ReactNode, useRef } from "react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion/gsap";
 import { Reveal } from "@/components/motion/Reveal";
+import { CalendarDays, Icon, Inbox, Plane, Search, Sparkles, Wallet } from "@/components/ui/Icon";
 import { MacWindow } from "@/components/ui/MacWindow";
 import { Mascot } from "@/components/ui/Mascot";
 import { Screenshot } from "@/components/ui/Screenshot";
@@ -10,7 +12,8 @@ import { superBot } from "@/lib/copy";
 import "./SuperBot.css";
 import { LearnMore } from "./LearnMore";
 
-const EMOJI = ["📬", "📅", "🔎", "💸", "✈️"];
+/** One line icon per Dot, same order as superBot.dots. */
+const DOT_ICONS = [Inbox, CalendarDays, Search, Wallet, Plane];
 // TODO(copy): answer snippets (one per Dot, same order as superBot.dots)
 const ANSWERS = [
 	"2 emails need replies",
@@ -193,9 +196,16 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 				<circle className="sb-core-glow" r={l.coreR * 1.9} fill={`url(#sb-glow-${uid})`} />
 				<circle r={l.coreR} fill="#06231f" stroke={`url(#sb-ring-${uid})`} strokeWidth="3" />
 				<circle r={l.coreR - 7} fill="none" stroke="#2dd4bf" strokeOpacity="0.25" />
-				<text y={-3} textAnchor="middle" fontSize={26 * f} dominantBaseline="middle">
-					✨
-				</text>
+				<Icon
+					as={Sparkles}
+					x={-13 * f}
+					y={-16 * f}
+					width={26 * f}
+					height={26 * f}
+					style={{ width: 26 * f, height: 26 * f }}
+					stroke="#2dd4bf"
+					strokeWidth={1.75}
+				/>
 				<text y={l.coreR * 0.5} textAnchor="middle" fontSize={13 * f} fontWeight="650" fill="#f5f5f7">
 					SuperDot
 				</text>
@@ -275,9 +285,16 @@ function Diagram({ l, className, animated }: { l: Layout; className: string; ani
 							stroke="#2dd4bf"
 							strokeWidth="2.5"
 						/>
-						<text textAnchor="middle" dominantBaseline="central" fontSize={l.nodeR * 0.85}>
-							{EMOJI[i]}
-						</text>
+						<Icon
+							as={DOT_ICONS[i] as LucideIcon}
+							x={-l.nodeR * 0.42}
+							y={-l.nodeR * 0.42}
+							width={l.nodeR * 0.84}
+							height={l.nodeR * 0.84}
+							style={{ width: l.nodeR * 0.84, height: l.nodeR * 0.84 }}
+							stroke="#f5f5f7"
+							strokeWidth={1.75}
+						/>
 						<text
 							x={l.chips ? block.name.x : 0}
 							y={l.chips ? block.name.y : l.nodeR + 18}
@@ -543,7 +560,7 @@ export function SuperBot(): ReactNode {
 							{superBot.dots.map((d, i) => (
 								<li key={d} className="rounded-3xl border border-accent/30 bg-white/[0.04] px-4 py-3 text-fg">
 									<p className="t-caption flex items-center gap-3">
-										<span aria-hidden="true">{EMOJI[i]}</span>
+										<Icon as={DOT_ICONS[i] as LucideIcon} size={18} className="shrink-0 text-accent" />
 										<span className="font-semibold">{d}</span>
 										<span className="ml-auto text-right text-fg-2">{ANSWERS[i]}</span>
 									</p>

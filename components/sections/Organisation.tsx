@@ -4,6 +4,7 @@ import { type ReactNode, useRef } from "react";
 import { gsap, useGSAP } from "@/components/motion/gsap";
 import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
+import { DeptIcon } from "@/components/ui/DeptIcon";
 import { GitHubButton } from "@/components/ui/GitHubButton";
 import { Check, Icon, Pause, Shield } from "@/components/ui/Icon";
 import { Mascot } from "@/components/ui/Mascot";
@@ -469,7 +470,9 @@ function Story() {
 					<Reveal stagger={0.05} className="org-cloud">
 						{orgDepartments.map((d) => (
 							<span key={d.id} className="org-cloud-chip">
-								<i>{d.emoji}</i>
+								<i>
+									<DeptIcon name={d.icon} size={16} />
+								</i>
 								{d.name}
 							</span>
 						))}
@@ -542,7 +545,7 @@ function More() {
 						{orgDepartments.map((d) => (
 							<li key={d.id} className="org-tile">
 								<span className="org-tile-ic" aria-hidden="true">
-									{d.emoji}
+									<DeptIcon name={d.icon} size={22} />
 								</span>
 								<span className="org-tile-text">
 									<b>{d.name}</b>

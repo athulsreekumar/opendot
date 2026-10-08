@@ -226,7 +226,7 @@ export function Privacy() {
 									>
 										<TreeIcon kind={l.kind} />
 										<span className={l.d === 0 ? "text-fg" : undefined}>{l.name}</span>
-										{l.kind === "lock" && <span aria-hidden="true">🔒</span>}
+										{l.kind === "lock" && <Icon as={Lock} size={12} className="shrink-0 text-fg-3" />}
 									</div>
 								))}
 							</div>
