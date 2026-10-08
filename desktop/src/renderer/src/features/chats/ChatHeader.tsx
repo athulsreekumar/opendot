@@ -143,7 +143,7 @@ export function ChatHeader({ dot }: { dot: Dot }) {
 
 	return (
 		<header className="flex h-[var(--od-header-h)] shrink-0 items-center gap-3 border-b border-border-subtle bg-sidebar px-4">
-			<Avatar size="md" color={dot.appearance.color} emoji={dot.appearance.emoji} name={dot.name} mark={isSuper} />
+			<Avatar size="md" color={dot.appearance.color} icon={dot.appearance.icon} name={dot.name} mark={isSuper} />
 			<div className="min-w-0 flex-1">
 				<div className="truncate text-lg font-semibold text-fg">{dot.name}</div>
 				<div
@@ -160,7 +160,7 @@ export function ChatHeader({ dot }: { dot: Dot }) {
 			</div>
 			<span className="hidden h-7 max-w-[200px] items-center gap-1 truncate rounded-full bg-sunken px-2.5 text-xs text-fg-2 sm:flex">
 				<span className="truncate">{modelLabel}</span>
-				{local && <span className="shrink-0">local 🔒</span>}
+				{local && <span className="shrink-0">local</span>}
 			</span>
 			<PiiBadge dot={dot} />
 			{hasConnError && (

@@ -92,17 +92,37 @@ describe("Badge", () => {
 
 describe("Avatar", () => {
 	it("renders with aria-label from name prop", () => {
-		const { getByLabelText } = render(<Avatar emoji="😀" color="teal" size="md" name="Alice" />);
+		const { getByLabelText } = render(<Avatar icon="mail" color="teal" size="md" name="Alice" />);
 		expect(getByLabelText("Alice")).toBeTruthy();
 	});
 
-	it("renders emoji content", () => {
-		const { getByText } = render(<Avatar emoji="😀" color="teal" size="md" name="TestEmoji" />);
-		expect(getByText("😀")).toBeTruthy();
+	it("renders the icon as an svg and no text", () => {
+		const { getByLabelText } = render(<Avatar icon="mail" color="teal" size="md" name="Inbox" />);
+		const el = getByLabelText("Inbox");
+		expect(el.querySelector("svg")).toBeTruthy();
+		expect(el.textContent).toBe("");
+	});
+
+	it("falls back to the neutral icon for an unknown key", () => {
+		const { getByLabelText } = render(<Avatar icon="not-an-icon" color="teal" size="md" name="Odd" />);
+		expect(getByLabelText("Odd").querySelector("svg")).toBeTruthy();
+	});
+
+	it("scales icon size and stroke with the avatar size", () => {
+		const { getByLabelText } = render(
+			<>
+				<Avatar icon="mail" color="teal" size="xs" name="Small" />
+				<Avatar icon="mail" color="teal" size="xl" name="Big" />
+			</>,
+		);
+		const small = getByLabelText("Small").querySelector("svg") as SVGElement;
+		const big = getByLabelText("Big").querySelector("svg") as SVGElement;
+		expect(Number(big.getAttribute("width"))).toBeGreaterThan(Number(small.getAttribute("width")));
+		expect(small.getAttribute("stroke-width")).toBe("2");
 	});
 
 	it("renders brand mark when mark prop is true", () => {
-		const { container } = render(<Avatar emoji="😀" color="teal" size="md" name="TestMark" mark />);
+		const { container } = render(<Avatar icon="mail" color="teal" size="md" name="TestMark" mark />);
 		expect(container.querySelector("svg")).toBeTruthy();
 	});
 });

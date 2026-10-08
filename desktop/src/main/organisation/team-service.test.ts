@@ -74,7 +74,7 @@ describe("TeamService.setup", () => {
 			const domain = ORG_DOMAINS.find((d) => d.id === m.domain)!;
 			expect(dot.name).toBe(domain.name);
 			expect(dot.roles).toEqual([m.domain, "org"]);
-			expect(dot.appearance).toEqual({ emoji: domain.emoji, color: domain.color });
+			expect(dot.appearance).toEqual({ icon: domain.icon, color: domain.color });
 			expect(dot.tagline).toBe(domain.tagline);
 			expect(dot.persona.role).toContain("[BLOCKED]");
 			expect(m.skillIds).toEqual(domain.skillIds);
@@ -162,7 +162,7 @@ describe("TeamService members", () => {
 			draft: {
 				name: "Accounts",
 				tagline: "mine",
-				appearance: { emoji: "🧾", color: "amber" },
+				appearance: { icon: "receipt", color: "amber" },
 				persona: { ...(await t.dots.ensureSuperBot()).persona, role: "Custom role" },
 				suggestedConnections: [],
 				roles: ["assistant"],

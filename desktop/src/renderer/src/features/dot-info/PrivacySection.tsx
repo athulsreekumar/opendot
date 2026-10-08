@@ -33,7 +33,7 @@ export function PrivacySection({ dot }: { dot: Dot }) {
 			{model && (
 				<p className="flex items-center gap-2 text-sm text-fg-2">
 					Right now this Dot uses {model.label} ({model.providerLabel}).
-					<Badge variant={model.isLocal ? "success" : "muted"}>{model.isLocal ? "On your device 🔒" : "Cloud"}</Badge>
+					<Badge variant={model.isLocal ? "success" : "muted"}>{model.isLocal ? "On your device" : "Cloud"}</Badge>
 				</p>
 			)}
 		</SectionCard>

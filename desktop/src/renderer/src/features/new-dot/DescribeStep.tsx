@@ -1,8 +1,10 @@
+import { resolveDotIcon } from "@shared/dot-icons";
 import type { ConnectorChoice, DotColor, DotDraft, DotTemplate } from "@shared/types";
 import { DOT_COLORS } from "@shared/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/design-system/cn";
 import { Avatar, Button, Input, Menu, MenuContent, MenuItem, MenuTrigger, TextArea } from "@/design-system/components";
+import { DotIcon } from "@/design-system/dot-icon-map";
 import { IconCheck, IconSearch, IconSparkles } from "@/design-system/icons";
 import { ConnectionIcon } from "@/features/connections/ConnectionCard";
 import { api, errorText } from "@/lib/api";
@@ -22,7 +24,7 @@ export interface DescribeResult {
 
 interface Preview {
 	name?: string;
-	emoji?: string;
+	icon?: string;
 	tagline?: string;
 	role?: string;
 	color?: DotColor;
@@ -33,7 +35,7 @@ function toPreview(o: Record<string, unknown>): Preview {
 	const color = str(o.color);
 	return {
 		name: str(o.name),
-		emoji: str(o.emoji),
+		icon: str(o.icon) ?? str(o.emoji),
 		tagline: str(o.tagline),
 		role: str(o.role),
 		color: DOT_COLORS.find((c) => c === color),
@@ -185,7 +187,7 @@ export function DescribeStep({
 								onClick={() => applyTemplate(t)}
 								className="inline-flex h-7 items-center rounded-full border border-border-subtle bg-elevated px-3 text-sm text-fg hover:bg-hover disabled:opacity-50"
 							>
-								{t.draft.appearance.emoji} {t.name}
+								<DotIcon name={t.draft.appearance.icon} size={14} className="mr-1.5" /> {t.name}
 							</button>
 						))}
 					</div>
@@ -240,7 +242,7 @@ export function DescribeStep({
 					<MenuContent align="start">
 						{templates.map((t) => (
 							<MenuItem key={t.id} onSelect={() => applyTemplate(t)}>
-								{t.draft.appearance.emoji} {t.name} · {t.description}
+								<DotIcon name={t.draft.appearance.icon} size={14} className="mr-2 inline" /> {t.name} · {t.description}
 							</MenuItem>
 						))}
 					</MenuContent>
@@ -323,7 +325,7 @@ function PreviewCard({ preview }: { preview: Preview }) {
 			<Avatar
 				size="lg"
 				name={preview.name ?? "New Dot"}
-				emoji={preview.emoji ?? "✨"}
+				icon={resolveDotIcon({ icon: preview.icon })}
 				color={preview.color ?? "teal"}
 			/>
 			<div className="min-w-0 flex-1">

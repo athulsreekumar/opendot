@@ -8,7 +8,7 @@ import { useOrganisation } from "@/stores/organisation";
 export interface MemberInfo {
 	id: string;
 	name: string;
-	emoji?: string;
+	icon?: string;
 	color: DotColor;
 	domain?: string;
 	human?: boolean;
@@ -28,7 +28,7 @@ export function useMemberLookup(): (id: string | undefined) => MemberInfo {
 			return {
 				id,
 				name: d?.name ?? "Team member",
-				emoji: d?.appearance.emoji,
+				icon: d?.appearance.icon,
 				color: d?.appearance.color ?? "teal",
 				domain: m?.domain,
 			};
@@ -42,7 +42,7 @@ export function useMembers(): OrgMember[] {
 }
 
 export function MemberAvatar({ info, size = "xs" }: { info: MemberInfo; size?: "xs" | "sm" | "md" }) {
-	return <Avatar size={size} name={info.name} emoji={info.human ? "🙂" : info.emoji} color={info.color} />;
+	return <Avatar size={size} name={info.name} icon={info.human ? "user" : info.icon} color={info.color} />;
 }
 
 export function MemberChip({ id }: { id: string | undefined }) {

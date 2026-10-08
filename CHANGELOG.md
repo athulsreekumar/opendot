@@ -39,6 +39,9 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - The lead assistant is called SuperDot everywhere. Existing installs with the default name are renamed automatically.
+- Dots have icons instead of emoji: a curated set of line icons (mail, calendar, wallet, shield, …) in the Dot's colour everywhere an avatar
+  shows, an icon picker with search when you create or edit a Dot, and the New Dot assistant chooses an icon for you. Existing Dots are
+  moved over automatically (their old emoji is mapped to the closest icon). Dots can still use emoji in their replies if their personality allows it.
 
 ## [0.1.0] - 2026-10-05
 

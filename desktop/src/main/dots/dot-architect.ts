@@ -1,6 +1,7 @@
 // Prompt + connectors → identity & personality (spec 08 §5). Streams via onDelta.
 import { z } from "zod";
 import { defaultPersona } from "../../shared/defaults";
+import { DOT_ICON_KEYS, resolveDotIcon } from "../../shared/dot-icons";
 import type { ConnectorChoice, DotColor, DotDraft, SuggestedWatcher, WatcherType } from "../../shared/types";
 import { DOT_COLORS } from "../../shared/types";
 import { log } from "../log";
@@ -24,7 +25,9 @@ const ALWAYS_AVAILABLE: WatcherType[] = ["schedule", "url", "rss"];
 const ArchitectSchema = z.object({
 	name: z.string().min(1).max(40),
 	tagline: z.string().max(120).default(""),
-	emoji: z.string().min(1).max(16),
+	icon: z.string().max(60).optional(),
+	/** Old replies: one emoji. Mapped to an icon key, never stored. */
+	emoji: z.string().max(32).optional(),
 	color: z.string(),
 	roles: z.array(z.string()).max(6).default([]),
 	role: z.string().min(10).max(1500),
@@ -56,7 +59,7 @@ export function systemPrompt(connectors: ConnectorChoice[]): string {
 	return `You design personal AI assistants ("Dots") for the OpenDot app. The user describes what the Dot should do and which connectors (tools/data
 sources) it can use. Create a distinct identity and a personality that fits the job AND the connectors (e.g. an email Dot is concise and careful
 about sending; a research Dot with web access cites sources). Output ONLY a JSON object, with no prose and no code fences, of this shape:
-{ "name": string (≤24 chars, short and memorable, not generic like "Assistant"), "tagline": string (≤60), "emoji": one emoji,
+{ "name": string (≤24 chars, short and memorable, not generic like "Assistant"), "tagline": string (≤60), "icon": one of [${DOT_ICON_KEYS.join(", ")}] (the key that best fits the job; no emoji),
   "color": one of [${DOT_COLORS.join(",")}],
   "roles": string[] (≤3, lowercase), "role": string (60–600 chars, second person "You are …", mention how it uses each connector),
   "tone": "warm"|"neutral"|"playful"|"direct"|"formal", "verbosity": 0–100, "formality": 0–100, "emojiUsage": 0|25|50|75|100,
@@ -86,8 +89,7 @@ export function parseDraftJson(text: string): z.infer<typeof ArchitectSchema> {
 
 export function toDraft(a: z.infer<typeof ArchitectSchema>, connectors: ConnectorChoice[]): DotDraft {
 	const color = (DOT_COLORS as readonly string[]).includes(a.color) ? (a.color as DotColor) : "teal";
-	const emoji =
-		[...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(a.emoji.trim())][0]?.segment ?? "💬";
+	const icon = resolveDotIcon({ icon: a.icon, emoji: a.emoji, name: a.name, tagline: a.tagline });
 	const valid = new Set(validWatcherTypes(connectors));
 	const watchers: SuggestedWatcher[] = a.suggestedWatchers
 		.filter((w) => valid.has(w.type as WatcherType))
@@ -96,7 +98,7 @@ export function toDraft(a: z.infer<typeof ArchitectSchema>, connectors: Connecto
 	return {
 		name: a.name.slice(0, 24),
 		tagline: a.tagline.slice(0, 60),
-		appearance: { emoji, color },
+		appearance: { icon, color },
 		persona: {
 			role: a.role.slice(0, 600),
 			tone: a.tone,
@@ -154,7 +156,7 @@ export function fallbackDraft(prompt: string, connectors: ConnectorChoice[]): Do
 	return {
 		name,
 		tagline: prompt.slice(0, 60),
-		appearance: { emoji: "💬", color: "teal" },
+		appearance: { icon: resolveDotIcon({ tagline: prompt }), color: "teal" },
 		persona,
 		roles: ["assistant"],
 		suggestedConnections: connectors.map((c) => c.id),
@@ -174,9 +176,7 @@ export async function draftFromDescription(
 		model = await models.resolveModel();
 	} catch {
 		const d = fallbackDraft(input.prompt, input.connectors);
-		opts.onDelta?.(
-			JSON.stringify({ name: d.name, tagline: d.tagline, emoji: d.appearance.emoji, role: d.persona.role }),
-		);
+		opts.onDelta?.(JSON.stringify({ name: d.name, tagline: d.tagline, icon: d.appearance.icon, role: d.persona.role }));
 		return d;
 	}
 	const prompt = opts.redact ? await opts.redact(input.prompt) : input.prompt;

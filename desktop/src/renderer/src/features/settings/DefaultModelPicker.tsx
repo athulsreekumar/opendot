@@ -19,7 +19,7 @@ export function DefaultModelPicker() {
 		label,
 		items: items.map((m) => ({
 			value: `${m.providerId}${SEP}${m.modelId}`,
-			label: `${m.isLocal ? "🔒 " : ""}${m.label}`,
+			label: `${m.label}${m.isLocal ? " (local)" : ""}`,
 		})),
 	}));
 

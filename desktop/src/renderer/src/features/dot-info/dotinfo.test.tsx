@@ -17,7 +17,7 @@ const template: DotTemplate = {
 	draft: {
 		name: "Inbox",
 		tagline: "",
-		appearance: { emoji: "📬", color: "blue" },
+		appearance: { icon: "mail", color: "blue" },
 		persona: {
 			role: "r",
 			tone: "direct",
@@ -107,9 +107,9 @@ describe("DescribeStep", () => {
 
 describe("parsePartialJson", () => {
 	it("reads fields from an unfinished object", () => {
-		expect(parsePartialJson('{"name":"Inbox","emoji":"📬","tagline":"Your cal')).toEqual({
+		expect(parsePartialJson('{"name":"Inbox","icon":"mail","tagline":"Your cal')).toEqual({
 			name: "Inbox",
-			emoji: "📬",
+			icon: "mail",
 			tagline: "Your cal",
 		});
 		expect(parsePartialJson('```json\n{"name":"A","roles":["x","y')).toEqual({ name: "A", roles: ["x", "y"] });

@@ -36,7 +36,7 @@ function Card({ peer, peerName, verb, request, reply, state }: CardProps) {
 					<Avatar
 						size="xs"
 						color={peer.appearance.color}
-						emoji={peer.appearance.emoji}
+						icon={peer.appearance.icon}
 						name={peer.name}
 						mark={peer.kind === "super"}
 					/>

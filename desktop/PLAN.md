@@ -487,7 +487,7 @@ Acceptance always includes `npm run typecheck && npm run lint && npm test` (abbr
 #### T45 · Dot Info drawer (customisation) — **S** — deps: T41, T29 — Status: done
 - **Spec:** 10 §4.2–§4.4, 08 §6
 - **Files:** `src/renderer/src/features/dot-info/{DotInfoDrawer,IdentitySection,PersonaSection,ModelSection,PrivacySection,LinksSection,DangerZone}.tsx`
-- **Acceptance:** e2e `T45` edits name, color, emoji, tone sliders, model and PII mode. Changes persist and the header updates live. Customisation limits from spec 08 §6 are enforced. ✅green.
+- **Acceptance:** e2e `T45` edits name, color, icon, tone sliders, model and PII mode. Changes persist and the header updates live. Customisation limits from spec 08 §6 are enforced. ✅green.
 
 ### M6 — Ship
 

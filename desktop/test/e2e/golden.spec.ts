@@ -67,12 +67,18 @@ test("create a Dot from a prompt + connectors (New Dot dialog)", async () => {
 		await page.getByRole("button", { name: /create personality/i }).click();
 		await expect(page.getByRole("button", { name: /create dot/i })).toBeVisible({ timeout: 30000 });
 		await screenshot(page, "new-dot-review");
+		// The draft came with an icon from the curated set; pick another one with the searchable grid.
+		await page.getByRole("button", { name: /change icon/i }).click();
+		await page.getByLabel("Search icons").fill("money");
+		await page.getByRole("option", { name: "Wallet" }).click();
+		await screenshot(page, "new-dot-review-icon");
 		await page.getByRole("button", { name: /create dot/i }).click();
 		await expect
 			.poll(async () => (await page.evaluate(() => window.opendot.dots.list())).length, { timeout: 15000 })
 			.toBe(2);
 		const created = (await page.evaluate(() => window.opendot.dots.list())).find((d) => d.kind === "standard")!;
 		expect(created.creationPrompt).toContain("invoices");
+		expect(created.appearance.icon).toBe("wallet");
 		expect(created.grants.length).toBe(1); // mac:files granted
 		await screenshot(page, "new-dot-created");
 	} finally {

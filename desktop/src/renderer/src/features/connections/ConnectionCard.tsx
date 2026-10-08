@@ -89,7 +89,7 @@ export function UsedByStack({ dots }: { dots: Dot[] }) {
 					<Avatar
 						key={d.id}
 						size="xs"
-						emoji={d.appearance.emoji}
+						icon={d.appearance.icon}
 						color={d.appearance.color}
 						name={d.name}
 						mark={d.kind === "super"}

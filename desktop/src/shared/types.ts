@@ -109,7 +109,8 @@ export const DOT_COLORS: readonly DotColor[] = [
 ];
 
 export interface DotAppearance {
-	emoji: string;
+	/** A key from the curated set in `dot-icons.ts`. Old files had `emoji` and are migrated on load. */
+	icon: string;
 	color: DotColor;
 }
 

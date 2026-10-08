@@ -98,8 +98,8 @@ provider, "Masked this chat: 4 emails, 1 phone", and a link "Privacy settings".
      **Available** (Google: Gmail/Calendar/Drive, Microsoft: Mail/Calendar/OneDrive/Teams, Mac: Files/Shell/Calendar/Reminders/Contacts/Notes/Screen, and catalog MCPs).
      Each chip: icon + label + a ✓ when selected. Available ones show a small "set up later" hint. Multi-select.
    - Footer: "Browse templates" (link → a popover with the 10 templates) · **Create personality** (primary). The loading state streams the identity into a preview
-     card as it is generated (name → emoji → tagline → role text typing in), using the typing-dots motif.
-2. **Review**: left: a live DotListItem preview + the greeting bubble. Right: name, emoji picker (a curated grid of 120 emoji + search), color swatches (12), tagline,
+     card as it is generated (name → icon → tagline → role text typing in), using the typing-dots motif.
+2. **Review**: left: a live DotListItem preview + the greeting bubble. Right: name, icon picker (a curated grid of the Dot icon set with search by keyword), color swatches (12), tagline,
    tone (SegmentedControl), the 3 sliders, and collapsible role/quirks/dos/donts. "Connectors": the chosen ones with status (Installed ✓ / "Set up after creating").
    "Always on": a Switch (pre-set by the generator) + the suggested watchers as checkboxes. Model: Select (default first). Footer: Back · **Create Dot**.
 After creation: the dialog closes, the new Dot is selected, and the greeting appears. The greeting is never sent to the model: `DotHost.history()` prepends a
@@ -108,7 +108,7 @@ with one button per connector.
 
 ### 4.2 Dot Info drawer (Sheet) — sections in a scroll, each a card with a header
 0. **Always on** (spec 12 §5): only for standard Dots, and for Super (briefing only).
-1. **Identity**: large avatar (xl), editable name, emoji, color, tagline, roles (chip input, suggestions: assistant, comms, scheduling, research, dev, finance, personal, trusted).
+1. **Identity**: large avatar (xl), editable name, icon, color, tagline, roles (chip input, suggestions: assistant, comms, scheduling, research, dev, finance, personal, trusted).
 2. **Personality** (PersonaSection): role textarea, tone, sliders, quirks chips, Always/Never lists, custom instructions (collapsible "Advanced"), greeting.
    A "Preview prompt" button opens a Dialog with the compiled system prompt (read-only, mono). "Reset to template".
 3. **Model** (ModelSection): model Select (Default / any model) + thinking level SegmentedControl (Off · Low · Medium · High; extra levels only when the model supports them).

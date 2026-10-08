@@ -109,7 +109,7 @@ export function modelGroups(models: ModelOption[], def?: ModelRef, current?: Mod
 			label,
 			items: list.map((m) => ({
 				value: modelValue(m),
-				label: m.isLocal ? `${m.label} 🔒` : m.label,
+				label: m.isLocal ? `${m.label} (local)` : m.label,
 			})),
 		});
 	}

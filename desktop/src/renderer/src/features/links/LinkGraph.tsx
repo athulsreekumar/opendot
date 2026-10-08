@@ -166,7 +166,7 @@ export function LinkGraph({
 						<foreignObject x={p.x - NODE_R} y={p.y - NODE_R} width={NODE_R * 2} height={NODE_R * 2}>
 							<Avatar
 								size="md"
-								emoji={d.appearance.emoji}
+								icon={d.appearance.icon}
 								color={d.appearance.color}
 								name={d.name}
 								mark={d.kind === "super"}

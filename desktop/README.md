@@ -8,7 +8,7 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
 - **Any model**: cloud (Anthropic, OpenAI, Gemini, xAI/Grok, OpenRouter, Groq, Mistral, DeepSeek, …), on your computer (Ollama,
   LM Studio, llama.cpp, vLLM, auto-detected) or any OpenAI/Anthropic-compatible URL.
 - **Create a Dot from a prompt**: describe what it should do, tick the connectors it may use, and OpenDot generates its name,
-  emoji, colour, tagline and personality (streamed live). Templates are just example prompts.
+  icon, colour, tagline and personality (streamed live). Templates are just example prompts.
 - **Tools**: unlimited MCP servers (local or remote, import your Claude Desktop / Cursor config), Google Workspace, Microsoft 365,
   and computer capabilities (files, shell, screenshots, clipboard, notifications, plus Calendar, Reminders, Contacts and Notes on a Mac).
 - **Knowledge**: point OpenDot at folders of notes and documents. It indexes them on your computer (BM25 search, no

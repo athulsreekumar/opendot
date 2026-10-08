@@ -8,7 +8,7 @@
 		"name": "SuperDot",
 		"tagline": "Ask me anything. I'll check with your Dots.",
 		"appearance": {
-			"emoji": "✦",
+			"icon": "sparkles",
 			"color": "teal"
 		},
 		"roles": ["super"],

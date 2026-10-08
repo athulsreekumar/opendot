@@ -2,6 +2,7 @@ import { appendFile, mkdir, readdir, readFile, rename, rm, stat } from "node:fs/
 import { dirname, join } from "node:path";
 import { z } from "zod";
 import { defaultSettings, defaultUiState } from "../../shared/defaults";
+import { migrateDotAppearance } from "../../shared/dot-icons";
 import { newId } from "../../shared/ids";
 import {
 	ConnectionSchema,
@@ -178,7 +179,7 @@ export class DotRepo {
 			try {
 				const text = await readFile(this.paths.dotFile(id), "utf8");
 				const raw = JSON.parse(text) as { data: unknown };
-				map.set(id, DotSchema.parse(raw.data));
+				map.set(id, DotSchema.parse(migrateDotAppearance(raw.data)));
 			} catch (e) {
 				log.warn(`Skipping unreadable dot ${id}: ${(e as Error).message}`);
 			}

@@ -79,25 +79,25 @@ when it differs (spec 03 §7).
 
 Each is a `DotTemplate` (`{ id, name, category, description, draft: DotDraft }`). Write all ten, with full persona fields:
 
-| id | Name | Emoji / color | Roles | Suggested connections | Tone · verb · formal · emoji | Role summary |
+| id | Name | Icon / color | Roles | Suggested connections | Tone · verb · formal · emoji | Role summary |
 |---|---|---|---|---|---|---|
-| `general` | Dot | 💬 teal | assistant | — | warm · 40 · 40 · 25 | Friendly general helper; asks clarifying questions when needed. |
-| `inbox` | Inbox | 📬 blue | assistant, comms | google:gmail or microsoft:mail | direct · 30 · 60 · 0 | Triage email, summarise threads, draft replies in the user's voice, never sends without approval. |
-| `calendar` | Calendar | 📅 orange | assistant, scheduling | google:calendar or microsoft:calendar, mac:calendar | direct · 20 · 50 · 0 | Finds free time, schedules, protects focus blocks, always states time zones. |
-| `research` | Scout | 🔭 violet | research | fetch, context7 | neutral · 70 · 60 · 0 | Deep research with sources; separates facts from inferences; cites links. |
-| `writer` | Quill | ✍️ rose | creative | — | playful · 60 · 30 · 50 | Drafting and editing; adapts to the user's style; offers 2 variants for short copy. |
-| `dev` | Forge | 🛠️ slate | dev | mac:files, mac:shell, github | direct · 40 · 50 · 0 | Coding companion; explains changes; runs commands only with approval. |
-| `finance` | Ledger | 📊 green | finance | mac:files | formal · 50 · 80 · 0 | Budgets and spreadsheets; precise numbers; flags assumptions; no investment advice. |
-| `files` | Archivist | 🗂️ amber | assistant | mac:files, drive or onedrive | neutral · 30 · 50 · 0 | Finds, organises and summarises documents in granted folders. |
-| `planner` | Compass | 🧭 indigo | assistant, coordinator | — (links to others) | warm · 40 · 40 · 25 | Breaks goals into plans and coordinates other Dots via message_dot. |
-| `wellbeing` | Sage | 🌿 lime | personal | mac:reminders | warm · 30 · 20 · 50 | Gentle habits and reminders coach; not a therapist; suggests professional help when appropriate. |
+| `general` | Dot | message teal | assistant | — | warm · 40 · 40 · 25 | Friendly general helper; asks clarifying questions when needed. |
+| `inbox` | Inbox | mail blue | assistant, comms | google:gmail or microsoft:mail | direct · 30 · 60 · 0 | Triage email, summarise threads, draft replies in the user's voice, never sends without approval. |
+| `calendar` | Calendar | calendar orange | assistant, scheduling | google:calendar or microsoft:calendar, mac:calendar | direct · 20 · 50 · 0 | Finds free time, schedules, protects focus blocks, always states time zones. |
+| `research` | Scout | telescope violet | research | fetch, context7 | neutral · 70 · 60 · 0 | Deep research with sources; separates facts from inferences; cites links. |
+| `writer` | Quill | pen rose | creative | — | playful · 60 · 30 · 50 | Drafting and editing; adapts to the user's style; offers 2 variants for short copy. |
+| `dev` | Forge | code slate | dev | mac:files, mac:shell, github | direct · 40 · 50 · 0 | Coding companion; explains changes; runs commands only with approval. |
+| `finance` | Ledger | wallet green | finance | mac:files | formal · 50 · 80 · 0 | Budgets and spreadsheets; precise numbers; flags assumptions; no investment advice. |
+| `files` | Archivist | folder amber | assistant | mac:files, drive or onedrive | neutral · 30 · 50 · 0 | Finds, organises and summarises documents in granted folders. |
+| `planner` | Compass | compass indigo | assistant, coordinator | — (links to others) | warm · 40 · 40 · 25 | Breaks goals into plans and coordinates other Dots via message_dot. |
+| `wellbeing` | Sage | leaf lime | personal | mac:reminders | warm · 30 · 20 · 50 | Gentle habits and reminders coach; not a therapist; suggests professional help when appropriate. |
 
 Each template also includes 2–4 `dos`, 2–4 `donts`, 0–2 `quirks`, and a greeting. Example (`inbox`):
 ```json
 { "id": "inbox", "name": "Inbox", "category": "Productivity", "description": "Email triage, summaries and replies.",
   "draft": {
     "name": "Inbox", "tagline": "Your calm email co-pilot",
-    "appearance": { "emoji": "📬", "color": "blue" },
+    "appearance": { "icon": "mail", "color": "blue" },
     "roles": ["assistant", "comms"],
     "persona": {
       "role": "You are Inbox, the user's email assistant. You triage new mail, summarise long threads into decisions and action items, and draft replies that sound like the user.",
@@ -115,7 +115,7 @@ Each template also includes 2–4 `dos`, 2–4 `donts`, 0–2 `quirks`, and a gr
 ## 5. Creating a Dot from a prompt + connectors (`src/main/dots/dot-architect.ts`)
 
 **This is the primary way to create a Dot.** The user writes what the Dot should do and (optionally) picks the connectors it may use.
-Both inputs shape its **identity** (name, emoji, color, tagline) and **personality** (role, tone, sliders, quirks, dos/don'ts, greeting).
+Both inputs shape its **identity** (name, icon, color, tagline) and **personality** (role, tone, sliders, quirks, dos/don'ts, greeting).
 Templates are just examples that prefill these two inputs.
 
 `draftFromDescription(input: { prompt: string; connectors: ConnectorChoice[] }, requestId?: string): Promise<DotDraft>`
@@ -129,7 +129,7 @@ export interface ConnectorChoice { id: string; label: string; kind: "installed" 
   You design personal AI assistants ("Dots") for the OpenDot app. The user describes what the Dot should do and which connectors (tools/data
   sources) it can use. Create a distinct identity and a personality that fits the job AND the connectors (e.g. an email Dot is concise and careful
   about sending; a research Dot with web access cites sources). Output ONLY a JSON object, with no prose and no code fences, of this shape:
-  { name: string(≤24, a short memorable name, not generic like "Assistant"), tagline: string(≤60), emoji: one emoji, color: one of
+  { name: string(≤24, a short memorable name, not generic like "Assistant"), tagline: string(≤60), icon: one key from the curated icon set (the prompt lists every key; no emoji), color: one of
     [teal,green,lime,amber,orange,rose,pink,violet,indigo,blue,sky,slate],
     roles: string[](≤3, lowercase), role: string(60–600, second person "You are …", mention how it uses each connector),
     tone: warm|neutral|playful|direct|formal, verbosity: 0–100, formality: 0–100, emojiUsage: 0|25|50|75|100,
@@ -144,7 +144,7 @@ Connectors it can use:
 - <label> (<id>, <installed|not yet installed>)…` (or "none").
   Valid watcher types per connector are given in the prompt (`google:gmail → gmail`, `google:calendar → google-calendar`, `mac:files → folder`, …, spec 12 §4).
 - Parse: strip code fences → `JSON.parse` → zod. On failure, make one repair call with the zod issues. A second failure → `OpenDotError("DRAFT_FAILED")`.
-- Map to `DotDraft`: clamp numbers, dedupe roles, `appearance` from emoji + color, `suggestedConnections = connectors.map(c => c.id)`, `alwaysOn` +
+- Map to `DotDraft`: clamp numbers, dedupe roles, `appearance` from icon + color (the icon is validated against the curated set; an invented key falls back to keyword matching on name and tagline, an emoji from an older style reply goes through the emoji-to-icon table), `suggestedConnections = connectors.map(c => c.id)`, `alwaysOn` +
   `suggestedWatchers` filtered to types whose requirements the chosen connectors satisfy.
 - On create (`dots.create`): grants are created for every chosen connector that is **installed** (default decisions from spec 06 §3). Connectors that are
   not installed yet are listed on the new Dot's greeting card as "Set up Gmail →" buttons; once installed, the grant is added automatically
@@ -156,7 +156,7 @@ Connectors it can use:
 
 ## 6. Customisation limits (enforced in zod schemas and UI)
 
-- Name 1–32 chars, unique among non-archived Dots (case-insensitive). Emoji = exactly one grapheme (`Intl.Segmenter`).
+- Name 1–32 chars, unique among non-archived Dots (case-insensitive). Icon = a key from the curated set (`src/shared/dot-icons.ts`). Old Dots with `appearance.emoji` are migrated on load; `emojiUsage` only controls emoji in the Dot's own replies.
 - Color from the palette only (keeps the design system coherent; no free hex).
 - Max 50 Dots (soft limit, warning at 30).
 - Changing `model` / `thinkingLevel` applies live. Persona or grant changes apply from the next message (a toast says so).

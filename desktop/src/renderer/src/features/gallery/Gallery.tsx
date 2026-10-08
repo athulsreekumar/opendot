@@ -150,20 +150,20 @@ function Showcase() {
 			<Section title="Avatar">
 				<Row>
 					{(["xs", "sm", "md", "lg", "xl"] as const).map((s) => (
-						<Avatar key={s} size={s} name={s} emoji="🦊" color="teal" />
+						<Avatar key={s} size={s} name={s} icon="sparkles" color="teal" />
 					))}
 				</Row>
 				<Row>
-					<Avatar name="online" emoji="📬" color="green" status="online" />
-					<Avatar name="busy" emoji="🗓" color="amber" status="busy" />
-					<Avatar name="away" emoji="🌙" color="lime" status="away" />
-					<Avatar name="error" emoji="⚠" color="orange" status="error" />
-					<Avatar name="ring" emoji="🎧" color="teal" ring />
+					<Avatar name="online" icon="mail" color="green" status="online" />
+					<Avatar name="busy" icon="calendar" color="amber" status="busy" />
+					<Avatar name="away" icon="moon" color="lime" status="away" />
+					<Avatar name="error" icon="bell" color="orange" status="error" />
+					<Avatar name="ring" icon="headphones" color="teal" ring />
 					<Avatar name="super" color="teal" mark />
 				</Row>
 				<Row>
 					{DOT_COLORS.map((c) => (
-						<Avatar key={c} size="sm" name={c} emoji="●" color={c} />
+						<Avatar key={c} size="sm" name={c} icon="message" color={c} />
 					))}
 				</Row>
 			</Section>

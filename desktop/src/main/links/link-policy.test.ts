@@ -11,7 +11,7 @@ function dot(id: string, over: Partial<Dot> = {}): Dot {
 		kind: "standard",
 		name,
 		tagline: "",
-		appearance: { color: "teal", emoji: "A" },
+		appearance: { color: "teal", icon: "mail" },
 		persona: defaultPersona(name),
 		suggestedConnections: [],
 		thinkingLevel: "off",

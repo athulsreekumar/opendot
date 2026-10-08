@@ -18,7 +18,7 @@ export function card(d: Dot, local: boolean): string {
 	if (d.profile.dataSources.length)
 		lines.push(`Watches: ${d.profile.dataSources.join(" · ")}${d.alwaysOn.enabled ? " · always on" : ""}`);
 	if (d.profile.knowledgeSummary) lines.push(`Knows now: ${d.profile.knowledgeSummary}`);
-	lines.push(`Roles: ${d.roles.join(", ") || "—"}${local ? " · Model: local 🔒" : ""}`);
+	lines.push(`Roles: ${d.roles.join(", ") || "—"}${local ? " · Model: local" : ""}`);
 	return lines.join("\n").slice(0, 700);
 }
 

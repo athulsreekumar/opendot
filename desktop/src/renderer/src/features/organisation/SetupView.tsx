@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { navigate } from "@/app/router";
 import { cn } from "@/design-system/cn";
 import { Avatar, Button, Input, toast } from "@/design-system/components";
+import { DotIcon } from "@/design-system/dot-icon-map";
 import { api, errorText } from "@/lib/api";
 import { useOrganisation } from "@/stores/organisation";
 import { CheckRow, Field, Unavailable } from "./shared-ui";
@@ -12,7 +13,7 @@ function DomainAvatars({ ids, domains }: { ids: string[]; domains: OrgDomain[] }
 	return (
 		<div className="flex -space-x-1.5" aria-hidden>
 			{list.slice(0, 8).map((d) => (
-				<Avatar key={d.id} size="xs" name={d.name} emoji={d.emoji} color={d.color} className="ring-2 ring-elevated" />
+				<Avatar key={d.id} size="xs" name={d.name} icon={d.icon} color={d.color} className="ring-2 ring-elevated" />
 			))}
 			{list.length > 8 && (
 				<span className="flex h-6 w-6 items-center justify-center rounded-full bg-active text-2xs text-fg-2">
@@ -142,7 +143,7 @@ export function SetupView() {
 									checked={ticked.includes(d.id)}
 									onChange={(on) => setTicked((cur) => (on ? [...cur, d.id] : cur.filter((x) => x !== d.id)))}
 								>
-									<span aria-hidden>{d.emoji}</span>
+									<DotIcon name={d.icon} size={16} className="shrink-0" />
 									<span>{d.name}</span>
 									<span className="truncate text-xs text-fg-3">{d.tagline}</span>
 								</CheckRow>

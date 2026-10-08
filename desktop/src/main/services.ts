@@ -547,7 +547,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 			}
 		} else if (isFocused(dot.id)) return;
 		bridge.notify({
-			title: importance === "urgent" ? `⚠ ${dot.name}` : dot.name,
+			title: importance === "urgent" ? `Urgent: ${dot.name}` : dot.name,
 			body: s.notifications.showPreview ? text.replace(/\s+/g, " ").slice(0, 180) : "New message",
 			silent: !s.notifications.sound,
 			dotId: dot.id,

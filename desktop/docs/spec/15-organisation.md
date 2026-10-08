@@ -38,7 +38,7 @@ Deliverable files are written by the Dots inside their own workspace: `dots/<dot
   `full` (all 13).
 - `org.setup({ templateId, name?, domains? })` creates one Dot per domain through `DotService.create` (see how the New Dot flow and
   `src/main/dots/templates` build a persona; use the same `Persona` shape, no model call). Rules:
-  - Name = the domain name ("Engineering"), emoji and colour from the domain, `roles: [domain, "org"]`, tagline from the domain.
+  - Name = the domain name ("Engineering"), icon and colour from the domain (`OrgDomain.icon`, a key from the Dot icon set), `roles: [domain, "org"]`, tagline from the domain.
   - Skip a domain that already has a member. Idempotent: running setup twice must not duplicate Dots.
   - Grants: `engineering`, `it` and `data` get the built-in computer connection (This Mac / This PC) with files and shell if it is available (use the same
     grant shape the app already uses for Dots created with that connection); every other domain gets files only. All other connections stay off, so the user decides

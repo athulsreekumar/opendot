@@ -3,6 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { type CSSProperties, forwardRef } from "react";
 import { cn } from "../cn";
 import { dotColorVars } from "../dot-colors";
+import { DotIcon } from "../dot-icon-map";
 
 const avatarVariants = cva("relative inline-flex items-center justify-center rounded-full font-semibold", {
 	variants: {
@@ -27,6 +28,15 @@ const sizeMap = {
 	xl: 96,
 };
 
+/** Icon pixel size and stroke width per avatar size, so strokes look the same weight everywhere. */
+const iconMetrics = {
+	xs: { size: 14, stroke: 2 },
+	sm: { size: 17, stroke: 2 },
+	md: { size: 21, stroke: 1.75 },
+	lg: { size: 25, stroke: 1.75 },
+	xl: { size: 46, stroke: 1.5 },
+};
+
 const statusSizeMap = {
 	xs: 8,
 	sm: 10,
@@ -36,7 +46,8 @@ const statusSizeMap = {
 };
 
 export interface AvatarProps extends VariantProps<typeof avatarVariants> {
-	emoji?: string;
+	/** A Dot icon key (`@shared/dot-icons`). Unknown keys show the neutral default. */
+	icon?: string;
 	color: DotColor;
 	status?: "online" | "busy" | "away" | "error";
 	ring?: boolean;
@@ -61,7 +72,7 @@ const BrandMark = ({ size }: { size: number }) => {
 };
 
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
-	({ size = "md", emoji, color, status, ring, name, mark, className }, ref) => {
+	({ size = "md", icon, color, status, ring, name, mark, className }, ref) => {
 		const sizeValue = size || "md";
 		const pixelSize = sizeMap[sizeValue];
 		const statusSize = statusSizeMap[sizeValue];
@@ -87,7 +98,11 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
 				role="img"
 				aria-label={name}
 			>
-				{mark ? <BrandMark size={Math.round(pixelSize * 0.6)} /> : emoji && <span>{emoji}</span>}
+				{mark ? (
+					<BrandMark size={Math.round(pixelSize * 0.6)} />
+				) : (
+					icon && <DotIcon name={icon} size={iconMetrics[sizeValue].size} strokeWidth={iconMetrics[sizeValue].stroke} />
+				)}
 
 				{status && (
 					<div

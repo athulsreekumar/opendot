@@ -7,7 +7,7 @@ attributions. It doesn't need tools of its own; its tools are the other Dots.
 ## 1. The Super Dot
 
 - Created on first run by `DotService.ensureSuperBot()` (idempotent, also run on every startup): `kind: "super"`, name "Super", tagline
-  "Ask me anything. I'll check with your Dots.", appearance `{ emoji: "✦", color: "teal" }` (rendered with the brand mark instead of the emoji in the list),
+  "Ask me anything. I'll check with your Dots.", appearance `{ icon: "sparkles", color: "teal" }` (rendered with the brand mark instead of the icon in the list),
   `alwaysOn.enabled: false` (it can be turned on for briefings, §6), `grants: []`, `roles: ["super"]`, persona from `templates/super.json`.
 - It **can't be deleted or archived** (the IPC rejects with `SUPER_IMMUTABLE`). Name, appearance, persona, model and grants are editable.
 - It's **always pinned first** in the list (above user-pinned Dots), with a subtle accent-subtle row background.

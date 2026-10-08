@@ -174,7 +174,7 @@ export function ActivityScreen() {
 										{d && (
 											<Avatar
 												size="xs"
-												emoji={d.appearance.emoji}
+												icon={d.appearance.icon}
 												color={d.appearance.color}
 												name={d.name}
 												mark={d.kind === "super"}
@@ -210,7 +210,7 @@ function HealthRow({ dot, health }: { dot: Dot; health?: DotHealth }) {
 				<span className="flex items-center gap-2 text-fg">
 					<Avatar
 						size="xs"
-						emoji={dot.appearance.emoji}
+						icon={dot.appearance.icon}
 						color={dot.appearance.color}
 						name={dot.name}
 						mark={dot.kind === "super"}

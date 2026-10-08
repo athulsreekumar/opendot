@@ -83,7 +83,7 @@ export function SuperSection() {
 					{standard.map((d: Dot) => (
 						<li key={d.id} className="flex items-center justify-between gap-3 rounded-md bg-sunken px-3 py-2">
 							<span className="flex min-w-0 items-center gap-2 text-sm text-fg">
-								<Avatar size="xs" name={d.name} emoji={d.appearance.emoji} color={d.appearance.color} />
+								<Avatar size="xs" name={d.name} icon={d.appearance.icon} color={d.appearance.color} />
 								<span className="truncate">{d.name}</span>
 							</span>
 							<span className="flex items-center gap-2 text-xs text-fg-2">

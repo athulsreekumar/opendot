@@ -74,7 +74,7 @@ export const DotSchema = z.object({
 	kind: z.enum(["standard", "super"]),
 	name: z.string().min(1).max(LIMITS.nameMax),
 	tagline: z.string().max(LIMITS.taglineMax * 2),
-	appearance: z.object({ emoji: z.string().min(1).max(16), color: DotColorSchema }),
+	appearance: z.object({ icon: z.string().min(1).max(40), color: DotColorSchema }),
 	persona: PersonaSchema,
 	templateId: z.string().optional(),
 	creationPrompt: z.string().max(LIMITS.creationPromptMax).optional(),

@@ -19,7 +19,7 @@ Dependencies are installed. **Never run npm install, never edit package.json, ne
   listWidth, setListWidth, newDotOpen, setNewDotOpen, drafts, setDraft, focused). Events from main are already wired into these stores.
   Subscribe with selectors (`useChat((s) => s.byDot[id])`) to avoid re-rendering on unrelated changes.
 - Design system: `@/design-system/components` (Button, IconButton (requires `label`), Input, TextArea (autoGrow/maxRows/showCount), Switch,
-  Badge, Avatar (emoji, color, size xs|sm|md|lg|xl, status, ring, name, mark), Tooltip/TooltipProvider, Dialog/DialogFooter, Sheet, Menu/MenuTrigger/
+  Badge, Avatar (icon, color, size xs|sm|md|lg|xl, status, ring, name, mark), Tooltip/TooltipProvider, Dialog/DialogFooter, Sheet, Menu/MenuTrigger/
   MenuContent/MenuItem/MenuSeparator, Select (groups), Slider, Tabs/TabsList/TabsTrigger/TabsContent, SegmentedControl, ScrollArea, toast()/Toaster,
   EmptyState, Spinner, Kbd, StatusPill). Read the component files for exact props. `@/design-system/icons` (semantic lucide icons),
   `@/design-system/cn` (`cn(...)`), `@/design-system/dot-colors` (`dotColorVars(color)`).
@@ -27,7 +27,7 @@ Dependencies are installed. **Never run npm install, never edit package.json, ne
   border-border-subtle bg-accent text-accent-fg bg-accent-subtle text-accent bg-bubble-out bg-bubble-in bg-bubble-system bg-bubble-link text-success
   bg-success-subtle text-warning bg-warning-subtle text-danger bg-danger-subtle …`), font sizes `text-2xs … text-4xl`, radius `rounded-bubble`, shadows
   `shadow-bubble`. The chat wallpaper class is `od-chat-wallpaper`. Drag regions: `od-drag` / `od-no-drag`. Selectable text: `od-selectable`.
-- Dot avatar colours: `<Avatar color={dot.appearance.color} emoji={dot.appearance.emoji} name={dot.name} mark={dot.kind === "super"} />`.
+- Dot avatar colours: `<Avatar color={dot.appearance.color} icon={dot.appearance.icon} name={dot.name} mark={dot.kind === "super"} />`.
 
 ## Conventions
 - Named exports, function components, files in your feature folder. Copy text = sentence case, friendly, no jargon.

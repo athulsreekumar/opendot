@@ -116,7 +116,7 @@ export function DotListItem({ dot, selected = false, static: isStatic = false }:
 				<Avatar
 					size="md"
 					name={dot.name}
-					emoji={dot.appearance.emoji}
+					icon={dot.appearance.icon}
 					color={dot.appearance.color}
 					mark={isSuper}
 					status={avatarStatus}

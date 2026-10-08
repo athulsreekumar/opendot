@@ -294,10 +294,10 @@ Track 32×18, thumb 14, accent when checked. `label` + optional `description` re
 `success | warning | danger | info` (subtle bg + solid fg, h 20, px 6, radius sm, text-2xs medium) · `outline`.
 
 ### 4.7 Avatar (DotAvatar)
-Props: `emoji`, `color: DotColor`, `size: xs 24 | sm 32 | md 40 | lg 48 | xl 96`, `status?: "online"|"busy"|"away"|"error"`, `ring?: boolean`.
-Circle with fill `--dot-soft`, emoji centred at 55% of the size, optional 2px ring `--dot`. Status = 10px dot (xl: 18px) at the bottom-right
+Props: `icon` (a key from the curated set in `src/shared/dot-icons.ts`, see §6.1), `color: DotColor`, `size: xs 24 | sm 32 | md 40 | lg 48 | xl 96`, `status?: "online"|"busy"|"away"|"error"`, `ring?: boolean`.
+Circle with fill `--dot-soft`, a lucide icon in `--dot` centred (icon size / stroke width per avatar size: xs 14 / 2, sm 17 / 2, md 21 / 1.75, lg 25 / 1.75, xl 46 / 1.5), optional 2px ring `--dot`. Status = 10px dot (xl: 18px) at the bottom-right
 with a 2px border in the sidebar bg: online = success, busy = accent with a pulse (thinking), away = fg-3, error = danger.
-`aria-label` = Dot name (passed as `name`).
+`aria-label` = Dot name (passed as `name`). `mark` shows the SuperDot brand mark instead of the icon. The product uses no emoji as decoration.
 
 ### 4.8 Tooltip (Radix)
 Delay 500 ms (0 inside a toolbar group). bg `fg` (inverted), text inverse, text-xs, radius sm, px 8, py 4, max-w 240. Optional `kbd` shortcut on the right.
@@ -389,6 +389,12 @@ side by side (each column sets `data-theme` on its wrapper). This is the visual 
 ## 6. Icons
 lucide-react only. `design-system/icons.ts` re-exports the used icons under semantic names (`IconSend = ArrowUp`, `IconStop = Square`,
 `IconApprove = ShieldCheck`, …), so swapping a glyph is one edit. Stroke width 1.75. Sizes 16 (inline), 18 (buttons), 20 (rail).
+
+### 6.1 Dot icons
+`src/shared/dot-icons.ts` holds the curated set (80 keys such as `mail`, `calendar`, `wallet`, `shield`, each with a label and search keywords) and the helpers
+main and renderer share: `resolveDotIcon`, `normalizeIconKey`, `searchDotIcons`, `migrateDotAppearance`. It has no React. The renderer maps key to lucide
+component in `design-system/dot-icon-map.tsx` (`<DotIcon name=…/>`, a unit test checks every key has a component). `IconPicker` (New Dot → Review, Dot Info →
+Identity) is a searchable grid of the set. Old Dots with `appearance.emoji` are migrated on load (emoji table, then name/tagline keywords, then `message`).
 
 ## 7. App icon & brand mark
 Mark: a rounded square (radius 22%) in accent with **three white dots in a gentle arc** (the typing indicator, frozen). T50 produces `build/icon.icns`

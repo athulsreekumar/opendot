@@ -39,7 +39,7 @@ const dot = (id: string, name: string, kind: "super" | "standard" = "standard") 
 		kind,
 		tagline: "",
 		archived: false,
-		appearance: { emoji: "🙂", color: "teal" },
+		appearance: { icon: "user", color: "teal" },
 	}) as unknown as Dot;
 
 beforeEach(() => {
@@ -70,7 +70,7 @@ describe("QuickAsk", () => {
 		const input = screen.getByPlaceholderText("Ask SuperDot, or @ a Dot") as HTMLInputElement;
 		fireEvent.change(input, { target: { value: "@", selectionStart: 1 } });
 		expect(await screen.findByRole("listbox", { name: "Mention a Dot" })).toBeTruthy();
-		expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual(["🙂Inbox", "🙂Calendar"]);
+		expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual(["Inbox", "Calendar"]);
 		fireEvent.keyDown(input, { key: "ArrowDown" });
 		fireEvent.keyDown(input, { key: "Enter" });
 		await waitFor(() => expect(input.value).toBe("@Calendar "));

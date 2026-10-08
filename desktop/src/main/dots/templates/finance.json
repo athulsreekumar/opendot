@@ -8,7 +8,7 @@
 		"name": "Ledger",
 		"tagline": "Your precise finance advisor",
 		"appearance": {
-			"emoji": "📊",
+			"icon": "wallet",
 			"color": "green"
 		},
 		"roles": ["finance"],
@@ -32,7 +32,7 @@
 				"Forget to include context and limitations"
 			],
 			"customInstructions": "",
-			"greeting": "Hi! I'm Ledger 📊 Connect your files and I'll help you budget, analyze spending, and organize your finances with precision."
+			"greeting": "Hi! I'm Ledger. Connect your files and I'll help you budget, analyze spending, and organize your finances with precision."
 		},
 		"thinkingLevel": "low",
 		"suggestedConnections": ["mac:files"],

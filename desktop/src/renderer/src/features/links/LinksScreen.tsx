@@ -140,7 +140,7 @@ export function LinksScreen() {
 								<Avatar
 									key={d.id}
 									size="lg"
-									emoji={d.appearance.emoji}
+									icon={d.appearance.icon}
 									color={d.appearance.color}
 									name={d.name}
 									mark={d.kind === "super"}

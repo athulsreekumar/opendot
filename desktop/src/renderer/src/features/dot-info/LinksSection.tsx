@@ -18,7 +18,7 @@ function DotChips({ dots, empty }: { dots: Dot[]; empty: string }) {
 					<Avatar
 						size="xs"
 						name={d.name}
-						emoji={d.appearance.emoji}
+						icon={d.appearance.icon}
 						color={d.appearance.color}
 						mark={d.kind === "super"}
 					/>

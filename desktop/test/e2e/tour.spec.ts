@@ -45,6 +45,13 @@ test("screen tour renders without errors", async () => {
 			.click();
 		await page.waitForTimeout(700);
 		await screenshot(page, "dot-info");
+		await page.getByRole("button", { name: /change icon/i }).click();
+		await page.getByLabel("Search icons").fill("triage");
+		await screenshot(page, "dot-info-icon-picker");
+		await page.getByRole("option", { name: "Inbox" }).click();
+		await expect
+			.poll(async () => (await page.evaluate((id) => window.opendot.dots.get(id), id)).appearance.icon)
+			.toBe("inbox");
 		await page.evaluate(() => {
 			window.location.hash = "#/connections";
 		});

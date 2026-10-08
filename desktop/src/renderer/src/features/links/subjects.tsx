@@ -27,13 +27,7 @@ export function SubjectChip({ subject, dots }: { subject: LinkSubject; dots: Dot
 		if (!d) return <span className="text-sm text-fg-3">Removed Dot</span>;
 		return (
 			<span className="inline-flex items-center gap-1.5 text-sm text-fg">
-				<Avatar
-					size="xs"
-					emoji={d.appearance.emoji}
-					color={d.appearance.color}
-					name={d.name}
-					mark={d.kind === "super"}
-				/>
+				<Avatar size="xs" icon={d.appearance.icon} color={d.appearance.color} name={d.name} mark={d.kind === "super"} />
 				{d.name}
 			</span>
 		);

@@ -202,7 +202,7 @@ export class TeamService {
 			draft: {
 				name: domain.name,
 				tagline: domain.tagline,
-				appearance: { emoji: domain.emoji, color: domain.color },
+				appearance: { icon: domain.icon, color: domain.color },
 				persona: personaForDomain(domain),
 				suggestedConnections: suggested,
 				roles: [domain.id, ORG_ROLE],

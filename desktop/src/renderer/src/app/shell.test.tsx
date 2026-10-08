@@ -26,7 +26,7 @@ function makeDot(over: Partial<Dot> & { id: string; name: string }): Dot {
 	return {
 		kind: "standard",
 		tagline: "",
-		appearance: { emoji: "📬", color: "teal" },
+		appearance: { icon: "mail", color: "teal" },
 		lastActivityAt: new Date().toISOString(),
 		lastMessagePreview: "",
 		unreadCount: 0,

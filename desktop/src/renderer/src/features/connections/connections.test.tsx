@@ -83,7 +83,7 @@ describe("LinkRuleEditor", () => {
 					name: "A",
 					archived: false,
 					roles: ["finance"],
-					appearance: { emoji: "A", color: "teal" },
+					appearance: { icon: "mail", color: "teal" },
 				} as unknown as Dot,
 			],
 		});

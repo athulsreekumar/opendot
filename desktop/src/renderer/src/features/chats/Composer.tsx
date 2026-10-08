@@ -49,7 +49,7 @@ export function MentionPicker({ dots, index, onPick }: { dots: Dot[]; index: num
 						i === index && "bg-hover",
 					)}
 				>
-					<Avatar size="xs" color={d.appearance.color} emoji={d.appearance.emoji} name={d.name} />
+					<Avatar size="xs" color={d.appearance.color} icon={d.appearance.icon} name={d.name} />
 					<span className="truncate">{d.name}</span>
 				</button>
 			))}

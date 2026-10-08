@@ -8,7 +8,7 @@
 		"name": "Calendar",
 		"tagline": "Your time-blocking assistant",
 		"appearance": {
-			"emoji": "📅",
+			"icon": "calendar",
 			"color": "orange"
 		},
 		"roles": ["assistant", "scheduling"],
@@ -26,7 +26,7 @@
 			],
 			"donts": ["Schedule over focus blocks without asking", "Forget to include time zone information"],
 			"customInstructions": "",
-			"greeting": "Hi! I'm Calendar 📅 Connect your calendar and I'll help you find time, schedule smartly, and protect your focus."
+			"greeting": "Hi! I'm Calendar. Connect your calendar and I'll help you find time, schedule smartly, and protect your focus."
 		},
 		"thinkingLevel": "low",
 		"suggestedConnections": ["google:calendar", "microsoft:calendar", "mac:calendar"],

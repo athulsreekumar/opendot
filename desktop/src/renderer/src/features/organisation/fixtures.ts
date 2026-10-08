@@ -13,25 +13,25 @@ import type { Dot } from "@shared/types";
 export const A = "dot_eng" as Dot["id"];
 export const B = "dot_sec" as Dot["id"];
 
-export function dot(id: Dot["id"], name: string, emoji: string): Dot {
+export function dot(id: Dot["id"], name: string, icon: string): Dot {
 	return {
 		id,
 		kind: "standard",
 		name,
-		appearance: { emoji, color: "teal" },
+		appearance: { icon, color: "teal" },
 		archived: false,
 		pinned: false,
 		lastActivityAt: "2026-01-01T00:00:00Z",
 	} as unknown as Dot;
 }
 
-export const DOTS: Dot[] = [dot(A, "Engineering", "E"), dot(B, "Security", "S")];
+export const DOTS: Dot[] = [dot(A, "Engineering", "wrench"), dot(B, "Security", "shield")];
 
 export const DOMAINS: OrgDomain[] = [
 	{
 		id: "engineering",
 		name: "Engineering",
-		emoji: "E",
+		icon: "wrench",
 		color: "teal",
 		tagline: "Builds it",
 		skillIds: [],
@@ -40,13 +40,13 @@ export const DOMAINS: OrgDomain[] = [
 	{
 		id: "security",
 		name: "Security",
-		emoji: "S",
+		icon: "shield",
 		color: "teal",
 		tagline: "Keeps it safe",
 		skillIds: [],
 		reviewedBy: [],
 	},
-	{ id: "hr", name: "HR", emoji: "H", color: "teal", tagline: "People", skillIds: [], reviewedBy: [] },
+	{ id: "hr", name: "HR", icon: "sprout", color: "teal", tagline: "People", skillIds: [], reviewedBy: [] },
 ];
 
 export const TEMPLATES: OrgTemplate[] = [

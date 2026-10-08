@@ -26,7 +26,7 @@ function MemberCard({ m, onSkills, onRemove }: { m: OrgMember; onSkills: () => v
 			className="flex h-full flex-col gap-3 rounded-lg border border-border-subtle bg-elevated p-4"
 		>
 			<div className="flex items-center gap-3">
-				<Avatar size="md" name={info.name} emoji={info.emoji} color={info.color} />
+				<Avatar size="md" name={info.name} icon={info.icon} color={info.color} />
 				<div className="min-w-0">
 					<h3 className="truncate text-md font-semibold text-fg">{info.name}</h3>
 					<p className="truncate text-xs text-fg-3">

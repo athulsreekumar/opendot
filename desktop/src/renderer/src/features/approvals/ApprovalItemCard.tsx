@@ -97,7 +97,7 @@ export function ApprovalItemCard({
 					<Avatar
 						size="sm"
 						name={dotName}
-						emoji={dot?.appearance.emoji}
+						icon={dot?.appearance.icon}
 						color={dot?.appearance.color ?? "teal"}
 						mark={dot?.kind === "super"}
 					/>

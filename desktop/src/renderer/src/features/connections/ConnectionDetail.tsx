@@ -198,7 +198,7 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 							>
 								<Avatar
 									size="xs"
-									emoji={d.appearance.emoji}
+									icon={d.appearance.icon}
 									color={d.appearance.color}
 									name={d.name}
 									mark={d.kind === "super"}

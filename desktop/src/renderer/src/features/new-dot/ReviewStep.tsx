@@ -2,6 +2,7 @@ import type { ConnectorChoice, DotDraft, SuggestedWatcher } from "@shared/types"
 import { useMemo, useState } from "react";
 import { navigate } from "@/app/router";
 import { Avatar, Badge, Button, Input, Select, Switch, toast } from "@/design-system/components";
+import { DotIcon } from "@/design-system/dot-icon-map";
 import { IconCheck } from "@/design-system/icons";
 import { PersonaEditor } from "@/features/dot-info/editors";
 import { Field, modelGroups, modelValue, parseModelValue } from "@/features/dot-info/ui";
@@ -9,7 +10,7 @@ import { errorText } from "@/lib/api";
 import { useDots } from "@/stores/dots";
 import { useSettings } from "@/stores/settings";
 import { ColorSwatches } from "./ColorSwatches";
-import { EmojiPicker } from "./EmojiPicker";
+import { IconPicker } from "./IconPicker";
 
 export function ReviewStep({
 	draft: initial,
@@ -28,7 +29,7 @@ export function ReviewStep({
 	const [alwaysOn, setAlwaysOn] = useState(Boolean(initial.alwaysOn?.enabled));
 	const suggested = initial.suggestedWatchers ?? [];
 	const [watcherOn, setWatcherOn] = useState<boolean[]>(() => suggested.map(() => true));
-	const [emojiOpen, setEmojiOpen] = useState(false);
+	const [iconOpen, setIconOpen] = useState(false);
 	const [busy, setBusy] = useState(false);
 	const models = useSettings((s) => s.models);
 	const defaultModel = useSettings((s) => s.settings?.defaultModel);
@@ -70,7 +71,7 @@ export function ReviewStep({
 						<Avatar
 							size="md"
 							name={draft.name || "New Dot"}
-							emoji={draft.appearance.emoji}
+							icon={draft.appearance.icon}
 							color={draft.appearance.color}
 						/>
 						<div className="min-w-0 flex-1">
@@ -96,18 +97,18 @@ export function ReviewStep({
 						/>
 					</Field>
 
-					<Field label="Emoji">
+					<Field label="Icon">
 						<div>
-							<Button variant="secondary" aria-expanded={emojiOpen} onClick={() => setEmojiOpen(!emojiOpen)}>
-								<span className="text-xl">{draft.appearance.emoji}</span> Change emoji
+							<Button variant="secondary" aria-expanded={iconOpen} onClick={() => setIconOpen(!iconOpen)}>
+								<DotIcon name={draft.appearance.icon} size={18} /> Change icon
 							</Button>
 						</div>
-						{emojiOpen && (
-							<EmojiPicker
-								value={draft.appearance.emoji}
-								onChange={(emoji) => {
-									patch({ appearance: { ...draft.appearance, emoji } });
-									setEmojiOpen(false);
+						{iconOpen && (
+							<IconPicker
+								value={draft.appearance.icon}
+								onChange={(icon) => {
+									patch({ appearance: { ...draft.appearance, icon } });
+									setIconOpen(false);
 								}}
 							/>
 						)}

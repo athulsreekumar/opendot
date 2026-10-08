@@ -8,7 +8,8 @@ import type { DotColor, DotId, ISODate } from "./types";
 export interface OrgDomain {
 	id: string;
 	name: string;
-	emoji: string;
+	/** A key from the curated Dot icon set (`dot-icons.ts`). */
+	icon: string;
 	color: DotColor;
 	tagline: string;
 	/** Built-in skill ids this domain's Dot starts with. */

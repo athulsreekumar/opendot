@@ -75,7 +75,7 @@ describe("Composer", () => {
 		name: "Inbox",
 		kind: "standard",
 		hiddenFromSuper: false,
-		appearance: { color: "teal", emoji: "x" },
+		appearance: { color: "teal", icon: "message" },
 	} as unknown as Dot;
 	const send = vi.fn();
 	beforeEach(() => {

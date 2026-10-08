@@ -1,4 +1,5 @@
 import { LIMITS } from "@shared/defaults";
+import { isDotIconKey } from "@shared/dot-icons";
 import { DotColorSchema, PersonaSchema, ThinkingSchema } from "@shared/schemas";
 import type { DotTemplate } from "@shared/types";
 import { describe, expect, it } from "vitest";
@@ -6,7 +7,7 @@ import { z } from "zod";
 import { SUPER_TEMPLATE, TEMPLATES } from "./index";
 
 const DotAppearanceSchema = z.object({
-	emoji: z.string().min(1).max(16),
+	icon: z.string().refine(isDotIconKey, "not in the curated icon set"),
 	color: DotColorSchema,
 });
 

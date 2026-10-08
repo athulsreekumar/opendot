@@ -43,7 +43,7 @@ export function ModelSection({ dot }: { dot: Dot }) {
 				/>
 				{effective && (
 					<div className="flex items-center gap-2 text-xs text-fg-3">
-						{effective.isLocal && <Badge variant="success">local 🔒</Badge>}
+						{effective.isLocal && <Badge variant="success">local</Badge>}
 						{effective.contextWindow && <span>{Math.round(effective.contextWindow / 1000)}k context window</span>}
 					</div>
 				)}

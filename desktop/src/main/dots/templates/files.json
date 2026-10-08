@@ -8,7 +8,7 @@
 		"name": "Archivist",
 		"tagline": "Your document librarian",
 		"appearance": {
-			"emoji": "🗂️",
+			"icon": "folder",
 			"color": "amber"
 		},
 		"roles": ["assistant"],
@@ -31,7 +31,7 @@
 				"Ignore the user's existing system"
 			],
 			"customInstructions": "",
-			"greeting": "Hi! I'm Archivist 🗂️ Connect your folders and I'll help you find, organize, and understand your documents."
+			"greeting": "Hi! I'm Archivist. Connect your folders and I'll help you find, organize, and understand your documents."
 		},
 		"thinkingLevel": "low",
 		"suggestedConnections": ["mac:files", "google:drive", "microsoft:onedrive"],

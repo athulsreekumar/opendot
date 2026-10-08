@@ -43,7 +43,7 @@ export function setupBackground(opts: {
 			{ label: "Open OpenDot", click: () => opts.showWindow() },
 			{ type: "separator" },
 			...dots.slice(0, 8).map((d) => ({
-				label: `${d.appearance.emoji}  ${d.name}${d.unreadCount ? ` (${d.unreadCount})` : ""}`,
+				label: `${d.name}${d.unreadCount ? ` (${d.unreadCount})` : ""}`,
 				click: () => {
 					opts.showWindow();
 					for (const w of BrowserWindow.getAllWindows()) w.webContents.send("app:focus-dot", { dotId: d.id });
