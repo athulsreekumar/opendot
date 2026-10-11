@@ -2,6 +2,7 @@ import type { DotId } from "@shared/types";
 import { AnimatePresence } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/design-system/cn";
+import { ApprovalPopup } from "@/features/approvals/ApprovalPopup";
 import { NewDotDialog } from "@/features/new-dot/NewDotDialog";
 import { SettingsNav } from "@/features/settings/SettingsNav";
 import { useDots } from "@/stores/dots";
@@ -184,6 +185,7 @@ export function AppShell({ route }: { route: Route }) {
 				{showDrawer && dotId && <RightDrawer key="drawer" dotId={dotId as DotId} overlay={overlay} />}
 			</AnimatePresence>
 			<NewDotDialog />
+			<ApprovalPopup route={route} />
 		</div>
 	);
 }

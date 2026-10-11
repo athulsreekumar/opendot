@@ -1,0 +1,29 @@
+{
+	"id": "postgres",
+	"label": "PostgreSQL",
+	"description": "Explore schemas and run read-only queries on a Postgres database.",
+	"category": "data",
+	"icon": "database",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "uvx",
+		"args": ["--with", "mcp<2", "postgres-mcp", "--access-mode=restricted"],
+		"env": {
+			"DATABASE_URI": "${secret:DATABASE_URI}"
+		}
+	},
+	"inputs": [
+		{
+			"key": "DATABASE_URI",
+			"label": "Connection string",
+			"secret": true,
+			"placeholder": "postgresql://user:password@localhost:5432/dbname",
+			"help": "Dots can read the database but not change it.",
+			"target": "env"
+		}
+	],
+	"defaultExposure": "deferred",
+	"requiresUv": true,
+	"verified": true,
+	"docsUrl": "https://github.com/crystaldba/postgres-mcp"
+}

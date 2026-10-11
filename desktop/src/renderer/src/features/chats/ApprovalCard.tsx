@@ -6,13 +6,19 @@ import { errorText } from "../../lib/api";
 import { useApprovals } from "../../stores/approvals";
 import { ApprovalDetailView } from "../approvals/ApprovalDetailView";
 
-export function useCountdown(expiresAt: string): number {
-	const [left, setLeft] = useState(() => Math.max(0, Math.round((new Date(expiresAt).getTime() - Date.now()) / 1000)));
+function secondsUntil(expiresAt: string | undefined): number | undefined {
+	return expiresAt === undefined
+		? undefined
+		: Math.max(0, Math.round((new Date(expiresAt).getTime() - Date.now()) / 1000));
+}
+
+/** Seconds until `expiresAt`, or undefined for an approval that waits until it is answered. */
+export function useCountdown(expiresAt: string | undefined): number | undefined {
+	const [left, setLeft] = useState(() => secondsUntil(expiresAt));
 	useEffect(() => {
-		const t = setInterval(
-			() => setLeft(Math.max(0, Math.round((new Date(expiresAt).getTime() - Date.now()) / 1000))),
-			1000,
-		);
+		setLeft(secondsUntil(expiresAt));
+		if (expiresAt === undefined) return;
+		const t = setInterval(() => setLeft(secondsUntil(expiresAt)), 1000);
 		return () => clearInterval(t);
 	}, [expiresAt]);
 	return left;
@@ -32,6 +38,7 @@ export function ApprovalCard({
 	const [details, setDetails] = useState(false);
 	const [busy, setBusy] = useState(false);
 	const left = useCountdown(approval.expiresAt);
+	const expired = left === 0;
 	const respond = async (d: ApprovalDecision) => {
 		setBusy(true);
 		onResolved?.(d);
@@ -69,25 +76,33 @@ export function ApprovalCard({
 				</div>
 			)}
 			<div className="mt-2.5 flex items-center gap-2">
-				<Button size="sm" disabled={busy || left === 0} onClick={() => void respond("allow-once")}>
+				<Button size="sm" disabled={busy || expired} onClick={() => void respond("allow-once")}>
 					Allow once
 				</Button>
 				<TooltipProvider>
-					<Tooltip content="For this Dot and this tool">
+					<Tooltip
+						content={
+							approval.kind === "folder"
+								? `Adds ${approval.folder} to this Dot's folders`
+								: "For this Dot and this tool"
+						}
+					>
 						<Button
 							size="sm"
 							variant="secondary"
-							disabled={busy || left === 0}
+							disabled={busy || expired}
 							onClick={() => void respond("allow-always")}
 						>
-							Always allow
+							{approval.kind === "folder" ? "Always allow this folder" : "Always allow"}
 						</Button>
 					</Tooltip>
 				</TooltipProvider>
 				<Button size="sm" variant="ghost" className="text-danger" disabled={busy} onClick={() => void respond("deny")}>
 					Deny
 				</Button>
-				<span className="ml-auto text-2xs text-fg-3">{left > 0 ? `Expires in ${fmt(left)}` : "Expired"}</span>
+				{left !== undefined && (
+					<span className="ml-auto text-2xs text-fg-3">{left > 0 ? `Expires in ${fmt(left)}` : "Expired"}</span>
+				)}
 			</div>
 		</div>
 	);

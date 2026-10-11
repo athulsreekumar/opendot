@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { LIMITS } from "../../shared/defaults";
-import { isDotIconKey } from "../../shared/dot-icons";
 import { BUILTIN_SKILLS } from "./builtin-skills";
 import { domainById, ORG_DOMAINS, ORG_TEMPLATES, personaForDomain, templateById } from "./catalog";
 
@@ -27,7 +26,7 @@ describe("catalog", () => {
 		for (const d of ORG_DOMAINS) {
 			expect(d.name.length).toBeLessThanOrEqual(LIMITS.nameMax);
 			expect(d.tagline.length).toBeLessThanOrEqual(LIMITS.taglineMax);
-			expect(isDotIconKey(d.icon), `${d.id} icon ${d.icon}`).toBe(true);
+			expect(d.emoji).toBeTruthy();
 			for (const r of d.reviewedBy) expect(domainById(r), `${d.id} reviewedBy ${r}`).toBeDefined();
 		}
 		// Colours are as distinct as 12 Dot colours allow: at most one repeat.

@@ -1,0 +1,15 @@
+{
+	"id": "exa",
+	"label": "Exa Search",
+	"description": "Search the web and read pages, with results built for AI.",
+	"category": "knowledge",
+	"icon": "search",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.exa.ai/mcp"
+	},
+	"inputs": [],
+	"defaultExposure": "direct",
+	"verified": true,
+	"docsUrl": "https://docs.exa.ai/reference/exa-mcp"
+}

@@ -30,7 +30,7 @@ function DotAvatar({ dot, size = "xs" }: { dot: Dot; size?: "xs" | "sm" }) {
 		<Avatar
 			size={size}
 			color={dot.appearance.color}
-			icon={dot.appearance.icon}
+			emoji={dot.appearance.emoji}
 			name={dot.name}
 			mark={dot.kind === "super"}
 		/>

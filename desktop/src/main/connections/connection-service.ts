@@ -1,10 +1,12 @@
 // Installed connections (MCP, Google, Microsoft, Mac) and grants resolution (spec 05).
 
 import { execFile } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import { OpenDotError } from "../../shared/errors";
 import { newId } from "../../shared/ids";
 import { builtinComputerDescription, builtinComputerLabel, platformFeatures } from "../../shared/platform";
+import { secretRefs } from "../../shared/secrets";
 import type {
 	CatalogEntry,
 	Connection,
@@ -48,6 +50,30 @@ export const MAC_FEATURES = [
 
 const SECRET_REF = /\$\{secret:([A-Za-z0-9_]+)\}/g;
 
+/**
+ * The access token pi saved for a remote MCP server when you signed in, read from its `mcp-auth.json`.
+ * Keys match pi's credential store: `mcp__<name>` (dashes as underscores) and the URL, or the URL alone for older
+ * entries. Expired tokens count as missing; pi refreshes them when a Dot connects.
+ */
+export async function savedMcpToken(file: string, name: string, url: string): Promise<string | undefined> {
+	let states: Record<string, { tokens?: { access_token?: string }; tokensExpireAt?: number }>;
+	try {
+		states = JSON.parse(await readFile(file, "utf8"));
+	} catch {
+		return undefined;
+	}
+	const legacyKey = String(new URL(url));
+	const s = states[`mcp__${name.replace(/-/g, "_")}|${legacyKey}`] ?? states[legacyKey];
+	if (!s?.tokens?.access_token || (s.tokensExpireAt !== undefined && s.tokensExpireAt <= Date.now())) return undefined;
+	return s.tokens.access_token;
+}
+
+/** Trims a pasted secret and drops a "Bearer " prefix when the header it fills already adds one. */
+export function cleanSecret(value: string, template?: string): string {
+	const v = value.trim();
+	return template && /^bearer\s+\$\{secret:/i.test(template.trim()) ? v.replace(/^bearer\s+/i, "").trim() : v;
+}
+
 export interface ConnectionEmitter {
 	status(s: ConnectionStatus): void;
 	changed(list: Connection[]): void;
@@ -69,6 +95,8 @@ export class ConnectionService {
 	readonly tokens: OAuthTokenStore;
 	/** Set by services: OAuth sign-in for remote MCP servers through pi. */
 	mcpSignIn?: (c: Connection, cfg: McpServerConfig) => Promise<{ ok: boolean; message: string }>;
+	/** Set by services: pi's `mcp-auth.json`, where that sign-in stores tokens. */
+	mcpAuthFile?: string;
 
 	constructor(
 		private readonly store: Store,
@@ -251,7 +279,7 @@ export class ConnectionService {
 				};
 			}
 		}
-		for (const [k, v] of Object.entries(secrets)) if (v) await this.secrets.set(`conn:${id}:${k}`, v);
+		await this.saveSecrets(conn, secrets);
 		await this.save([...list, conn]);
 		await this.store.audit({
 			kind: "connection-change",
@@ -347,7 +375,7 @@ export class ConnectionService {
 			stdio: stdio && cur.stdio ? { ...cur.stdio, ...stdio } : cur.stdio,
 			http: http && cur.http ? { ...cur.http, ...http } : cur.http,
 		};
-		if (secrets) for (const [k, v] of Object.entries(secrets)) await this.secrets.set(`conn:${id}:${k}`, v);
+		if (secrets) await this.saveSecrets(next, secrets);
 		list[i] = next;
 		await this.save(list);
 		this.notifyChange([id]);
@@ -383,15 +411,41 @@ export class ConnectionService {
 	}
 
 	// ── secrets & config resolution ──
-	private async resolveSecrets(id: ConnectionId, rec: Record<string, string>): Promise<Record<string, string>> {
+	/** Stores cleaned secrets; empty values are skipped so they never replace a saved one. */
+	private async saveSecrets(c: Connection, secrets: Record<string, string>): Promise<void> {
+		const templates = [...Object.values(c.http?.headers ?? {}), ...Object.values(c.stdio?.env ?? {})];
+		for (const [k, v] of Object.entries(secrets)) {
+			const clean = cleanSecret(
+				v,
+				templates.find((t) => t.includes(`\${secret:${k}}`)),
+			);
+			if (clean) await this.secrets.set(`conn:${c.id}:${k}`, clean);
+		}
+	}
+
+	/** Secret keys the connection refers to that have no saved value. */
+	async missingSecrets(c: Connection): Promise<string[]> {
+		const missing: string[] = [];
+		for (const k of secretRefs(c)) if (!(await this.secrets.get(`conn:${c.id}:${k}`))?.trim()) missing.push(k);
+		return missing;
+	}
+
+	/** Fills `${secret:KEY}` refs. With `dropEmpty`, an entry whose secret is missing is left out instead of sent half-filled. */
+	private async resolveSecrets(
+		id: ConnectionId,
+		rec: Record<string, string>,
+		dropEmpty = false,
+	): Promise<Record<string, string>> {
 		const out: Record<string, string> = {};
 		for (const [k, v] of Object.entries(rec)) {
 			let val = v;
+			let empty = false;
 			for (const m of v.matchAll(SECRET_REF)) {
 				const s = (await this.secrets.get(`conn:${id}:${m[1]}`)) ?? "";
+				if (!s.trim()) empty = true;
 				val = val.replace(m[0], s);
 			}
-			out[k] = val;
+			if (!(dropEmpty && empty)) out[k] = val;
 		}
 		return out;
 	}
@@ -409,7 +463,7 @@ export class ConnectionService {
 		}
 		return {
 			url: c.http!.url,
-			headers: await this.resolveSecrets(c.id, c.http!.headers),
+			headers: await this.resolveSecrets(c.id, c.http!.headers, true),
 			...(c.http?.oauth ? { oauth: c.http.oauth } : {}),
 			...common,
 		} as unknown as McpServerConfig;
@@ -490,6 +544,21 @@ export class ConnectionService {
 			this.reportStatus(st);
 			return st;
 		}
+		const missing = await this.missingSecrets(c);
+		if (missing.length > 0) {
+			const inputs = CATALOG.find((e) => e.id === c.catalogId)?.inputs ?? [];
+			const names = missing.map((k) => inputs.find((i) => i.key === k)?.label ?? k);
+			const st: ConnectionStatus = {
+				connectionId: id,
+				state: "needs-auth",
+				toolCount: 0,
+				tools: [],
+				error: `Add your ${names.join(" and ")} below, then test again.`,
+				checkedAt: now(),
+			};
+			this.reportStatus(st);
+			return st;
+		}
 		this.reportStatus({ connectionId: id, state: "connecting", toolCount: 0, tools: [], checkedAt: now() });
 		let stderr = "";
 		let client: InstanceType<typeof McpClient> | undefined;
@@ -512,7 +581,11 @@ export class ConnectionService {
 							stderr = (stderr + chunk).slice(-2048);
 						},
 					} as never)
-				: new StreamableHttpTransport({ url: cfg.url!, headers: cfg.headers ?? {} } as never);
+				: new StreamableHttpTransport({
+						url: cfg.url!,
+						headers: cfg.headers ?? {},
+						authProvider: await this.savedTokenProvider(c, cfg.headers),
+					} as never);
 			client = new McpClient({ name: "OpenDot", version: "0.1.0" });
 			await withTimeout(client.connect(transport as never), 20000, "Timed out connecting (20 s).");
 			const tools = (await withTimeout(client.listTools(), 15000, "Timed out listing tools.")) as Array<{
@@ -537,8 +610,12 @@ export class ConnectionService {
 			return st;
 		} catch (e) {
 			const msg = (e as Error).message ?? String(e);
-			const needsAuth = /401|403|unauthori[sz]ed|oauth/i.test(msg);
+			const needsAuth = /401|403|unauthori[sz]ed|oauth|authorization header|requires authentication/i.test(msg);
 			const notFound = /ENOENT/.test(msg);
+			const signInHint =
+				needsAuth && c.type === "mcp-http" && secretRefs(c).length === 0
+					? `Not signed in, or the sign-in has expired. Press Sign in with ${c.label}.`
+					: undefined;
 			const st: ConnectionStatus = {
 				connectionId: id,
 				state: needsAuth ? "needs-auth" : "error",
@@ -546,7 +623,7 @@ export class ConnectionService {
 				tools: [],
 				error: notFound
 					? `Command not found: ${c.stdio?.command} (is it installed? Node.js provides npx; uv provides uvx)`
-					: msg.slice(0, 500),
+					: (signInHint ?? msg.slice(0, 500)),
 				stderrTail: stderr || undefined,
 				checkedAt: now(),
 			};
@@ -555,6 +632,13 @@ export class ConnectionService {
 		} finally {
 			await client?.close().catch(() => undefined);
 		}
+	}
+
+	/** Sends the token from an MCP sign-in, unless the connection already sets its own Authorization header. */
+	private async savedTokenProvider(c: Connection, headers: Record<string, string> = {}) {
+		if (!this.mcpAuthFile || !c.http || Object.keys(headers).some((h) => h.toLowerCase() === "authorization")) return;
+		const token = await savedMcpToken(this.mcpAuthFile, c.name, c.http.url);
+		return token ? { token: async () => token } : undefined;
 	}
 
 	// ── OAuth for native stacks ──

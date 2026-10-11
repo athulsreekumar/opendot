@@ -1,0 +1,16 @@
+{
+	"id": "cloudflare",
+	"label": "Cloudflare",
+	"description": "Manage DNS, Workers, R2 and the rest of your Cloudflare account.",
+	"category": "dev",
+	"icon": "cloud",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.cloudflare.com/mcp",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": true,
+	"docsUrl": "https://developers.cloudflare.com/agents/model-context-protocol/mcp-servers-for-cloudflare/"
+}

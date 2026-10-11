@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MacDeps } from "./deps";
 import { MAC_DEFAULT_DECISIONS, macTools as macToolsFor } from "./index";
 import { isNotAuthorized, jsString } from "./jxa";
-import { checkPath, fileToolPath } from "./path-guard";
+import { checkPath, fileToolPath, folderToGrant } from "./path-guard";
 import { getMacPermissions, requestMacPermission } from "./permissions";
 
 /** These tests describe the macOS tool set, so pin the platform instead of using whatever runs the tests. */
@@ -169,7 +169,11 @@ describe("path guard", () => {
 
 	it("denies outside paths, traversal and symlink escape", async () => {
 		const o = await checkPath(path.join(outside, "secret.txt"), [root]);
-		expect(o).toEqual({ ok: false, reason: `This Dot can only access: ${root}` });
+		expect(o).toEqual({
+			ok: false,
+			reason: `This Dot can only access: ${root}`,
+			resolved: path.join(outside, "secret.txt"),
+		});
 		expect((await checkPath(path.join(root, "..", "out", "secret.txt"), [root])).ok).toBe(false);
 		expect((await checkPath(path.join(root, "link", "secret.txt"), [root])).ok).toBe(false);
 		expect((await checkPath(path.join(root, "link", "newfile"), [root])).ok).toBe(false);
@@ -239,5 +243,26 @@ describe("permissions", () => {
 		expect(r.status).toBe("granted");
 		const c = await requestMacPermission("calendar", { ...base, runJxa: async () => "1" });
 		expect(c.status).toBe("granted");
+	});
+});
+
+describe("folderToGrant", () => {
+	it("offers the project root, the folder, or only the path itself next to home", async () => {
+		const base = await realpath(await mkdtemp(path.join(tmpdir(), "od-grant-")));
+		const home = path.join(base, "home");
+		const proj = path.join(home, "code", "proj");
+		await mkdir(path.join(proj, ".git"), { recursive: true });
+		await mkdir(path.join(proj, "src", "deep"), { recursive: true });
+		await mkdir(path.join(home, "notes"), { recursive: true });
+		await mkdir(path.join(home, ".git"), { recursive: true });
+		try {
+			expect(await folderToGrant(path.join(proj, "src", "deep", "a.ts"), home)).toBe(proj);
+			expect(await folderToGrant(path.join(home, "notes", "todo.md"), home)).toBe(path.join(home, "notes"));
+			expect(await folderToGrant(path.join(home, "notes"), home)).toBe(path.join(home, "notes"));
+			// Directly in home: only that file, never home itself (even though home has a .git).
+			expect(await folderToGrant(path.join(home, "secrets.txt"), home)).toBe(path.join(home, "secrets.txt"));
+		} finally {
+			await rm(base, { recursive: true, force: true });
+		}
 	});
 });

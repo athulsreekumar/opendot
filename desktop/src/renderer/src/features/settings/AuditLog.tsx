@@ -137,7 +137,7 @@ export function AuditLog() {
 										<Avatar
 											size="xs"
 											color={dot.appearance.color}
-											icon={dot.appearance.icon}
+											emoji={dot.appearance.emoji}
 											name={dot.name}
 											mark={dot.kind === "super"}
 										/>

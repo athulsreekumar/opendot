@@ -1,0 +1,16 @@
+{
+	"id": "dropbox",
+	"label": "Dropbox",
+	"description": "Browse, search, read and organise files in your Dropbox.",
+	"category": "files",
+	"icon": "package",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.dropbox.com/mcp",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": true,
+	"docsUrl": "https://help.dropbox.com/integrations/connect-dropbox-mcp-server"
+}

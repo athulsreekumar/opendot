@@ -274,6 +274,8 @@ export interface OpenDotApi {
 		/** The user answers a Dot's question; the task continues. */
 		answerTask(id: string, taskId: string, answer: string): Promise<void>;
 		retryTask(id: string, taskId: string): Promise<void>;
+		/** Runs a finished task again, with every task that builds on it; `note` says what to do differently. */
+		redoTask(id: string, taskId: string, note?: string): Promise<void>;
 		skipTask(id: string, taskId: string): Promise<void>;
 		/** Open a file deliverable (or reveal it when it isn't a safe document type). */
 		openDeliverable(id: string, taskId: string, index: number): Promise<void>;
@@ -464,6 +466,7 @@ export const INVOKE_CHANNELS = [
 	"org.completeTask",
 	"org.answerTask",
 	"org.retryTask",
+	"org.redoTask",
 	"org.skipTask",
 	"org.openDeliverable",
 	"attachments.pick",

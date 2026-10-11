@@ -8,7 +8,7 @@ Dots for you. Built on the open-source [pi agent harness](https://github.com/ear
 - **Any model**: cloud (Anthropic, OpenAI, Gemini, xAI/Grok, OpenRouter, Groq, Mistral, DeepSeek, …), on your computer (Ollama,
   LM Studio, llama.cpp, vLLM, auto-detected) or any OpenAI/Anthropic-compatible URL.
 - **Create a Dot from a prompt**: describe what it should do, tick the connectors it may use, and OpenDot generates its name,
-  icon, colour, tagline and personality (streamed live). Templates are just example prompts.
+  emoji, colour, tagline and personality (streamed live). Templates are just example prompts.
 - **Tools**: unlimited MCP servers (local or remote, import your Claude Desktop / Cursor config), Google Workspace, Microsoft 365,
   and computer capabilities (files, shell, screenshots, clipboard, notifications, plus Calendar, Reminders, Contacts and Notes on a Mac).
 - **Knowledge**: point OpenDot at folders of notes and documents. It indexes them on your computer (BM25 search, no
@@ -157,7 +157,7 @@ Both use your own OAuth client (so your data never passes through anyone else's 
 
 ## Adding tools (MCP)
 
-Connections → **Catalog** (one click for Filesystem, Memory, Fetch, Git, GitHub, Notion, Linear, Sentry, Context7, …),
+Connections → **Catalog** (one click for Filesystem, Memory, Fetch, Exa Search, Git, GitHub, Notion, Linear, Atlassian, Todoist, Dropbox, Sentry, Context7, PostgreSQL, …),
 **Add MCP server** (any local command or remote URL), or **Import JSON** (paste a Claude Desktop / Cursor / VS Code `mcpServers`
 block). Then give a Dot access in **Dot info → Tools**, where each tool can be set to Allow, Ask or Block. Local MCP servers that
 use `npx`/`uvx` need Node.js / uv installed.

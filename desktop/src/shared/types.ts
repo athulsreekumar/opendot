@@ -109,8 +109,7 @@ export const DOT_COLORS: readonly DotColor[] = [
 ];
 
 export interface DotAppearance {
-	/** A key from the curated set in `dot-icons.ts`. Old files had `emoji` and are migrated on load. */
-	icon: string;
+	emoji: string;
 	color: DotColor;
 }
 
@@ -549,10 +548,13 @@ export type ChatEvent =
 // ───────────────────────── Approvals ─────────────────────────
 export interface ApprovalRequest {
 	id: ApprovalId;
-	kind: "tool" | "link";
+	/** tool: a tool call to allow. link: a message to another Dot. folder: a file tool reaching outside the Dot's folders. */
+	kind: "tool" | "link" | "folder";
 	dotId: DotId;
 	title: string;
 	detail: string;
+	/** folder: the folder "Always allow" adds to the Dot's allowed folders. */
+	folder?: string;
 	toolName?: string;
 	args?: unknown;
 	linkId?: LinkId;
@@ -562,7 +564,8 @@ export interface ApprovalRequest {
 	/** False when a persistent allow rule would have no effect (an explicit rule on the tool wins). Default true. */
 	alwaysAllowable?: boolean;
 	createdAt: ISODate;
-	expiresAt: ISODate;
+	/** Unset: waits until answered or the Dot's run stops. */
+	expiresAt?: ISODate;
 }
 
 export type ApprovalDecision = "allow-once" | "allow-always" | "deny";

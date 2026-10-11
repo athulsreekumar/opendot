@@ -1,9 +1,8 @@
 import type { Dot } from "@shared/types";
 import { useState } from "react";
 import { Avatar, Button, Input } from "@/design-system/components";
-import { DotIcon } from "@/design-system/dot-icon-map";
 import { ColorSwatches } from "@/features/new-dot/ColorSwatches";
-import { IconPicker } from "@/features/new-dot/IconPicker";
+import { EmojiPicker } from "@/features/new-dot/EmojiPicker";
 import { ChipInput } from "./editors";
 import { Field, SectionCard } from "./ui";
 import { useDotSaver } from "./useDotSaver";
@@ -22,7 +21,7 @@ export const ROLE_SUGGESTIONS = [
 export function IdentitySection({ dot }: { dot: Dot }) {
 	const { save, saved } = useDotSaver(dot.id);
 	const [name, setName] = useState(dot.name);
-	const [iconOpen, setIconOpen] = useState(false);
+	const [emojiOpen, setEmojiOpen] = useState(false);
 	const nameOk = name.trim().length >= 1 && name.trim().length <= 32;
 
 	return (
@@ -31,7 +30,7 @@ export function IdentitySection({ dot }: { dot: Dot }) {
 				<Avatar
 					size="xl"
 					name={dot.name}
-					icon={dot.appearance.icon}
+					emoji={dot.appearance.emoji}
 					color={dot.appearance.color}
 					mark={dot.kind === "super"}
 				/>
@@ -53,18 +52,18 @@ export function IdentitySection({ dot }: { dot: Dot }) {
 			</div>
 			{dot.kind !== "super" && (
 				<>
-					<Field label="Icon">
+					<Field label="Emoji">
 						<div>
-							<Button variant="secondary" aria-expanded={iconOpen} onClick={() => setIconOpen(!iconOpen)}>
-								<DotIcon name={dot.appearance.icon} size={18} /> Change icon
+							<Button variant="secondary" aria-expanded={emojiOpen} onClick={() => setEmojiOpen(!emojiOpen)}>
+								<span className="text-xl">{dot.appearance.emoji}</span> Change emoji
 							</Button>
 						</div>
-						{iconOpen && (
-							<IconPicker
-								value={dot.appearance.icon}
-								onChange={(icon) => {
-									save({ appearance: { ...dot.appearance, icon } });
-									setIconOpen(false);
+						{emojiOpen && (
+							<EmojiPicker
+								value={dot.appearance.emoji}
+								onChange={(emoji) => {
+									save({ appearance: { ...dot.appearance, emoji } });
+									setEmojiOpen(false);
 								}}
 							/>
 						)}

@@ -8,7 +8,7 @@
 		"name": "Dot",
 		"tagline": "Your friendly assistant",
 		"appearance": {
-			"icon": "message",
+			"emoji": "💬",
 			"color": "teal"
 		},
 		"roles": ["assistant"],

@@ -16,6 +16,7 @@ const m = vi.hoisted(() => ({
 	completeTask: vi.fn(),
 	answerTask: vi.fn(),
 	retryTask: vi.fn(),
+	redoTask: vi.fn(),
 	skipTask: vi.fn(),
 	openDeliverable: vi.fn(),
 }));
@@ -403,6 +404,26 @@ describe("task drawer", () => {
 		expect(within(d).getAllByRole("button", { name: /^Open / })).toHaveLength(2);
 		expect(within(d).queryByRole("button", { name: "Retry" })).toBeNull();
 		expect(within(d).queryByRole("button", { name: "Send answer" })).toBeNull();
+	});
+
+	it("redoes a done task with a note, naming the tasks that run again", async () => {
+		const d = open(
+			project({
+				tasks: [
+					task("t1", { title: "PRD", status: "done" }),
+					task("t2", { title: "Design brief", status: "failed", dependsOn: ["t1"] }),
+					task("t3", { title: "Build", status: "skipped", dependsOn: ["t2"] }),
+				],
+			}),
+			"PRD",
+		);
+		fireEvent.click(within(d).getByRole("button", { name: "Redo this task" }));
+		expect(within(d).getByText(/These build on it and run again too: "Design brief", "Build"/)).toBeTruthy();
+		fireEvent.change(within(d).getByLabelText("What should change? (optional)"), {
+			target: { value: "  Keep the real city names.  " },
+		});
+		fireEvent.click(within(d).getByRole("button", { name: "Redo" }));
+		await waitFor(() => expect(m.redoTask).toHaveBeenCalledWith("prj_1", "t1", "Keep the real city names."));
 	});
 
 	it("follows live updates of the open task", async () => {

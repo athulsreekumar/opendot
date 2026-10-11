@@ -7,7 +7,6 @@ import { Faq } from "@/components/sections/Faq";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Hero } from "@/components/sections/Hero";
 import { OpenSource } from "@/components/sections/OpenSource";
-import { Organisation } from "@/components/sections/Organisation";
 import { Privacy } from "@/components/sections/Privacy";
 import { Statement } from "@/components/sections/Statement";
 import { Streaming } from "@/components/sections/Streaming";
@@ -23,7 +22,6 @@ export default function Home() {
 			<Hero />
 			<Statement />
 			<CreateDot />
-			<Organisation />
 			<AlwaysOn />
 			<SuperBot />
 			<DotLinks />

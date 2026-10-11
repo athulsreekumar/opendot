@@ -130,6 +130,8 @@ function InstallDialog({ entry, onClose }: { entry: CatalogEntry; onClose: () =>
 	const [values, setValues] = useState<Record<string, string>>({});
 	const [busy, setBusy] = useState<"test" | "install" | undefined>();
 	const [conn, setConn] = useState<Connection | undefined>();
+	// The values `conn` was installed with, so editing a field after "Test connection" installs it again.
+	const [installedWith, setInstalledWith] = useState<Record<string, string> | undefined>();
 	const [status, setStatus] = useState<ConnectionStatus | undefined>();
 	const [tools, setTools] = useState<{ node?: string; npx: boolean; uvx: boolean } | undefined>();
 
@@ -144,10 +146,15 @@ function InstallDialog({ entry, onClose }: { entry: CatalogEntry; onClose: () =>
 
 	const missing = tools && ((entry.requiresNode && !tools.npx) || (entry.requiresUv && !tools.uvx));
 
+	const complete = entry.inputs.every((i) => (values[i.key] ?? "").trim().length > 0);
+
 	const ensureInstalled = async (): Promise<Connection> => {
-		if (conn) return conn;
+		const same = installedWith && entry.inputs.every((i) => (installedWith[i.key] ?? "") === (values[i.key] ?? ""));
+		if (conn && same) return conn;
+		if (conn) await api.connections.remove(conn.id);
 		const c = await api.connections.install({ catalogId: entry.id, inputs: values });
 		setConn(c);
+		setInstalledWith({ ...values });
 		await useRuntime.getState().loadConnections();
 		return c;
 	};
@@ -190,10 +197,10 @@ function InstallDialog({ entry, onClose }: { entry: CatalogEntry; onClose: () =>
 					<Button variant="ghost" onClick={onClose}>
 						Cancel
 					</Button>
-					<Button variant="secondary" onClick={test} loading={busy === "test"} disabled={!!busy}>
+					<Button variant="secondary" onClick={test} loading={busy === "test"} disabled={!!busy || !complete}>
 						Test connection
 					</Button>
-					<Button onClick={install} loading={busy === "install"} disabled={!!busy}>
+					<Button onClick={install} loading={busy === "install"} disabled={!!busy || !complete}>
 						{conn ? "Done" : "Install"}
 					</Button>
 				</DialogFooter>

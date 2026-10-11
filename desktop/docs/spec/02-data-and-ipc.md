@@ -82,7 +82,7 @@ export interface Persona {
 export type PiiMode = "auto" | "always" | "off";
 
 export interface DotAppearance {
-	icon: string; // a key from src/shared/dot-icons.ts, e.g. "mail". Old files had `emoji`; migrated on load.
+	emoji: string; // single grapheme, e.g. "📬"
 	color: DotColor; // one of the palette keys
 }
 

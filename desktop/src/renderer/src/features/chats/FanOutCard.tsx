@@ -34,7 +34,7 @@ function PeerRow({ row, toolRunning, durMs }: { row: Row; toolRunning: boolean; 
 				<Avatar
 					size="xs"
 					color={row.dot.appearance.color}
-					icon={row.dot.appearance.icon}
+					emoji={row.dot.appearance.emoji}
 					name={row.dot.name}
 					mark={row.dot.kind === "super"}
 				/>

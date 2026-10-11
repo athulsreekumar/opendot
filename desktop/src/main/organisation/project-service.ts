@@ -3,6 +3,7 @@
 import { OpenDotError } from "../../shared/errors";
 import {
 	blockedByFailure,
+	dependentTaskIds,
 	ORG_LIMITS,
 	type OrgCreateProjectInput,
 	type OrgLogEntry,
@@ -569,6 +570,47 @@ export class ProjectService {
 		this.tick(p);
 	}
 
+	/**
+	 * Runs a finished task again from scratch, with every task that builds on it (even finished ones), so nothing
+	 * keeps using its old result. `note` tells the assignee what to do differently.
+	 */
+	async redoTask(id: string, taskId: string, note?: string): Promise<void> {
+		const p = await this.need(id);
+		const t = this.task(p, taskId);
+		if (p.status !== "running" && p.status !== "paused" && p.status !== "failed" && p.status !== "done")
+			bad("This project isn't active.");
+		if (t.status !== "done" && t.status !== "failed" && t.status !== "skipped")
+			bad("Only a finished task can be redone. Wait until it finishes, or skip it.");
+		const text = (note ?? "").trim().slice(0, ORG_LIMITS.answerMax);
+		const later = dependentTaskIds(p.tasks, t.id).map((d) => this.task(p, d));
+		for (const x of [t, ...later]) {
+			const k = key(p.id, x.id);
+			this.inflight.get(k)?.abort();
+			this.inflight.get(`${k}:review`)?.abort();
+			this.reviewing.delete(k);
+			this.snapshots.delete(k);
+			this.resetTask(x);
+			x.deliverables = [];
+			x.redoNote =
+				x === t
+					? text || "The user asked for this task to be done again."
+					: `"${t.title}", which this task builds on, was redone, so this task runs again on its new result.`;
+		}
+		if (p.status === "done") {
+			p.status = "running";
+			p.summary = undefined;
+		}
+		this.reviveIfFailed(p);
+		this.addLog(
+			p,
+			"task",
+			`Redoing "${t.title}"${later.length ? ` and ${later.length} task(s) that build on it` : ""}.`,
+			t.id,
+		);
+		this.commit(p);
+		this.tick(p);
+	}
+
 	async skipTask(id: string, taskId: string): Promise<void> {
 		const p = await this.need(id);
 		const t = this.task(p, taskId);
@@ -827,6 +869,7 @@ export class ProjectService {
 
 	private markDone(p: OrgProject, t: OrgTask): void {
 		t.status = "done";
+		t.redoNote = undefined;
 		t.finishedAt = this.deps.now().toISOString();
 		this.addLog(p, "task", `"${t.title}" is done.`, t.id);
 	}

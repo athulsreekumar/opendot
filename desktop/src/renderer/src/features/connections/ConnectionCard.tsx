@@ -5,6 +5,7 @@ import {
 	Bug,
 	Calendar,
 	Clock,
+	Cloud,
 	CreditCard,
 	Database,
 	FileText,
@@ -12,11 +13,15 @@ import {
 	GitBranch,
 	Globe,
 	HardDrive,
+	Kanban,
 	ListChecks,
+	ListTodo,
 	type LucideIcon,
 	Laptop as MacIcon,
 	Mail,
 	MessageSquare,
+	Package,
+	PenTool,
 	Plug,
 	Search,
 	Smile,
@@ -32,6 +37,10 @@ import { useRuntime } from "@/stores/runtime";
 const ICONS: Record<string, LucideIcon> = {
 	globe: Globe,
 	"list-checks": ListChecks,
+	"list-todo": ListTodo,
+	kanban: Kanban,
+	cloud: Cloud,
+	package: Package,
 	"book-open": BookOpen,
 	triangle: Triangle,
 	smile: Smile,
@@ -55,7 +64,7 @@ const ICONS: Record<string, LucideIcon> = {
 	chat: MessageSquare,
 	"message-square": MessageSquare,
 	"message-circle": MessageSquare,
-	figma: Smile,
+	figma: PenTool,
 };
 
 export function ConnectionIcon({ name, size = 20 }: { name: string; size?: number }) {
@@ -89,7 +98,7 @@ export function UsedByStack({ dots }: { dots: Dot[] }) {
 					<Avatar
 						key={d.id}
 						size="xs"
-						icon={d.appearance.icon}
+						emoji={d.appearance.emoji}
 						color={d.appearance.color}
 						name={d.name}
 						mark={d.kind === "super"}

@@ -212,7 +212,7 @@ export function Onboarding() {
 												<Avatar
 													size="sm"
 													color={t.draft.appearance.color}
-													icon={t.draft.appearance.icon}
+													emoji={t.draft.appearance.emoji}
 													name={t.name}
 												/>
 												<span className="min-w-0">
