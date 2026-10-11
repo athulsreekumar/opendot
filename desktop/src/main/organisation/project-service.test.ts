@@ -364,6 +364,55 @@ describe("scheduler", () => {
 		expect((await h.project(id)).tasks.map((x) => x.status)).toEqual(["done", "done", "done", "done"]);
 	});
 
+	it("redo runs a finished task again with the user's note, and every task that builds on it", async () => {
+		const prompts: Array<{ to: DotId; prompt: string }> = [];
+		h.auto = ({ to, prompt }) => {
+			prompts.push({ to, prompt });
+			return { ok: true, reply: "[DONE] ok" };
+		};
+		const id = await h.running([
+			t("t1", "Engineering"),
+			t("t2", "Design", { dependsOn: ["t1"] }),
+			t("t3", "Security", { dependsOn: ["t2"] }),
+			t("t4", "Design"),
+		]);
+		await h.untilStatus(id, "done");
+		prompts.length = 0;
+		await h.svc.redoTask(id, "t1", "The city names were lost; write them in full.");
+		expect((await h.project(id)).status).toBe("running");
+		await h.untilStatus(id, "done");
+		const p = await h.project(id);
+		expect(prompts.map((x) => x.to)).toEqual([ENG, DES, SEC]);
+		expect(prompts[0]!.prompt).toContain("This task is being done again. The city names were lost");
+		expect(prompts[1]!.prompt).toContain("was redone, so this task runs again on its new result");
+		expect(p.tasks.every((x) => x.status === "done" && !x.redoNote)).toBe(true);
+		expect(p.summary).toBe("REPORT");
+		expect(p.log.some((l) => l.text.includes('Redoing "Task t1" and 2 task(s)'))).toBe(true);
+	});
+
+	it("redo of a done task revives a stopped project whose later task failed", async () => {
+		h.auto = ({ to }) => (to === DES ? { ok: false, reason: "blocked" } : { ok: true, reply: "[DONE] ok" });
+		const id = await h.running([
+			t("t1", "Engineering"),
+			t("t2", "Design", { dependsOn: ["t1"] }),
+			t("t3", "Security", { dependsOn: ["t2"] }),
+		]);
+		await h.untilStatus(id, "failed");
+		expect((await h.project(id)).tasks.map((x) => x.status)).toEqual(["done", "failed", "skipped"]);
+		h.auto = () => ({ ok: true, reply: "[DONE] fixed" });
+		await h.svc.redoTask(id, "t1");
+		await h.untilStatus(id, "done");
+		expect((await h.project(id)).tasks.map((x) => x.status)).toEqual(["done", "done", "done"]);
+	});
+
+	it("redo refuses a task that is still running", async () => {
+		const id = await h.running([t("t1", "Engineering")]);
+		await h.waitCalls(1);
+		await expect(h.svc.redoTask(id, "t1")).rejects.toThrow(/Only a finished task/);
+		h.reply("[DONE] ok");
+		await h.untilStatus(id, "done");
+	});
+
 	it("skipping a failed task lets the project carry on", async () => {
 		h.auto = ({ to }) => (to === ENG ? { ok: false, reason: "no" } : { ok: true, reply: "[DONE] fine" });
 		const id = await h.running([t("t1", "Engineering"), t("t2", "Design", { dependsOn: ["t1"] })]);

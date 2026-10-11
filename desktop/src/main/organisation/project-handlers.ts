@@ -20,6 +20,7 @@ type Keys =
 	| "org.completeTask"
 	| "org.answerTask"
 	| "org.retryTask"
+	| "org.redoTask"
 	| "org.skipTask"
 	| "org.openDeliverable";
 
@@ -43,6 +44,7 @@ export function projectHandlers(
 		"org.completeTask": (id, taskId, note) => p().completeTask(id, taskId, note),
 		"org.answerTask": (id, taskId, answer) => p().answerTask(id, taskId, answer),
 		"org.retryTask": (id, taskId) => p().retryTask(id, taskId),
+		"org.redoTask": (id, taskId, note) => p().redoTask(id, taskId, note),
 		"org.skipTask": (id, taskId) => p().skipTask(id, taskId),
 		"org.openDeliverable": async (id, taskId, index) => {
 			if (!app) throw new OpenDotError("INTERNAL", "Can't open files here.");

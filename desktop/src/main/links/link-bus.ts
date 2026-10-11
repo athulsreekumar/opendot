@@ -31,6 +31,30 @@ export interface LinkBusDeps {
 	now?: () => Date;
 }
 
+/**
+ * Aborts after `ms` of working time. Time while `waiting()` is true (the Dot is waiting for the user's approval)
+ * doesn't count, so a reply that needs the user is never cut off by the clock.
+ */
+export function workingTimeout(
+	ms: number,
+	waiting: () => boolean,
+	tickMs = 1000,
+): { signal: AbortSignal; dispose: () => void } {
+	const ctrl = new AbortController();
+	let used = 0;
+	let last = Date.now();
+	const timer = setInterval(() => {
+		const now = Date.now();
+		if (!waiting()) used += now - last;
+		last = now;
+		if (used >= ms) {
+			clearInterval(timer);
+			ctrl.abort(new DOMException("The reply timed out.", "TimeoutError"));
+		}
+	}, tickMs);
+	return { signal: ctrl.signal, dispose: () => clearInterval(timer) };
+}
+
 export type SendResult = { ok: true; reply: string; to: Dot } | { ok: false; reason: string; to?: Dot };
 
 export class LinkBus {
@@ -147,6 +171,7 @@ export class LinkBus {
 		};
 		await save({});
 		this.deps.setTalking(from.id, to.id);
+		let clock: ReturnType<typeof workingTimeout> | undefined;
 		try {
 			if (d.approval === "ask") {
 				opts.onStatus?.(to, "queued", "Waiting for your approval");
@@ -173,8 +198,10 @@ export class LinkBus {
 			if (!d.sharePii && (await this.deps.pii.shouldRedact(to.id)))
 				delivered = (await this.deps.pii.redact(from.id, message)).text;
 			opts.onStatus?.(to, "running");
-			const timeout = AbortSignal.timeout(opts.timeoutMs ?? settings.links.replyTimeoutSec * 1000);
-			const signal = opts.signal ? AbortSignal.any([opts.signal, timeout]) : timeout;
+			clock = workingTimeout(opts.timeoutMs ?? settings.links.replyTimeoutSec * 1000, () =>
+				this.deps.approvals.hasPending(to.id),
+			);
+			const signal = opts.signal ? AbortSignal.any([opts.signal, clock.signal]) : clock.signal;
 			const reply = await this.deps.host(to.id).runLinkTurn({
 				from,
 				message: delivered,
@@ -203,6 +230,7 @@ export class LinkBus {
 			opts.onStatus?.(to, "error", reason);
 			return { ok: false, reason, to };
 		} finally {
+			clock?.dispose();
 			this.deps.setTalking(from.id, undefined);
 		}
 	}

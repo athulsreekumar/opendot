@@ -1,4 +1,4 @@
-import { ORG_LIMITS, type OrgProject, type OrgTask, readyTaskIds } from "@shared/organisation";
+import { dependentTaskIds, ORG_LIMITS, type OrgProject, type OrgTask, readyTaskIds } from "@shared/organisation";
 import { useState } from "react";
 import { Badge, Button, Sheet, TextArea, toast } from "@/design-system/components";
 import { IconExternal, IconFile, IconLink } from "@/design-system/icons";
@@ -275,7 +275,63 @@ function TaskBody({ project, task }: { project: OrgProject; task: OrgTask }) {
 			{live && (task.status === "pending" || task.status === "needs-input") && (
 				<SkipOnly project={project} task={task} />
 			)}
+			{(live || project.status === "done") && task.status === "done" && <Redo project={project} task={task} />}
 		</div>
+	);
+}
+
+/** Run a finished task again (with a note), and every task that builds on it. */
+function Redo({ project, task }: { project: OrgProject; task: OrgTask }) {
+	const [open, setOpen] = useState(false);
+	const [note, setNote] = useState("");
+	const { busy, run } = useAction();
+	const later = dependentTaskIds(project.tasks, task.id)
+		.map((id) => project.tasks.find((x) => x.id === id))
+		.filter((x): x is OrgTask => !!x);
+	if (!open)
+		return (
+			<div className="border-t border-border-subtle pt-3">
+				<Button variant="secondary" onClick={() => setOpen(true)}>
+					Redo this task
+				</Button>
+			</div>
+		);
+	return (
+		<Section title="Redo this task">
+			<p className="text-sm text-fg-2">
+				It runs again from scratch.
+				{later.length > 0 && ` These build on it and run again too: ${later.map((x) => `"${x.title}"`).join(", ")}.`}
+			</p>
+			<Field label="What should change? (optional)" htmlFor="td-redo">
+				<TextArea
+					id="td-redo"
+					value={note}
+					minRows={2}
+					autoGrow
+					maxLength={ORG_LIMITS.answerMax}
+					placeholder="For example: the city names were lost, write them out in full."
+					onChange={(e) => setNote(e.target.value)}
+				/>
+			</Field>
+			<div className="flex gap-2">
+				<Button
+					disabled={busy}
+					loading={busy}
+					onClick={() =>
+						void run(async () => {
+							await api.org.redoTask(project.id, task.id, note.trim() || undefined);
+							setOpen(false);
+							setNote("");
+						}, "Couldn't redo it")
+					}
+				>
+					Redo
+				</Button>
+				<Button variant="ghost" disabled={busy} onClick={() => setOpen(false)}>
+					Cancel
+				</Button>
+			</div>
+		</Section>
 	);
 }
 

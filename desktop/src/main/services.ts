@@ -154,6 +154,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		(url) => bridge.openExternal(url),
 	);
 	await connections.ensureBuiltins();
+	connections.mcpAuthFile = join(paths.piDir, "mcp-auth.json");
 	connections.mcpSignIn = async (c, cfg) => {
 		const { signInMcpServer } = await import("./connections/mcp-signin");
 		return signInMcpServer(c, cfg, { paths, models, openUrl: (u) => void bridge.openExternal(u) });
@@ -324,6 +325,22 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 		dot.workspaceDir,
 		...dot.grants.flatMap((g) => (g.features ?? []).filter((f) => f.startsWith("folder:")).map((f) => f.slice(7))),
 	];
+	/** Adds `folder:<path>` to the Dot's This Mac grant, keeping what it already has (an empty list means all). */
+	const grantFolder = async (dot: Dot, folder: string): Promise<void> => {
+		const mac = (await connections.list()).find((c) => c.type === "mac");
+		if (!mac) return;
+		const fresh = await dots.get(dot.id);
+		const entry = `folder:${folder}`;
+		const grants = structuredClone(fresh.grants);
+		const g = grants.find((x) => x.connectionId === mac.id);
+		if (!g) grants.push({ connectionId: mac.id, toolRules: {}, features: [entry] });
+		else {
+			const feats = g.features?.length ? g.features : mac.features;
+			if (feats.includes(entry)) return;
+			g.features = [...feats, entry];
+		}
+		await dots.update(dot.id, { grants });
+	};
 	const builtinsFor = (dot: Dot, conns: Connection[]): string[] => {
 		const mac = conns.find((c) => c.type === "mac");
 		const g = mac?.enabled ? dot.grants.find((x) => x.connectionId === mac.id) : undefined;
@@ -375,7 +392,7 @@ export async function createServices(paths: Paths, bridge: ElectronBridge, opts:
 				audit: (kind, d, summary, data) => void store.audit({ kind, dotId: d.id, summary, data }),
 				recordRuleAllow: (d, tool, args) => void approvalHistory.recordRule(d.id, tool, args).catch(() => undefined),
 				restore: (t) => pii.restore(dot.id, t),
-				approvalTtlMs: () => (runtime.peek(dot.id)?.status.kind === "handling-events" ? 30 * 60_000 : 5 * 60_000),
+				grantFolder: (d, folder) => grantFolder(d, folder),
 			}),
 			sectionsExtension({
 				getDot: getFresh,

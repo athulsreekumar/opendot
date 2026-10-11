@@ -34,7 +34,8 @@ export function ApprovalItemCard({
 	const [values, setValues] = useState<Record<string, string>>(() =>
 		Object.fromEntries(fields.map((f) => [f.key, f.value])),
 	);
-	const canAlways = approval.kind === "tool" && approval.alwaysAllowable !== false;
+	const canAlways = (approval.kind === "tool" && approval.alwaysAllowable !== false) || approval.kind === "folder";
+	const expired = left === 0;
 	const dotName = dot?.name ?? "A Dot";
 
 	const send = async (
@@ -106,7 +107,8 @@ export function ApprovalItemCard({
 					<div className="flex items-baseline justify-between gap-3">
 						<h3 className="text-md font-semibold text-fg">{approval.title}</h3>
 						<span className="shrink-0 text-2xs text-fg-3">
-							{left > 0 ? `Expires in ${fmt(left)}` : "Expired"} · {relativeTime(approval.createdAt)}
+							{left !== undefined && `${left > 0 ? `Expires in ${fmt(left)}` : "Expired"} · `}
+							{relativeTime(approval.createdAt)}
 						</span>
 					</div>
 					{approval.why ? (
@@ -175,11 +177,11 @@ export function ApprovalItemCard({
 			<div className="mt-3 flex flex-wrap items-center gap-2">
 				{mode === "view" && (
 					<>
-						<Button size="sm" disabled={busy || left === 0} onClick={() => void send("allow-once")}>
+						<Button size="sm" disabled={busy || expired} onClick={() => void send("allow-once")}>
 							Allow once <Kbd className="ml-1">A</Kbd>
 						</Button>
 						{fields.length > 0 && (
-							<Button size="sm" variant="secondary" disabled={busy || left === 0} onClick={() => setMode("edit")}>
+							<Button size="sm" variant="secondary" disabled={busy || expired} onClick={() => setMode("edit")}>
 								Edit, then allow <Kbd className="ml-1">E</Kbd>
 							</Button>
 						)}
@@ -187,11 +189,15 @@ export function ApprovalItemCard({
 							<Button
 								size="sm"
 								variant="secondary"
-								title="Skips this question next time, for this tool and this Dot."
-								disabled={busy || left === 0}
+								title={
+									approval.kind === "folder"
+										? `Adds ${approval.folder} to this Dot's folders, so it won't ask again.`
+										: "Skips this question next time, for this tool and this Dot."
+								}
+								disabled={busy || expired}
 								onClick={() => void send("allow-always")}
 							>
-								Always allow for this Dot
+								{approval.kind === "folder" ? "Always allow this folder" : "Always allow for this Dot"}
 							</Button>
 						)}
 						<Button size="sm" variant="ghost" className="text-danger" disabled={busy} onClick={() => void send("deny")}>
@@ -204,7 +210,7 @@ export function ApprovalItemCard({
 				)}
 				{mode === "edit" && (
 					<>
-						<Button size="sm" disabled={busy || left === 0} onClick={allowEdited}>
+						<Button size="sm" disabled={busy || expired} onClick={allowEdited}>
 							Allow with my changes
 						</Button>
 						<Button size="sm" variant="ghost" disabled={busy} onClick={() => setMode("view")}>

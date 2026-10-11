@@ -27,6 +27,12 @@ export function taskPrompt(p: OrgProject, t: OrgTask, deps: DepInfo[]): string {
 		`Project request: ${p.brief}`,
 		`What to do and what "done" means: ${t.brief}`,
 	];
+	if (t.redoNote)
+		lines.push(
+			"",
+			`This task is being done again. ${trim(t.redoNote, ORG_LIMITS.answerMax)}`,
+			"Start fresh from the work listed here as it is now, and rewrite your files for this task instead of reusing earlier versions.",
+		);
 	if (deps.length) {
 		lines.push("", "Work you can build on (from tasks this one depends on):");
 		for (const d of deps) {

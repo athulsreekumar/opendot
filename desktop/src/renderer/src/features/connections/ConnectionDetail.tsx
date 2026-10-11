@@ -1,7 +1,8 @@
-import type { Connection, McpExposure } from "@shared/types";
+import { secretRefs } from "@shared/secrets";
+import type { CatalogEntry, Connection, McpExposure } from "@shared/types";
 import { useEffect, useState } from "react";
 import { navigate } from "@/app/router";
-import { Avatar, Badge, Button, Dialog, DialogFooter, Select, Switch, toast } from "@/design-system/components";
+import { Avatar, Badge, Button, Dialog, DialogFooter, Input, Select, Switch, toast } from "@/design-system/components";
 import { api, errorText } from "@/lib/api";
 import { useDots } from "@/stores/dots";
 import { useRuntime } from "@/stores/runtime";
@@ -80,6 +81,11 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 		);
 
 	const isOAuth = connection.type === "google" || connection.type === "microsoft";
+	const secretKeys = secretRefs(connection);
+	// Remote servers sign in through OAuth unless they use a token, or come from the catalog without OAuth.
+	const canSignIn =
+		isOAuth ||
+		(connection.type === "mcp-http" && secretKeys.length === 0 && (!!connection.http?.oauth || !connection.catalogId));
 	const users = dotsUsing(dots, connection.id);
 
 	return (
@@ -115,9 +121,7 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 						<Button size="sm" variant="secondary" loading={busy === "check"} onClick={check}>
 							Reconnect
 						</Button>
-						{(isOAuth || connection.type === "mcp-http") && (
-							<OAuthButtons connection={connection} busy={busy} run={run} />
-						)}
+						{canSignIn && <OAuthButtons connection={connection} busy={busy} run={run} />}
 					</div>
 				</div>
 				{status?.error && <p className="text-sm text-danger">{status.error}</p>}
@@ -130,6 +134,8 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 					</pre>
 				)}
 			</section>
+
+			{secretKeys.length > 0 && <SecretsSection connection={connection} keys={secretKeys} onSaved={check} />}
 
 			{type === "knowledge" && <KnowledgePanel />}
 
@@ -252,6 +258,72 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
 				<p className="text-sm text-fg-2">This can't be undone.</p>
 			</Dialog>
 		</div>
+	);
+}
+
+/** Replace a saved token or key. Saved values are never shown; leaving a field empty keeps it. */
+function SecretsSection({
+	connection,
+	keys,
+	onSaved,
+}: {
+	connection: Connection;
+	keys: string[];
+	onSaved: () => Promise<void>;
+}) {
+	const [values, setValues] = useState<Record<string, string>>({});
+	const [inputs, setInputs] = useState<CatalogEntry["inputs"]>([]);
+	const [saving, setSaving] = useState(false);
+
+	useEffect(() => {
+		if (!connection.catalogId) return;
+		api.connections
+			.catalog()
+			.then((list) => setInputs(list.find((e) => e.id === connection.catalogId)?.inputs ?? []))
+			.catch(() => undefined);
+	}, [connection.catalogId]);
+
+	const filled = Object.fromEntries(Object.entries(values).filter(([, v]) => v.trim()));
+	const save = async () => {
+		setSaving(true);
+		try {
+			await api.connections.update(connection.id, { secrets: filled });
+			setValues({});
+			toast({ title: "Saved", variant: "success" });
+			await onSaved();
+		} catch (e) {
+			toast({ title: "Couldn't save", description: errorText(e), variant: "error" });
+		} finally {
+			setSaving(false);
+		}
+	};
+
+	return (
+		<section className="flex flex-col gap-3">
+			<h3 className="text-lg font-semibold text-fg">{keys.length === 1 ? "Token" : "Tokens"}</h3>
+			{keys.map((k) => {
+				const input = inputs.find((i) => i.key === k);
+				return (
+					// biome-ignore lint/a11y/noLabelWithoutControl: wraps a design-system input
+					<label key={k} className="flex flex-col gap-1 text-sm text-fg-2">
+						{input?.label ?? k}
+						<Input
+							type="password"
+							autoComplete="off"
+							placeholder="Paste a new value to replace the saved one"
+							value={values[k] ?? ""}
+							onChange={(e) => setValues((v) => ({ ...v, [k]: e.target.value }))}
+						/>
+						{input?.help && <span className="text-xs text-fg-3">{input.help}</span>}
+					</label>
+				);
+			})}
+			<div>
+				<Button size="sm" onClick={save} loading={saving} disabled={Object.keys(filled).length === 0}>
+					Save and test
+				</Button>
+			</div>
+		</section>
 	);
 }
 

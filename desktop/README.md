@@ -157,7 +157,7 @@ Both use your own OAuth client (so your data never passes through anyone else's 
 
 ## Adding tools (MCP)
 
-Connections → **Catalog** (one click for Filesystem, Memory, Fetch, Git, GitHub, Notion, Linear, Sentry, Context7, …),
+Connections → **Catalog** (one click for Filesystem, Memory, Fetch, Exa Search, Git, GitHub, Notion, Linear, Atlassian, Todoist, Dropbox, Sentry, Context7, PostgreSQL, …),
 **Add MCP server** (any local command or remote URL), or **Import JSON** (paste a Claude Desktop / Cursor / VS Code `mcpServers`
 block). Then give a Dot access in **Dot info → Tools**, where each tool can be set to Allow, Ask or Block. Local MCP servers that
 use `npx`/`uvx` need Node.js / uv installed.

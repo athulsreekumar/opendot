@@ -1,7 +1,8 @@
 // tool_call gate: path guard + allow/ask/deny + approvals (spec 06 §3.1).
+import path from "node:path";
 import { approvalTitle, changedKeys, formatApprovalDetail } from "../../../shared/approvals/describe";
 import type { Connection, Dot, ToolDecision } from "../../../shared/types";
-import { checkPath, fileToolPath } from "../../connections/mac/path-guard";
+import { checkPath, fileToolPath, folderToGrant } from "../../connections/mac/path-guard";
 import type { ApprovalBroker } from "../../security/approval-broker";
 import type { PolicyEngine, ToolAnnotations } from "../../security/policy-engine";
 import type { InlineExtension } from "../pi-adapter";
@@ -21,7 +22,8 @@ export interface PolicyExtDeps {
 		summary: string,
 		data: Record<string, string | number | boolean | null>,
 	) => void;
-	approvalTtlMs: () => number;
+	/** Adds a folder to the Dot's allowed folders (folder approval answered with Always allow). */
+	grantFolder: (dot: Dot, folder: string) => Promise<void>;
 	/** Approvals decided by an Always allow rule are recorded in the inbox history (no prompt was shown). */
 	recordRuleAllow?: (dot: Dot, toolName: string, args: unknown) => void;
 	/** Puts real values back into text the model wrote (PII tokens), for the "why" shown to the user. */
@@ -106,16 +108,44 @@ export function policyExtension(deps: PolicyExtDeps): InlineExtension {
 					],
 				};
 			});
+			const why = (): { why?: string } => {
+				const said = lastSaid ? (deps.restore ? deps.restore(lastSaid) : lastSaid) : "";
+				return said ? { why: said.length > WHY_MAX ? `${said.slice(0, WHY_MAX - 1)}…` : said } : {};
+			};
 			api.on("tool_call", async (event, ctx) => {
-				const dot = await deps.getDot();
+				let dot = await deps.getDot();
 				const name = event.toolName;
 				if (FILE_TOOLS.has(name)) {
 					const target = fileToolPath(name, event.input);
 					if (target) {
 						const res = await checkPath(target, deps.allowedRoots(dot));
 						if (!res.ok) {
-							deps.audit("tool-blocked", dot, `${name} outside allowed folders`, { tool: name });
-							return { block: true, reason: res.reason };
+							// Outside the Dot's folders: ask for access and wait, instead of failing the task.
+							if (!res.resolved) return { block: true, reason: res.reason };
+							const folder = await folderToGrant(res.resolved);
+							const access = await deps.approvals.requestDetailed(
+								{
+									kind: "folder",
+									dotId: dot.id,
+									title: `${dot.name} needs access to ${path.basename(folder) || folder}`,
+									detail: `${humanToolLabel(name)}: ${res.resolved}`,
+									folder,
+									toolName: name,
+									args: event.input,
+									...why(),
+								},
+								{ signal: ctx.signal },
+							);
+							if (access.outcome === "deny") {
+								deps.audit("tool-blocked", dot, `${name} outside allowed folders: denied`, { tool: name });
+								return { block: true, reason: denyReasonText(access.reason) };
+							}
+							if (access.outcome === "expired") return { block: true, reason: res.reason };
+							if (access.outcome === "allow-always") {
+								await deps.grantFolder(dot, folder);
+								dot = await deps.getDot();
+							}
+							deps.audit("approval", dot, `${name} in ${folder} (${access.outcome})`, { tool: name, folder });
 						}
 					}
 				}
@@ -139,7 +169,6 @@ export function policyExtension(deps: PolicyExtDeps): InlineExtension {
 					deps.audit("tool-blocked", dot, `${humanToolLabel(name)} blocked: ${d.reason}`, { tool: name });
 					return { block: true, reason: `Blocked by OpenDot: ${d.reason}` };
 				}
-				const said = lastSaid ? (deps.restore ? deps.restore(lastSaid) : lastSaid) : "";
 				const res = await deps.approvals.requestDetailed(
 					{
 						kind: "tool",
@@ -148,10 +177,10 @@ export function policyExtension(deps: PolicyExtDeps): InlineExtension {
 						detail: summarize(event.input),
 						toolName: name,
 						args: event.input,
-						...(said ? { why: said.length > WHY_MAX ? `${said.slice(0, WHY_MAX - 1)}…` : said } : {}),
+						...why(),
 						alwaysAllowable: d.ruleSource !== "dot-rule",
 					},
-					{ signal: ctx.signal, ttlMs: deps.approvalTtlMs() },
+					{ signal: ctx.signal },
 				);
 				if (res.outcome === "allow-always") await deps.policy.rememberAlways(dot.id, name);
 				if (res.outcome === "deny") return { block: true, reason: denyReasonText(res.reason) };

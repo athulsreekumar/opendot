@@ -1,0 +1,25 @@
+{
+	"id": "sqlite",
+	"label": "SQLite",
+	"description": "Query and update a SQLite database file on your computer.",
+	"category": "data",
+	"icon": "database",
+	"type": "mcp-stdio",
+	"stdio": {
+		"command": "uvx",
+		"args": ["--with", "mcp<2", "mcp-server-sqlite", "--db-path", "{DB_PATH}"]
+	},
+	"inputs": [
+		{
+			"key": "DB_PATH",
+			"label": "Database file",
+			"secret": false,
+			"placeholder": "/Users/you/data/app.db",
+			"target": "arg"
+		}
+	],
+	"defaultExposure": "deferred",
+	"requiresUv": true,
+	"verified": false,
+	"docsUrl": "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/sqlite"
+}

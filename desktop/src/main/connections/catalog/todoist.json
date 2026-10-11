@@ -1,0 +1,16 @@
+{
+	"id": "todoist",
+	"label": "Todoist",
+	"description": "Add, update and complete tasks and projects in Todoist.",
+	"category": "productivity",
+	"icon": "list-todo",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://ai.todoist.net/mcp",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": true,
+	"docsUrl": "https://github.com/Doist/todoist-ai"
+}

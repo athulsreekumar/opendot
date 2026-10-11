@@ -57,4 +57,15 @@ describe("ApprovalBroker", () => {
 		vi.advanceTimersByTime(1000);
 		expect(await p).toMatchObject({ outcome: "expired", by: "timeout" });
 	});
+
+	it("waits with no deadline unless one is given", async () => {
+		vi.useFakeTimers();
+		const { broker, base } = make();
+		const p = broker.requestDetailed(base);
+		expect(broker.pending()[0]!.expiresAt).toBeUndefined();
+		vi.advanceTimersByTime(24 * 60 * 60_000);
+		expect(broker.pending()).toHaveLength(1);
+		broker.respond({ id: broker.pending()[0]!.id, decision: "allow-once" });
+		expect(await p).toMatchObject({ outcome: "allow-once", by: "you" });
+	});
 });

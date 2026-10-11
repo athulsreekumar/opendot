@@ -1,3 +1,6 @@
+import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { defaultAlwaysOn, defaultPersona, emptyProfile } from "../../../shared/defaults";
 import type { Dot } from "../../../shared/types";
@@ -22,15 +25,19 @@ function setup(decision: "ask" | "allow" = "ask", ruleSource = "annotation") {
 	const approvals = new ApprovalBroker({ requested: () => undefined, resolved: () => undefined });
 	const rememberAlways = vi.fn(async () => undefined);
 	const recordRuleAllow = vi.fn();
+	const roots = ["/tmp"];
+	const grantFolder = vi.fn(async (_d: Dot, folder: string) => {
+		roots.push(folder);
+	});
 	const deps: PolicyExtDeps = {
 		policy: { decide: async () => ({ decision, reason: "r", ruleSource }), rememberAlways } as never,
 		approvals,
 		getDot: async () => dot,
 		connectionFor: () => undefined,
 		nativeDefault: () => undefined,
-		allowedRoots: () => ["/tmp"],
+		allowedRoots: () => roots,
 		audit: () => undefined,
-		approvalTtlMs: () => 60_000,
+		grantFolder,
 		recordRuleAllow,
 	};
 	const ext = policyExtension(deps);
@@ -48,7 +55,7 @@ function setup(decision: "ask" | "allow" = "ask", ruleSource = "annotation") {
 		await vi.waitFor(() => expect(approvals.pending()).toHaveLength(1));
 		approvals.respond({ id: approvals.pending()[0]!.id, ...res } as never);
 	};
-	return { handlers, approvals, call, answer, rememberAlways, recordRuleAllow };
+	return { handlers, approvals, call, answer, rememberAlways, recordRuleAllow, grantFolder };
 }
 
 describe("policy extension approvals", () => {
@@ -158,5 +165,46 @@ describe("sanitizeEditedArgs", () => {
 		expect(sanitizeEditedArgs("send_email", args, { subject: "S" })).toBeUndefined();
 		expect(sanitizeEditedArgs("send_email", args, undefined)).toBeUndefined();
 		expect(sanitizeEditedArgs("mcp__echo__delete_everything", {}, { anything: "x" })).toBeUndefined();
+	});
+});
+
+describe("policy extension folder access", () => {
+	// A project outside the Dot's folders: <tmp>/proj with a .git, and a file two folders down.
+	const proj = realpathSync(mkdtempSync(join(tmpdir(), "od-proj-")));
+	mkdirSync(join(proj, ".git"));
+	mkdirSync(join(proj, "src", "screens"), { recursive: true });
+	const file = join(proj, "src", "screens", "Home.tsx");
+	writeFileSync(file, "x");
+
+	it("asks for the project folder and waits instead of failing", async () => {
+		const t = setup("allow");
+		const p = t.call("read", { path: file });
+		await vi.waitFor(() => expect(t.approvals.pending()).toHaveLength(1));
+		const req = t.approvals.pending()[0]!;
+		expect(req).toMatchObject({ kind: "folder", folder: proj, toolName: "read" });
+		expect(req.title).toContain("Inbox needs access to");
+		expect(req.expiresAt).toBeUndefined();
+		t.approvals.respond({ id: req.id, decision: "allow-once" });
+		expect(await p).toBeUndefined();
+		expect(t.grantFolder).not.toHaveBeenCalled();
+	});
+
+	it("Always allow adds the folder, so the next call does not ask", async () => {
+		const t = setup("allow");
+		const p = t.call("read", { path: file });
+		await t.answer({ decision: "allow-always" });
+		expect(await p).toBeUndefined();
+		expect(t.grantFolder).toHaveBeenCalledWith(expect.anything(), proj);
+		expect(await t.call("read", { path: join(proj, "README.md") })).toBeUndefined();
+		expect(t.approvals.pending()).toHaveLength(0);
+	});
+
+	it("deny blocks with the user's reason", async () => {
+		const t = setup("allow");
+		const p = t.call("ls", { path: proj });
+		await t.answer({ decision: "deny", reason: "not that repo" });
+		const r = await p;
+		expect(r?.block).toBe(true);
+		expect(r?.reason).toContain("not that repo");
 	});
 });

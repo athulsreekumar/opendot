@@ -127,6 +127,8 @@ export interface OrgTask {
 	/** Set while status is "needs-input". */
 	question?: string;
 	error?: string;
+	/** Set when the task is redone: why, told to the assignee on its next run. Cleared once it is done. */
+	redoNote?: string;
 	startedAt?: ISODate;
 	finishedAt?: ISODate;
 }
@@ -276,6 +278,20 @@ export function validatePlan(tasks: OrgTaskInput[], isKnownDot: (id: DotId) => b
 		if (seen < tasks.length) problems.push({ message: "The tasks depend on each other in a circle." });
 	}
 	return problems;
+}
+
+/** Ids of every task that builds on `id`, directly or through other tasks, in plan order. */
+export function dependentTaskIds(tasks: OrgTask[], id: string): string[] {
+	const found = new Set<string>([id]);
+	for (let grew = true; grew; ) {
+		grew = false;
+		for (const t of tasks)
+			if (!found.has(t.id) && t.dependsOn.some((d) => found.has(d))) {
+				found.add(t.id);
+				grew = true;
+			}
+	}
+	return tasks.filter((t) => t.id !== id && found.has(t.id)).map((t) => t.id);
 }
 
 /** Ids of pending Dot tasks whose dependencies are all finished (done or skipped) and that are free to start. */

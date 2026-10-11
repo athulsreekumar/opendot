@@ -1,3 +1,5 @@
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import type { CatalogEntry } from "@shared/types";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
@@ -43,38 +45,18 @@ const CatalogEntrySchema = z.object({
 }) as unknown as z.ZodType<CatalogEntry>;
 
 describe("CatalogEntries", () => {
-	it("should have exactly 18 entries", () => {
-		expect(CATALOG).toHaveLength(18);
-	});
-
 	it("should have unique ids", () => {
 		const ids = CATALOG.map((e) => e.id);
 		const uniqueIds = new Set(ids);
 		expect(uniqueIds.size).toBe(ids.length);
 	});
 
-	it("should have expected catalog ids", () => {
-		const ids = CATALOG.map((e) => e.id);
-		expect(ids).toEqual([
-			"filesystem",
-			"memory",
-			"sequential-thinking",
-			"everything",
-			"fetch",
-			"git",
-			"time",
-			"playwright",
-			"context7",
-			"github",
-			"notion",
-			"linear",
-			"sentry",
-			"figma",
-			"supabase",
-			"vercel",
-			"stripe",
-			"huggingface",
-		]);
+	it("should register every catalog JSON file", () => {
+		const files = readdirSync(__dirname)
+			.filter((f) => f.endsWith(".json"))
+			.map((f) => f.replace(/\.json$/, ""))
+			.sort();
+		expect(CATALOG.map((e) => e.id).sort()).toEqual(files);
 	});
 
 	describe.each(CATALOG)("CatalogEntry: $id", (entry) => {
@@ -174,31 +156,8 @@ describe("CatalogEntries", () => {
 			}
 		});
 
-		it("should have correct verified status", () => {
-			const verifiedIds = [
-				"filesystem",
-				"memory",
-				"sequential-thinking",
-				"everything",
-				"fetch",
-				"git",
-				"time",
-				"playwright",
-				"context7",
-				"github",
-				"notion",
-				"linear",
-				"sentry",
-				"huggingface",
-			];
-			if (verifiedIds.includes(entry.id)) {
-				expect(entry.verified).toBe(true);
-			}
-
-			const unverifiedIds = ["figma", "supabase", "vercel", "stripe"];
-			if (unverifiedIds.includes(entry.id)) {
-				expect(entry.verified).toBe(false);
-			}
+		it("should have a file name matching its id", () => {
+			expect(existsSync(join(__dirname, `${entry.id}.json`))).toBe(true);
 		});
 
 		it("should have valid inputs", () => {

@@ -15,7 +15,7 @@ export interface ApprovalResolution {
 interface Pending {
 	req: ApprovalRequest;
 	resolve: (r: ApprovalResolution) => void;
-	timer: ReturnType<typeof setTimeout>;
+	timer: ReturnType<typeof setTimeout> | undefined;
 }
 
 export interface ApprovalEmitter {
@@ -40,13 +40,14 @@ export class ApprovalBroker {
 		input: Omit<ApprovalRequest, "id" | "createdAt" | "expiresAt">,
 		opts: { signal?: AbortSignal; ttlMs?: number } = {},
 	): Promise<ApprovalResolution> {
-		const ttl = opts.ttlMs ?? 5 * 60_000;
+		// No deadline unless asked for: a Dot waits for the user instead of giving up (stopping its run still ends it).
+		const ttl = opts.ttlMs;
 		const now = Date.now();
 		const req: ApprovalRequest = {
 			...input,
 			id: newId("apr"),
 			createdAt: new Date(now).toISOString(),
-			expiresAt: new Date(now + ttl).toISOString(),
+			...(ttl !== undefined ? { expiresAt: new Date(now + ttl).toISOString() } : {}),
 		};
 		return new Promise<ApprovalResolution>((resolve) => {
 			const finish = (r: ApprovalResolution) => {
@@ -58,7 +59,8 @@ export class ApprovalBroker {
 				for (const l of this.listeners) l(req.dotId);
 				resolve(r);
 			};
-			const timer = setTimeout(() => finish({ outcome: "expired", by: "timeout" }), ttl);
+			const timer =
+				ttl !== undefined ? setTimeout(() => finish({ outcome: "expired", by: "timeout" }), ttl) : undefined;
 			this.pendingMap.set(req.id, { req, resolve: finish, timer });
 			opts.signal?.addEventListener("abort", () => finish({ outcome: "deny", by: "stopped" }), { once: true });
 			this.emit.requested(req);

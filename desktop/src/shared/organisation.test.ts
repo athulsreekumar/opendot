@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
 	blockedByFailure,
+	dependentTaskIds,
 	type OrgTask,
 	type OrgTaskInput,
 	parseReviewReply,
@@ -60,6 +61,18 @@ describe("readiness", () => {
 		expect(readyTaskIds(tasks)).toEqual(["t2"]);
 		expect(readyTaskIds([task("t1", "skipped"), task("t2", "pending", { dependsOn: ["t1"] })])).toEqual(["t2"]);
 		expect(readyTaskIds([task("t1", "review"), task("t2", "pending", { dependsOn: ["t1"] })])).toEqual([]);
+	});
+	it("finds every task that builds on one, through chains, in plan order", () => {
+		const tasks = [
+			task("t1", "done"),
+			task("t2", "done", { dependsOn: ["t1"] }),
+			task("t3", "done"),
+			task("t4", "pending", { dependsOn: ["t3", "t2"] }),
+			task("t5", "pending", { dependsOn: ["t4"] }),
+		];
+		expect(dependentTaskIds(tasks, "t1")).toEqual(["t2", "t4", "t5"]);
+		expect(dependentTaskIds(tasks, "t3")).toEqual(["t4", "t5"]);
+		expect(dependentTaskIds(tasks, "t5")).toEqual([]);
 	});
 	it("finds tasks that can never start", () => {
 		expect(blockedByFailure([task("t1", "failed"), task("t2", "pending", { dependsOn: ["t1"] })])).toEqual(["t2"]);

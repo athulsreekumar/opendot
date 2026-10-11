@@ -1,0 +1,16 @@
+{
+	"id": "atlassian",
+	"label": "Atlassian",
+	"description": "Search and update Jira issues and Confluence pages.",
+	"category": "productivity",
+	"icon": "kanban",
+	"type": "mcp-http",
+	"http": {
+		"url": "https://mcp.atlassian.com/v1/mcp/authv2",
+		"oauth": {}
+	},
+	"inputs": [],
+	"defaultExposure": "deferred",
+	"verified": true,
+	"docsUrl": "https://developer.atlassian.com/cloud/rovo-mcp/"
+}

@@ -400,6 +400,11 @@ export const ARG_SCHEMAS: Partial<Record<string, z.ZodType<unknown[]>>> = {
 		z.string().min(1).max(24),
 		z.string().min(1).max(ORG_LIMITS.answerMax),
 	]) as unknown as z.ZodType<unknown[]>,
+	"org.redoTask": z.tuple([
+		z.string().min(1).max(64),
+		z.string().min(1).max(24),
+		z.string().max(ORG_LIMITS.answerMax).optional(),
+	]) as unknown as z.ZodType<unknown[]>,
 	"org.openDeliverable": z.tuple([
 		z.string().min(1).max(64),
 		z.string().min(1).max(24),
