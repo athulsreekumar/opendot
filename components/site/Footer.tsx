@@ -1,5 +1,5 @@
 import { LogoMark } from "@/components/ui/LogoMark";
-import { footer } from "@/lib/copy";
+import { footer, parentCompany } from "@/lib/copy";
 import "./Footer.css";
 
 export function Footer() {
@@ -53,7 +53,17 @@ export function Footer() {
 
 				{/* Bottom line */}
 				<div className="od-footer-bottom">
-					<p className="t-caption text-fg-3">© 2026 OpenDot · For Mac and Windows</p>
+					<p className="t-caption text-fg-3">
+						© 2026 OpenDot · For Mac and Windows · A product of{" "}
+						<a
+							href={parentCompany.href}
+							target="_blank"
+							rel="noopener"
+							className="text-fg-2 underline underline-offset-2 transition-colors duration-200 hover:text-accent"
+						>
+							{parentCompany.name}
+						</a>
+					</p>
 				</div>
 			</div>
 		</footer>

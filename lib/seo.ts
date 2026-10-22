@@ -93,6 +93,7 @@ export function homeJsonLd() {
 				url: abs("/"),
 				logo: { "@type": "ImageObject", url: abs("/icon.png"), width: 512, height: 512 },
 				sameAs: [GITHUB_URL],
+				parentOrganization: { "@type": "Organization", name: "The Other Company", url: "https://other-company.com" },
 			},
 			{
 				"@type": "WebSite",
@@ -220,6 +221,7 @@ export function pageJsonLd(page: ContentPage) {
 			url: abs("/"),
 			logo: { "@type": "ImageObject", url: abs("/icon.png"), width: 512, height: 512 },
 			sameAs: [GITHUB_URL],
+			parentOrganization: { "@type": "Organization", name: "The Other Company", url: "https://other-company.com" },
 		},
 		isGuide
 			? {

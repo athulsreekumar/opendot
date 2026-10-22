@@ -488,3 +488,14 @@ export const meta = {
 	title: "OpenDot: your AI team, living on your Mac",
 	description: hero.lead,
 };
+
+/** The company that makes OpenDot. */
+export const parentCompany = {
+	label: "Who makes OpenDot",
+	h2: "Made by The Other Company.",
+	lead: "OpenDot is built by The Other Company, an independent product, engineering and research company.",
+	body: "It builds its own products, works with businesses on AI and software, and gives working time back to the open-source projects it depends on. Looper, a live map for meeting people nearby, is its other product.",
+	cta: "About The Other Company",
+	href: "https://other-company.com",
+	name: "The Other Company",
+};
